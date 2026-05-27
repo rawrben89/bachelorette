@@ -2019,7 +2019,9 @@ function initDb() {
   dot.id = 'sync-dot';
   dot.title = 'Connecting…';
   dot.style.cssText = 'width:8px;height:8px;border-radius:50%;background:#888;display:inline-block;flex-shrink:0;transition:background .4s';
-  if (bar) bar.prepend(dot);
+  // Insert dot inside the flex row (before the "Share" label), not outside it
+  const _barRow = bar ? bar.querySelector('div') : null;
+  if (_barRow) _barRow.prepend(dot); else if (bar) bar.prepend(dot);
 
   function _setSyncDot(state) {
     if (!dot) return;
