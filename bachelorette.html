@@ -1220,11 +1220,15 @@
   </div>
   </header>
 
-  <!-- Live Party Bar (shown once Firebase is configured) -->
-  <div id="live-bar" style="display:none;background:var(--wine);color:#fff;padding:10px 20px;text-align:center;font-size:13px;letter-spacing:.05em;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap">
-    <span>🎉 Everyone open this link to share the live board:</span>
-    <code id="live-url" style="background:rgba(255,255,255,.15);padding:4px 10px;border-radius:4px;font-size:12px;letter-spacing:.02em;max-width:380px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block;vertical-align:middle"></code>
-    <button id="live-copy-btn" style="background:var(--pink-hot);border:none;color:#fff;padding:6px 14px;border-radius:999px;cursor:pointer;font-size:12px;font-weight:600;letter-spacing:.1em;white-space:nowrap">Copy Link</button>
+  <!-- Live Party Bar -->
+  <div id="live-bar" style="display:none;background:var(--wine);color:#fff;padding:16px 24px 18px;text-align:center">
+    <div style="font-size:10px;letter-spacing:.35em;text-transform:uppercase;opacity:.7;margin-bottom:10px">🎉 Share this link — everyone opens it together</div>
+    <code id="live-url" style="display:block;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);padding:10px 16px;border-radius:6px;font-size:13px;letter-spacing:.03em;word-break:break-all;white-space:normal;line-height:1.55;max-width:640px;margin:0 auto 14px;cursor:text;user-select:all"></code>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button id="live-copy-btn" style="background:var(--pink-hot);border:none;color:#fff;padding:9px 22px;border-radius:999px;cursor:pointer;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;touch-action:manipulation">Copy Link</button>
+      <button id="live-new-btn" style="background:transparent;border:1px solid rgba(255,255,255,.45);color:#fff;padding:9px 22px;border-radius:999px;cursor:pointer;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;touch-action:manipulation">✦ New Room</button>
+    </div>
+    <div id="live-room-id" style="margin-top:10px;font-size:10px;letter-spacing:.3em;opacity:.45;text-transform:uppercase"></div>
   </div>
 
   <div class="personalize" id="personalize">
@@ -1973,19 +1977,41 @@ function initDb() {
   }
 
   // Show the share bar
-  const bar     = document.getElementById('live-bar');
-  const urlEl   = document.getElementById('live-url');
-  const copyBtn = document.getElementById('live-copy-btn');
+  const bar      = document.getElementById('live-bar');
+  const urlEl    = document.getElementById('live-url');
+  const copyBtn  = document.getElementById('live-copy-btn');
+  const newBtn   = document.getElementById('live-new-btn');
+  const roomLabel= document.getElementById('live-room-id');
   if (bar && urlEl) {
     const shareUrl = window.location.origin + window.location.pathname + '?p=' + _partyId;
     urlEl.textContent = shareUrl;
-    bar.style.display = 'flex';
+    bar.style.display = 'block';
+    if (roomLabel) roomLabel.textContent = 'Room · ' + _partyId;
+
     if (copyBtn) {
       copyBtn.addEventListener('click', () => {
         navigator.clipboard.writeText(shareUrl).then(() => {
           copyBtn.textContent = '✓ Copied!';
           setTimeout(() => { copyBtn.textContent = 'Copy Link'; }, 2200);
+        }).catch(() => {
+          // Fallback for browsers that block clipboard API
+          const sel = window.getSelection();
+          const range = document.createRange();
+          range.selectNodeContents(urlEl);
+          sel.removeAllRanges();
+          sel.addRange(range);
+          document.execCommand('copy');
+          copyBtn.textContent = '✓ Copied!';
+          setTimeout(() => { copyBtn.textContent = 'Copy Link'; }, 2200);
         });
+      });
+    }
+
+    if (newBtn) {
+      newBtn.addEventListener('click', () => {
+        const newId = Math.random().toString(36).slice(2, 9).toUpperCase();
+        // Navigate to a fresh page with the new party room — clean start
+        window.location.href = window.location.pathname + '?p=' + newId;
       });
     }
   }
