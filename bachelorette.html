@@ -914,9 +914,23 @@
     .main-nav button{padding:14px 14px;font-size:16px;min-width:auto}
     .main-nav .nav-num{font-size:8px;letter-spacing:.2em}
   }
-  @media (max-width:380px){
-    .main-nav button{padding:12px 8px;font-size:14px}
+  @media (max-width:480px){
+    .main-nav button{padding:10px 12px;font-size:14px;min-width:0;flex:1}
+    .main-nav .nav-num{display:none}
   }
+  @media (max-width:340px){
+    .main-nav button{padding:8px 8px;font-size:13px}
+  }
+  /* Offline banner */
+  #offline-banner{
+    display:none;position:sticky;top:0;z-index:49;
+    background:#b71c1c;color:#fff;text-align:center;
+    font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+    padding:7px 16px;font-family:'DM Sans',sans-serif;font-weight:600;
+  }
+  /* Personalize bar highlight when names auto-arrive */
+  .personalize.synced{animation:pp-glow .8s ease;}
+  @keyframes pp-glow{0%{background:#fff5e9}60%{background:#fff5e9}100%{background:transparent}}
 
   /* ---------- SCHEDULE REMINDERS ---------- */
   .up-next-pill{
@@ -1345,6 +1359,8 @@
       </div>
     </div>
   </div>
+
+  <div id="offline-banner">⚡ Reconnecting to live sync…</div>
 
   <div class="personalize" id="personalize">
     <div class="pp-field">
@@ -2221,10 +2237,13 @@ function initDb() {
   // Status dot — already in the HTML markup, just grab it
   const dot = document.getElementById('sync-dot');
 
+  const _offlineBanner = document.getElementById('offline-banner');
   function _setSyncDot(state) {
-    if (!dot) return;
-    dot.style.background = state === 'on' ? '#4caf50' : state === 'err' ? '#e53935' : '#888';
-    dot.title = state === 'on' ? 'Live — syncing' : state === 'err' ? 'Reconnecting…' : 'Connecting…';
+    if (dot) {
+      dot.style.background = state === 'on' ? '#4caf50' : state === 'err' ? '#e53935' : '#888';
+      dot.title = state === 'on' ? 'Live — syncing' : state === 'err' ? 'Reconnecting…' : 'Connecting…';
+    }
+    if (_offlineBanner) _offlineBanner.style.display = state === 'err' ? 'block' : 'none';
   }
 
   // SSE with auto-reconnect
@@ -2388,6 +2407,9 @@ function _applyPersona(v) {
   }
   if (typeof refreshPersonalized === 'function') refreshPersonalized();
   if (typeof updateCountdown === 'function') updateCountdown();
+  // Flash the personalize bar so guests notice names were auto-filled
+  const pp = document.getElementById('personalize');
+  if (pp) { pp.classList.remove('synced'); void pp.offsetWidth; pp.classList.add('synced'); }
 }
 
 /* ============================================
@@ -3053,6 +3075,11 @@ function renderHunt(state){
   });
   huntPts.textContent=done;
   huntMax.textContent=total;
+  if(done>0 && done===total && !huntList.dataset.celebrated){
+    huntList.dataset.celebrated='1';
+    fireConfetti({count:120});
+  }
+  if(done<total) huntList.dataset.celebrated='';
 }
 function loadHunt(){try{return JSON.parse(localStorage.getItem('bach_hunt')||'[]')}catch(e){return[]}}
 function saveHunt(s){try{localStorage.setItem('bach_hunt',JSON.stringify(s))}catch(e){};dbSet('hunt',s)}
@@ -4144,6 +4171,11 @@ function renderBL(state){
   });
   blPtsEl.textContent=done;
   blMaxEl.textContent=total;
+  if(done>0 && done===total && !blList.dataset.celebrated){
+    blList.dataset.celebrated='1';
+    fireConfetti({count:150});
+  }
+  if(done<total) blList.dataset.celebrated='';
 }
 function loadBL(){try{return JSON.parse(localStorage.getItem('bach_bl')||'[]')}catch(e){return[]}}
 function saveBL(s){try{localStorage.setItem('bach_bl',JSON.stringify(s))}catch(e){};dbSet('bl',s)}
