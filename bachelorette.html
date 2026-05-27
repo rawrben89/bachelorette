@@ -1132,6 +1132,10 @@
 
     /* Personalize bar tighter */
     .personalize{padding:10px 14px;gap:8px}
+
+    /* Share bar: URL full-width, button full-width below */
+    #live-url{width:100%;box-sizing:border-box}
+    #live-copy-btn{width:100%}
   }
 
   @media (max-width:380px){
@@ -1220,12 +1224,17 @@
   </div>
   </header>
 
-  <!-- Live Party Bar — single line -->
-  <div id="live-bar" style="display:none;background:var(--wine);color:#fff;padding:10px 16px">
-    <div style="display:flex;align-items:center;gap:10px;max-width:900px;margin:0 auto;flex-wrap:wrap">
-      <span style="font-size:10px;letter-spacing:.28em;text-transform:uppercase;opacity:.65;white-space:nowrap;flex-shrink:0">🎉 Share</span>
-      <code id="live-url" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);padding:7px 12px;border-radius:5px;font-size:12px;letter-spacing:.02em;word-break:break-all;white-space:normal;line-height:1.45;cursor:text;user-select:all"></code>
-      <button id="live-copy-btn" style="flex-shrink:0;background:var(--pink-hot);border:none;color:#fff;padding:8px 18px;border-radius:999px;cursor:pointer;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;touch-action:manipulation;white-space:nowrap">Copy</button>
+  <!-- Live Party Bar -->
+  <div id="live-bar" style="display:none;background:var(--wine);color:#fff;padding:12px 20px;text-align:center">
+    <div style="max-width:660px;margin:0 auto">
+      <div style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:10px;letter-spacing:.3em;text-transform:uppercase;opacity:.65;margin-bottom:9px">
+        <span id="sync-dot" style="width:7px;height:7px;border-radius:50%;background:#888;display:inline-block;flex-shrink:0;transition:background .4s"></span>
+        Share this link with your guests
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap">
+        <code id="live-url" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);padding:8px 14px;border-radius:6px;font-size:12px;letter-spacing:.02em;word-break:break-all;white-space:normal;line-height:1.5;cursor:text;user-select:all;max-width:100%"></code>
+        <button id="live-copy-btn" style="flex-shrink:0;background:var(--pink-hot);border:none;color:#fff;padding:9px 22px;border-radius:999px;cursor:pointer;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;touch-action:manipulation;white-space:nowrap">Copy Link</button>
+      </div>
     </div>
   </div>
 
@@ -2014,14 +2023,8 @@ function initDb() {
     }
   }
 
-  // Status dot in the share bar
-  const dot = document.createElement('span');
-  dot.id = 'sync-dot';
-  dot.title = 'Connecting…';
-  dot.style.cssText = 'width:8px;height:8px;border-radius:50%;background:#888;display:inline-block;flex-shrink:0;transition:background .4s';
-  // Insert dot inside the flex row (before the "Share" label), not outside it
-  const _barRow = bar ? bar.querySelector('div') : null;
-  if (_barRow) _barRow.prepend(dot); else if (bar) bar.prepend(dot);
+  // Status dot — already in the HTML markup, just grab it
+  const dot = document.getElementById('sync-dot');
 
   function _setSyncDot(state) {
     if (!dot) return;
