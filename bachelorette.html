@@ -1325,9 +1325,12 @@
   <!-- Live Party Bar -->
   <div id="live-bar" style="display:none;background:var(--wine);color:#fff;padding:12px 20px;text-align:center">
     <div style="max-width:660px;margin:0 auto">
-      <div style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:10px;letter-spacing:.3em;text-transform:uppercase;opacity:.65;margin-bottom:9px">
-        <span id="sync-dot" style="width:7px;height:7px;border-radius:50%;background:#888;display:inline-block;flex-shrink:0;transition:background .4s"></span>
-        Share this link with your guests
+      <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:9px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.3em;text-transform:uppercase;opacity:.65">
+          <span id="sync-dot" style="width:7px;height:7px;border-radius:50%;background:#888;display:inline-block;flex-shrink:0;transition:background .4s"></span>
+          Share this link with your guests
+        </div>
+        <span id="live-room-id" style="background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:3px 12px;font-size:11px;font-weight:700;letter-spacing:.2em;font-family:'DM Sans',sans-serif"></span>
       </div>
       <div style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap">
         <code id="live-url" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);padding:8px 14px;border-radius:6px;font-size:12px;letter-spacing:.02em;word-break:break-all;white-space:normal;line-height:1.5;cursor:text;user-select:all;max-width:100%"></code>
@@ -2188,6 +2191,9 @@ function initDb() {
     if (newBtn) {
       newBtn.addEventListener('click', () => {
         const newId = Math.random().toString(36).slice(2, 9).toUpperCase();
+        // Clear all game data from localStorage so the new room starts blank
+        ['bach_bingo','bach_hunt','bach_bl','bach_budget','bach_people',
+         'bach_guests','bach_tl','bach_mm','bach_section'].forEach(k=>localStorage.removeItem(k));
         window.location.href = window.location.pathname + '?p=' + newId;
       });
     }
