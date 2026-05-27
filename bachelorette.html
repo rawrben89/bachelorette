@@ -1334,6 +1334,12 @@
         <button id="live-copy-btn" style="flex-shrink:0;background:var(--pink-hot);border:none;color:#fff;padding:9px 22px;border-radius:999px;cursor:pointer;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;touch-action:manipulation;white-space:nowrap">Copy Link</button>
         <button id="live-new-btn" style="flex-shrink:0;background:transparent;border:1px solid rgba(255,255,255,.45);color:#fff;padding:9px 18px;border-radius:999px;cursor:pointer;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;touch-action:manipulation;white-space:nowrap">✦ New Room</button>
       </div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;flex-wrap:wrap">
+        <span style="font-size:10px;letter-spacing:.25em;text-transform:uppercase;opacity:.55">Join a room</span>
+        <input id="join-room-input" type="text" placeholder="Room ID or full URL" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false"
+          style="padding:7px 12px;border-radius:6px;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.1);color:#fff;font-size:13px;font-family:'DM Sans',sans-serif;letter-spacing:.05em;width:200px;outline:none" />
+        <button id="join-room-btn" style="background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.45);color:#fff;padding:7px 18px;border-radius:999px;cursor:pointer;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;touch-action:manipulation;white-space:nowrap">→ Go</button>
+      </div>
     </div>
   </div>
 
@@ -2182,10 +2188,28 @@ function initDb() {
     if (newBtn) {
       newBtn.addEventListener('click', () => {
         const newId = Math.random().toString(36).slice(2, 9).toUpperCase();
-        // Navigate to a fresh page with the new party room — clean start
         window.location.href = window.location.pathname + '?p=' + newId;
       });
     }
+
+    // Join room
+    const joinInput = document.getElementById('join-room-input');
+    const joinBtn   = document.getElementById('join-room-btn');
+    function doJoin() {
+      const raw = joinInput.value.trim();
+      if (!raw) return;
+      // Accept full URL or bare room ID
+      let roomId = raw;
+      try {
+        const u = new URL(raw);
+        roomId = u.searchParams.get('p') || raw;
+      } catch(_) { /* not a URL — treat as bare ID */ }
+      roomId = roomId.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 10);
+      if (!roomId) return;
+      window.location.href = window.location.pathname + '?p=' + roomId;
+    }
+    joinBtn.addEventListener('click', doJoin);
+    joinInput.addEventListener('keydown', e => { if (e.key === 'Enter') doJoin(); });
   }
 
   // Status dot — already in the HTML markup, just grab it
