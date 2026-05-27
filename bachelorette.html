@@ -51,15 +51,45 @@
   header{position:relative;padding:36px 32px 0;border-bottom:1px solid var(--line)}
   .topbar{display:flex;justify-content:space-between;align-items:center;text-transform:uppercase;letter-spacing:.22em;font-size:11px;color:var(--wine);flex-wrap:wrap;gap:8px}
   .topbar span:nth-child(2){letter-spacing:.4em}
-  .hero{padding:48px 0 64px;position:relative}
-  .hero h1{font-size:clamp(46px,14vw,210px);color:var(--wine)}
+  .hero{
+    padding:56px 0 72px;position:relative;
+    text-align:center;
+  }
+  .hero h1{
+    font-size:clamp(52px,14vw,210px);color:var(--wine);
+    text-align:center;
+  }
   .hero h1 .pink{color:var(--pink-hot)}
-  .hero-row{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;margin-top:24px;flex-wrap:wrap}
-  .hero-row p{max-width:420px;font-size:17px;color:#3a1226}
-  .hero-meta{text-align:right;font-family:"Fraunces",serif;font-size:14px;text-transform:uppercase;letter-spacing:.3em;color:var(--wine)}
-  .hero-meta strong{display:block;font-size:20px;letter-spacing:.15em;margin-top:6px}
-  .ornament{position:absolute;font-family:"Fraunces",serif;font-style:italic;color:var(--pink);opacity:.5;pointer-events:none}
-  .ornament.o1{top:18%;right:6%;font-size:120px;transform:rotate(-12deg)}
+  .hero-divider{
+    display:flex;align-items:center;justify-content:center;
+    gap:16px;margin:28px auto 28px;
+  }
+  .hero-divider::before,.hero-divider::after{
+    content:"";flex:1;max-width:80px;height:1px;background:var(--line);
+  }
+  .hero-divider-icon{
+    color:var(--pink-hot);font-size:18px;line-height:1;opacity:.8;
+  }
+  .hero-sub{
+    max-width:500px;margin:0 auto;
+    font-size:17px;color:#3a1226;line-height:1.65;
+    text-align:center;
+  }
+  .hero-curated{
+    display:inline-flex;flex-direction:column;align-items:center;
+    margin-top:36px;gap:6px;
+  }
+  .hero-curated-label{
+    font-size:10px;letter-spacing:.45em;text-transform:uppercase;
+    color:var(--wine);opacity:.7;font-family:"DM Sans",sans-serif;
+  }
+  .hero-curated-name{
+    font-family:"Fraunces",serif;font-style:italic;
+    font-size:clamp(22px,3.5vw,34px);color:var(--pink-hot);
+    letter-spacing:-.01em;line-height:1;
+  }
+  .ornament{position:absolute;font-family:"Fraunces",serif;font-style:italic;color:var(--pink);opacity:.35;pointer-events:none}
+  .ornament.o1{top:10%;right:4%;font-size:clamp(60px,8vw,110px);transform:rotate(-12deg)}
 
   /* ---------- SECTIONS ---------- */
   section{padding:80px 32px;border-bottom:1px solid var(--line);position:relative}
@@ -924,8 +954,6 @@
     .topbar{flex-direction:column;align-items:flex-start;gap:4px;font-size:10px}
     .topbar span:nth-child(2){letter-spacing:.3em}
     .hero{padding:32px 0 40px}
-    .hero-row{flex-direction:column;align-items:flex-start;margin-top:18px}
-    .hero-meta{text-align:left}
     .ornament.o1{font-size:60px;top:8%;right:4%}
 
     .section-label{font-size:10px;letter-spacing:.25em;margin-bottom:18px}
@@ -1177,12 +1205,13 @@
       <span class="italic pink">before the</span><br>
       Ring.
     </h1>
-    <div class="hero-row">
-      <p>A complete playbook for the bride's send-off — five games you can actually play right here, a cocktail menu worth printing, and a budget you can edit live.</p>
-      <div class="hero-meta">
-        Curated for<br>
-        <strong id="hero-bride-display">The Bride-to-Be</strong>
-      </div>
+    <div class="hero-divider">
+      <span class="hero-divider-icon">✦</span>
+    </div>
+    <p class="hero-sub">A complete playbook for the bride's send-off — five games you can actually play right here, a cocktail menu worth printing, and a budget you can edit live.</p>
+    <div class="hero-curated">
+      <span class="hero-curated-label">Curated for</span>
+      <span class="hero-curated-name" id="hero-bride-display">The Bride-to-Be</span>
     </div>
   </div>
 </header>
