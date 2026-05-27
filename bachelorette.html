@@ -270,6 +270,68 @@
     margin-top:16px;font-size:12px;color:var(--wine);opacity:.6;font-style:italic;
   }
 
+  /* ---------- PEOPLE / SPLITS ---------- */
+  .people-row{
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+    margin-bottom:28px;padding:16px 20px;
+    background:var(--cream-deep);border-left:3px solid var(--wine);
+  }
+  .people-label{
+    text-transform:uppercase;letter-spacing:.28em;font-size:11px;
+    color:var(--wine);font-weight:500;flex-shrink:0;
+  }
+  .person-chip{
+    display:inline-flex;align-items:center;gap:5px;
+    background:var(--wine);color:#fff;
+    padding:5px 10px 5px 13px;border-radius:999px;
+    font-family:"Fraunces",serif;font-style:italic;font-size:14px;
+  }
+  .person-chip .rm{
+    background:rgba(255,255,255,.22);border:none;color:#fff;
+    width:18px;height:18px;border-radius:50%;cursor:pointer;
+    font-size:13px;line-height:1;display:flex;align-items:center;justify-content:center;
+  }
+  .person-chip .rm:hover{background:rgba(255,255,255,.45)}
+  .person-add{display:flex;gap:6px;align-items:center;flex-shrink:0}
+  .person-add input{
+    background:#fff;border:1px solid var(--line);border-radius:6px;
+    padding:6px 10px;font-family:"DM Sans";font-size:13px;color:var(--ink);width:120px;
+  }
+  .person-add input:focus{outline:none;border-color:var(--pink-hot)}
+  .paid-select{
+    background:#fff;border:1px solid var(--line);border-radius:4px;
+    padding:4px 6px;font-family:"DM Sans";font-size:12px;color:var(--ink);
+    cursor:pointer;max-width:115px;
+  }
+  .paid-select:focus{outline:none;border-color:var(--pink-hot)}
+  /* Settlements panel */
+  .settle-wrap{margin-top:52px;border-top:1px solid var(--ink);padding-top:40px}
+  .settle-wrap>.section-label{margin-bottom:24px}
+  .settle-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);margin-bottom:32px}
+  @media(max-width:680px){.settle-grid{grid-template-columns:1fr}}
+  .settle-grid-col{padding:24px;border-right:1px solid var(--line)}
+  .settle-grid-col:last-child{border-right:none}
+  .settle-col-title{text-transform:uppercase;letter-spacing:.28em;font-size:11px;color:var(--wine);margin-bottom:16px}
+  .bal-row{
+    display:flex;align-items:baseline;justify-content:space-between;
+    padding:10px 0;border-bottom:1px solid var(--line);
+  }
+  .bal-row:last-child{border-bottom:none}
+  .bal-name{font-family:"Fraunces",serif;font-size:17px;color:var(--wine)}
+  .bal-amt{font-family:"Fraunces",serif;font-size:20px;font-style:italic;font-weight:500}
+  .bal-amt.pos{color:#2d7a3d}
+  .bal-amt.neg{color:#a32d4a}
+  .bal-amt.zero{color:var(--wine);opacity:.4;font-size:15px}
+  .settl-row{
+    display:flex;align-items:center;gap:10px;
+    padding:14px 16px;margin-bottom:6px;
+    background:var(--cream-deep);border-radius:4px;flex-wrap:wrap;
+  }
+  .settl-from,.settl-to{font-family:"Fraunces",serif;font-size:17px;color:var(--ink)}
+  .settl-arrow{color:var(--pink-hot);font-size:20px;line-height:1;flex-shrink:0}
+  .settl-amt{margin-left:auto;font-family:"Fraunces",serif;font-size:22px;font-style:italic;color:var(--pink-hot)}
+  .settle-note{font-style:italic;font-size:14px;color:var(--wine);opacity:.6;padding:12px 0}
+
   /* ---------- DRINKS MENU ---------- */
   .drinks-cat{
     display:flex;align-items:baseline;gap:20px;margin:48px 0 20px;
@@ -1449,6 +1511,16 @@
     <h2 class="section-title display">A budget you <span class="accent">edit</span> live.</h2>
     <p class="section-sub">Click any amount or category to edit it. Adjust the guest count and watch the per-person total recalculate.</p>
 
+    <!-- Participants for split tracking -->
+    <div class="people-row" id="people-row">
+      <span class="people-label">Who's going</span>
+      <div id="people-chips" style="display:contents"></div>
+      <div class="person-add">
+        <input type="text" id="person-input" placeholder="Add name…" maxlength="20" />
+        <button class="btn small" id="add-person">+ Add</button>
+      </div>
+    </div>
+
     <div class="budget-controls">
       <div class="guest-control">
         <label>Guests</label>
@@ -1486,6 +1558,7 @@
         <tr>
           <th>Category</th>
           <th>Notes</th>
+          <th>Paid by</th>
           <th>Base (group)</th>
           <th>Splurge (group)</th>
           <th></th>
@@ -1498,6 +1571,21 @@
       <button class="btn small" id="add-row">+ Add Category</button>
       <button class="btn small ghost" id="reset-budget">Reset to Defaults</button>
       <span class="save-hint">Changes save to this browser automatically.</span>
+    </div>
+
+    <!-- WHO OWES WHO -->
+    <div class="settle-wrap" id="settle-wrap" style="display:none">
+      <div class="section-label">Who Owes Who</div>
+      <div class="settle-grid">
+        <div class="settle-grid-col">
+          <div class="settle-col-title">Balances</div>
+          <div id="bal-list"></div>
+        </div>
+        <div class="settle-grid-col">
+          <div class="settle-col-title">Settle Up</div>
+          <div id="settle-list"></div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -1760,9 +1848,25 @@ function _applySection(key, data) {
       break;
     }
     case 'budget': {
+      if (data === '__empty__') {
+        if (typeof budget !== 'undefined') {
+          budget.splice(0, budget.length);
+          if (typeof renderBudget === 'function') renderBudget();
+        }
+        break;
+      }
       const arr = _toArr(data);
-      if (typeof budget !== 'undefined' && arr.length) {
+      if (typeof budget !== 'undefined') {
         budget.splice(0, budget.length, ...arr);
+        if (typeof renderBudget === 'function') renderBudget();
+      }
+      break;
+    }
+    case 'people': {
+      const arr = _toArr(data);
+      if (typeof people !== 'undefined') {
+        people.splice(0, people.length, ...arr);
+        if (typeof renderPeople === 'function') renderPeople();
         if (typeof renderBudget === 'function') renderBudget();
       }
       break;
@@ -1783,19 +1887,15 @@ function _applySection(key, data) {
       }
       break;
     case 'mm': {
-      const arr = _toArr(data);
-      if (typeof mmData !== 'undefined' && arr.length) {
-        mmData.splice(0, mmData.length, ...arr);
-        if (typeof renderMMSetup === 'function') renderMMSetup();
-      }
+      if (data === '__empty__') { if (typeof mmData !== 'undefined') { mmData.splice(0, mmData.length); if (typeof renderMMSetup === 'function') renderMMSetup(); } break; }
+      const arrMm = _toArr(data);
+      if (typeof mmData !== 'undefined') { mmData.splice(0, mmData.length, ...arrMm); if (typeof renderMMSetup === 'function') renderMMSetup(); }
       break;
     }
     case 'tl': {
-      const arr = _toArr(data);
-      if (typeof tlData !== 'undefined' && arr.length) {
-        tlData.splice(0, tlData.length, ...arr);
-        if (typeof renderTL === 'function') renderTL();
-      }
+      if (data === '__empty__') { if (typeof tlData !== 'undefined') { tlData.splice(0, tlData.length); if (typeof renderTL === 'function') renderTL(); } break; }
+      const arrTl = _toArr(data);
+      if (typeof tlData !== 'undefined') { tlData.splice(0, tlData.length, ...arrTl); if (typeof renderTL === 'function') renderTL(); }
       break;
     }
   }
@@ -2363,7 +2463,11 @@ let guests=loadGuests();
 let bridePays=loadBridePays();
 
 function loadBudget(){try{const v=JSON.parse(localStorage.getItem('bach_budget'));return v&&v.length?v:JSON.parse(JSON.stringify(DEFAULT_BUDGET));}catch(e){return JSON.parse(JSON.stringify(DEFAULT_BUDGET))}}
-function saveBudget(){try{localStorage.setItem('bach_budget',JSON.stringify(budget))}catch(e){};dbSet('budget',budget)}
+function saveBudget(){
+  try{localStorage.setItem('bach_budget',JSON.stringify(budget))}catch(e){}
+  // Firebase deletes nodes set to null/empty — use a sentinel when array is empty
+  dbSet('budget', budget.length ? budget : '__empty__');
+}
 function loadGuests(){const v=parseInt(localStorage.getItem('bach_guests'));return v&&v>0?v:8}
 function saveGuests(){try{localStorage.setItem('bach_guests',String(guests))}catch(e){};dbSet('guests',guests)}
 function loadBridePays(){return localStorage.getItem('bach_bride_pays')==='1'}
@@ -2375,10 +2479,14 @@ function fmt(n){return '$'+Math.round(n).toLocaleString()}
 function renderBudget(){
   budgetBody.innerHTML='';
   budget.forEach((row,i)=>{
+    const paidByVal = row.paidBy != null ? row.paidBy : '';
+    const paidOpts = `<option value="">—</option>` +
+      people.map((p,pi)=>`<option value="${pi}"${+paidByVal===pi?' selected':''}>${p}</option>`).join('');
     const tr=document.createElement('tr');
     tr.innerHTML=`
       <td class="cat-cell"><span class="editable" contenteditable="true" data-i="${i}" data-f="cat">${row.cat}</span></td>
       <td><span class="editable" contenteditable="true" data-i="${i}" data-f="note" style="font-size:13px;color:#6b324d">${row.note}</span></td>
+      <td><select class="paid-select" data-i="${i}">${paidOpts}</select></td>
       <td><span class="currency">$</span><span class="editable amount" contenteditable="true" data-i="${i}" data-f="base">${row.base}</span></td>
       <td><span class="currency">$</span><span class="editable amount" contenteditable="true" data-i="${i}" data-f="splurge">${row.splurge}</span></td>
       <td><button class="delete-row" data-i="${i}" title="Delete row">×</button></td>
@@ -2412,6 +2520,14 @@ function attachBudgetEvents(){
       if(e.key==='Enter'){e.preventDefault();el.blur();}
     });
   });
+  budgetBody.querySelectorAll('.paid-select').forEach(sel=>{
+    sel.addEventListener('change',()=>{
+      const i=+sel.dataset.i;
+      budget[i].paidBy = sel.value==='' ? null : +sel.value;
+      saveBudget();
+      renderSettlements();
+    });
+  });
   budgetBody.querySelectorAll('.delete-row').forEach(b=>{
     b.addEventListener('click',()=>{
       budget.splice(+b.dataset.i,1);
@@ -2427,6 +2543,7 @@ function recalc(){
   document.getElementById('total-group').textContent=fmt(baseTotal);
   document.getElementById('total-per').textContent=fmt(baseTotal/payingGuests);
   document.getElementById('total-splurge').textContent=fmt(splurgeTotal/payingGuests);
+  renderSettlements();
 }
 
 document.getElementById('guest-count').textContent=guests;
@@ -2442,7 +2559,7 @@ brideToggle.addEventListener('click',()=>{bridePays=!bridePays;saveBridePays();u
 updateBrideToggle();
 
 document.getElementById('add-row').addEventListener('click',()=>{
-  budget.push({cat:"New Category",note:"Click to edit",base:0,splurge:0});
+  budget.push({cat:"New Category",note:"Click to edit",base:0,splurge:0,paidBy:null});
   saveBudget();renderBudget();
 });
 document.getElementById('reset-budget').addEventListener('click',()=>{
@@ -2452,6 +2569,129 @@ document.getElementById('reset-budget').addEventListener('click',()=>{
   }
 });
 renderBudget();
+
+/* ============================================
+   PEOPLE & SETTLEMENTS (Tricount-style)
+============================================ */
+let people = loadPeople();
+
+function loadPeople(){try{const v=JSON.parse(localStorage.getItem('bach_people'));return Array.isArray(v)?v:[];}catch(e){return[]}}
+function savePeople(){try{localStorage.setItem('bach_people',JSON.stringify(people))}catch(e){};dbSet('people',people)}
+
+function renderPeople(){
+  const chips=document.getElementById('people-chips');
+  if(!chips)return;
+  chips.innerHTML='';
+  people.forEach((name,i)=>{
+    const chip=document.createElement('div');
+    chip.className='person-chip';
+    chip.innerHTML=`${name}<button class="rm" data-pi="${i}" title="Remove">×</button>`;
+    chips.appendChild(chip);
+  });
+  chips.querySelectorAll('.rm').forEach(b=>{
+    b.addEventListener('click',()=>{
+      // Clear paidBy references that point to removed or shifted person
+      const idx=+b.dataset.pi;
+      people.splice(idx,1);
+      budget.forEach(r=>{
+        if(r.paidBy===idx)r.paidBy=null;
+        else if(r.paidBy>idx)r.paidBy--;
+      });
+      savePeople();saveBudget();
+      renderPeople();renderBudget();
+    });
+  });
+  // Show/hide settle panel
+  const wrap=document.getElementById('settle-wrap');
+  if(wrap)wrap.style.display=people.length>=2?'block':'none';
+  renderSettlements();
+}
+
+// Add person
+const personInput=document.getElementById('person-input');
+document.getElementById('add-person').addEventListener('click',addPerson);
+personInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addPerson();}});
+function addPerson(){
+  const name=personInput.value.trim();
+  if(!name||people.includes(name))return;
+  people.push(name);
+  savePeople();
+  personInput.value='';
+  renderPeople();renderBudget();
+}
+
+/* ── Settlement calculation (greedy minimum-transactions) ── */
+function calcSettlements(){
+  if(people.length<2)return{balances:[],settlements:[]};
+  const bal=new Array(people.length).fill(0);
+  budget.forEach(row=>{
+    if(row.paidBy==null||row.paidBy==='')return;
+    const paid=+row.paidBy;
+    const amount=+row.base||0;
+    if(!amount)return;
+    const share=amount/people.length;
+    bal[paid]+=amount;
+    for(let i=0;i<people.length;i++)bal[i]-=share;
+  });
+  // Greedy settle-up
+  const pos=[],neg=[];
+  bal.forEach((b,i)=>{
+    if(b>0.005)pos.push([i,b]);
+    else if(b<-0.005)neg.push([i,-b]);
+  });
+  pos.sort((a,b)=>b[1]-a[1]);neg.sort((a,b)=>b[1]-a[1]);
+  const settlements=[];
+  let pi=0,ni=0;
+  while(pi<pos.length&&ni<neg.length){
+    const amt=Math.min(pos[pi][1],neg[ni][1]);
+    if(amt>0.005)settlements.push({from:neg[ni][0],to:pos[pi][0],amount:amt});
+    pos[pi][1]-=amt;neg[ni][1]-=amt;
+    if(pos[pi][1]<0.005)pi++;
+    if(neg[ni][1]<0.005)ni++;
+  }
+  return{balances:bal,settlements};
+}
+
+function renderSettlements(){
+  const wrap=document.getElementById('settle-wrap');
+  if(!wrap)return;
+  if(people.length<2){wrap.style.display='none';return;}
+  wrap.style.display='block';
+  const{balances,settlements}=calcSettlements();
+  // Balances
+  const balList=document.getElementById('bal-list');
+  if(balList){
+    balList.innerHTML='';
+    people.forEach((name,i)=>{
+      const b=balances[i]||0;
+      const cls=b>0.005?'pos':b<-0.005?'neg':'zero';
+      const sign=b>0.005?'+':'';
+      const label=b>0.005?'gets back':b<-0.005?'owes':'all square';
+      const row=document.createElement('div');
+      row.className='bal-row';
+      row.innerHTML=`<span class="bal-name">${name}</span><span class="bal-amt ${cls}">${sign}${fmt(Math.abs(b))} <small style="font-size:.55em;font-style:normal;letter-spacing:.12em;text-transform:uppercase;font-family:'DM Sans'">${label}</small></span>`;
+      balList.appendChild(row);
+    });
+  }
+  // Settlements
+  const settleList=document.getElementById('settle-list');
+  if(settleList){
+    settleList.innerHTML='';
+    if(!settlements.length){
+      const anyPaid=budget.some(r=>r.paidBy!=null&&r.paidBy!=='');
+      settleList.innerHTML=`<div class="settle-note">${anyPaid?'🥂 Everyone\'s square!':'Assign who paid each expense in the "Paid by" column above to see settlements.'}</div>`;
+    } else {
+      settlements.forEach(s=>{
+        const row=document.createElement('div');
+        row.className='settl-row';
+        row.innerHTML=`<span class="settl-from">${people[s.from]}</span><span class="settl-arrow">→</span><span class="settl-to">${people[s.to]}</span><span class="settl-amt">${fmt(s.amount)}</span>`;
+        settleList.appendChild(row);
+      });
+    }
+  }
+}
+
+renderPeople();
 
 /* ============================================
    GAME 5 — MR & MRS
@@ -2474,7 +2714,7 @@ let mmData=loadMM();
 let mmIdx=0,mmScore=0,mmSetupMode=true;
 
 function loadMM(){try{const v=JSON.parse(localStorage.getItem('bach_mm'));return v&&v.length?v:JSON.parse(JSON.stringify(DEFAULT_MM));}catch(e){return JSON.parse(JSON.stringify(DEFAULT_MM))}}
-function saveMM(){try{localStorage.setItem('bach_mm',JSON.stringify(mmData))}catch(e){};dbSet('mm',mmData)}
+function saveMM(){try{localStorage.setItem('bach_mm',JSON.stringify(mmData))}catch(e){};dbSet('mm',mmData.length?mmData:'__empty__')}
 
 const mmSetupEl=document.getElementById('mm-setup');
 const mmPlayEl=document.getElementById('mm-play');
@@ -3260,7 +3500,7 @@ const DEFAULT_TIMELINE=[
 ];
 let tlData=loadTL();
 function loadTL(){try{const v=JSON.parse(localStorage.getItem('bach_tl'));return v&&v.length?v:JSON.parse(JSON.stringify(DEFAULT_TIMELINE));}catch(e){return JSON.parse(JSON.stringify(DEFAULT_TIMELINE))}}
-function saveTL(){try{localStorage.setItem('bach_tl',JSON.stringify(tlData))}catch(e){};dbSet('tl',tlData)}
+function saveTL(){try{localStorage.setItem('bach_tl',JSON.stringify(tlData))}catch(e){};dbSet('tl',tlData.length?tlData:'__empty__')}
 
 const tlList=document.getElementById('timeline-list');
 function escapeAttr(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;')}
