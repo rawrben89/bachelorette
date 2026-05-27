@@ -168,6 +168,29 @@
   }
   .bingo-status.win{color:var(--pink-hot);font-size:36px;animation:pulse 1s ease infinite}
   @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+  /* Bingo cell edit pencil button — always visible on filled cells */
+  .bingo-cell-edit-btn{
+    position:absolute;top:2px;right:2px;width:20px;height:20px;
+    border:none;border-radius:4px;
+    background:rgba(107,50,77,.15);
+    color:var(--wine);font-size:11px;
+    display:none;align-items:center;justify-content:center;
+    padding:0;cursor:pointer;z-index:3;
+    transition:background .15s;line-height:1;
+  }
+  /* show on all filled (non-empty, non-free) cells — no hover required */
+  .bingo-cell:not(.free):not([data-empty="1"]) .bingo-cell-edit-btn{display:flex;}
+  .bingo-cell-edit-btn:hover,.bingo-cell-edit-btn:active{background:rgba(230,58,124,.45);color:#fff}
+  /* on marked (pink) cells use a light icon so it's visible */
+  .bingo-cell.marked .bingo-cell-edit-btn{background:rgba(255,255,255,.25);color:#fff}
+  /* Bingo inline edit bar */
+  #bingo-edit-bar{
+    display:none;align-items:center;gap:10px;justify-content:center;
+    margin-top:10px;padding:9px 14px;
+    background:#fff5e9;border:1.5px solid rgba(230,58,124,.3);
+    border-radius:10px;font-size:13px;color:var(--wine);flex-wrap:wrap;
+  }
+  #bingo-edit-bar.visible{display:flex}
 
   /* ---------- DRINK IF / TRUTH OR DARE CARDS ---------- */
   .card-stage{
@@ -1395,6 +1418,11 @@
         </div>
       </div>
       <div class="bingo-board" id="bingo-board"></div>
+      <div id="bingo-edit-bar">
+        ✏️ <strong>Editing cell</strong> — make your changes, then:
+        <button class="btn small" id="bingo-apply-edit">✓ Apply</button>
+        <button class="btn ghost small" id="bingo-cancel-edit">✕ Cancel</button>
+      </div>
       <div class="bingo-status" id="bingo-status">Tap squares as they happen…</div>
     </div>
 
@@ -2081,6 +2109,18 @@
   </div>
 </div>
 
+<!-- BINGO RANDOMIZE CONFIRM MODAL -->
+<div class="modal" id="bingo-rand-confirm-modal">
+  <div class="modal-content">
+    <h3>Randomize Bingo?</h3>
+    <p>This will replace all current cell content with house-party prompts. Are you sure?</p>
+    <div class="modal-actions">
+      <button class="btn ghost small" id="bingo-rand-no">No, keep it</button>
+      <button class="btn" id="bingo-rand-yes">Yes, randomize!</button>
+    </div>
+  </div>
+</div>
+
 <!-- HIDDEN PRINT CONTAINER (only visible when printing) -->
 <div class="print-bingo" id="print-bingo-container" style="display:none"></div>
 
@@ -2558,6 +2598,38 @@ function _setCellMode(cell, hasContent){
   cell.dataset.empty   = hasContent ? '0' : '1';
 }
 
+// Track which cell is currently in pencil-edit mode
+let _bingoEditingCell = null;
+let _bingoEditingOrig = '';
+
+function enterCellEdit(cell){
+  if(_bingoEditingCell && _bingoEditingCell !== cell) exitCellEdit(false);
+  _bingoEditingCell = cell;
+  _bingoEditingOrig = cell.textContent.trim();
+  cell.contentEditable = 'true';
+  cell.dataset.empty   = '0'; // keep "filled" styles while editing
+  cell.classList.add('editing');
+  cell.focus();
+  // Move cursor to end
+  try{
+    const r=document.createRange(); r.selectNodeContents(cell); r.collapse(false);
+    const s=window.getSelection(); s.removeAllRanges(); s.addRange(r);
+  }catch(e){}
+  document.getElementById('bingo-edit-bar').classList.add('visible');
+}
+
+function exitCellEdit(apply){
+  if(!_bingoEditingCell) return;
+  const cell = _bingoEditingCell;
+  _bingoEditingCell = null;
+  cell.classList.remove('editing');
+  if(!apply){ cell.textContent = _bingoEditingOrig; }
+  const filled = cell.textContent.trim() !== '';
+  _setCellMode(cell, filled);
+  document.getElementById('bingo-edit-bar').classList.remove('visible');
+  if(apply) saveBingo();
+}
+
 function buildBingo(){
   bingoBoard.innerHTML='';
   for(let i=0;i<25;i++){
@@ -2570,16 +2642,32 @@ function buildBingo(){
       cell.spellcheck=false;
       _setCellMode(cell, false); // starts empty → editable
 
+      // Pencil edit button (shown on filled cells)
+      const editBtn=document.createElement('button');
+      editBtn.className='bingo-cell-edit-btn';
+      editBtn.title='Edit this cell';
+      editBtn.innerHTML='✏';
+      editBtn.addEventListener('mousedown',e=>{e.stopPropagation();e.preventDefault();});
+      editBtn.addEventListener('click',e=>{e.stopPropagation();enterCellEdit(cell);});
+      editBtn.addEventListener('touchend',e=>{e.stopPropagation();e.preventDefault();enterCellEdit(cell);});
+      cell.appendChild(editBtn);
+
       // Show typing cursor while editing an empty cell
       cell.addEventListener('focus',()=>{cell.classList.add('editing');});
       cell.addEventListener('blur',()=>{
         cell.classList.remove('editing');
+        if(_bingoEditingCell===cell)return; // pencil-edit mode: Apply/Cancel handle save
         const filled = cell.textContent.trim() !== '';
         _setCellMode(cell, filled); // lock if now has content
         saveBingo();
       });
       cell.addEventListener('keydown',e=>{
-        if(e.key==='Enter'){e.preventDefault();cell.blur();}
+        if(e.key==='Enter'){
+          e.preventDefault();
+          if(_bingoEditingCell===cell) exitCellEdit(true);
+          else cell.blur();
+        }
+        if(e.key==='Escape' && _bingoEditingCell===cell){exitCellEdit(false);}
       });
 
       // Tap / click → mark or unmark (only when filled / tap-only mode)
@@ -2594,10 +2682,20 @@ function buildBingo(){
 
       // Mobile touch: fire on touchend for instant response (no 300ms delay)
       let _tm=false;
-      cell.addEventListener('touchstart',()=>{_tm=false;},{passive:true});
-      cell.addEventListener('touchmove', ()=>{_tm=true; },{passive:true});
+      let _lpTimer=null;
+      cell.addEventListener('touchstart',()=>{
+        _tm=false;
+        // Long-press on filled cell → edit mode (mobile alternative to pencil button)
+        if(cell.contentEditable==='false'){
+          _lpTimer=setTimeout(()=>{_lpTimer=null;enterCellEdit(cell);},600);
+        }
+      },{passive:true});
+      cell.addEventListener('touchmove',()=>{_tm=true;clearTimeout(_lpTimer);_lpTimer=null;},{passive:true});
       cell.addEventListener('touchend',e=>{
         if(_tm)return;
+        clearTimeout(_lpTimer);
+        if(_lpTimer===null && _bingoEditingCell===cell)return; // long-press fired
+        _lpTimer=null;
         if(cell.contentEditable==='false'){
           e.preventDefault(); // block synthetic click
           cell.classList.toggle('marked');
@@ -2690,8 +2788,29 @@ function checkBingo(){
   bingoStatus.textContent=marked>0?`${marked} marked — keep going`:'Tap squares as they happen…';
   bingoStatus.classList.remove('win');
 }
-document.getElementById('bingo-rand').addEventListener('click',randomizeBingo);
+// Randomize: ask for confirmation first
+const _bingoRandModal = document.getElementById('bingo-rand-confirm-modal');
+document.getElementById('bingo-rand').addEventListener('click',()=>{
+  _bingoRandModal.classList.add('open');
+});
+document.getElementById('bingo-rand-no').addEventListener('click',()=>{
+  _bingoRandModal.classList.remove('open');
+});
+document.getElementById('bingo-rand-yes').addEventListener('click',()=>{
+  _bingoRandModal.classList.remove('open');
+  randomizeBingo();
+});
+_bingoRandModal.addEventListener('click',e=>{
+  if(e.target===_bingoRandModal) _bingoRandModal.classList.remove('open');
+});
+
 document.getElementById('bingo-clear').addEventListener('click',clearBingo);
+
+// Bingo cell edit Apply / Cancel
+document.getElementById('bingo-apply-edit').addEventListener('mousedown',e=>e.preventDefault());
+document.getElementById('bingo-apply-edit').addEventListener('click',()=>exitCellEdit(true));
+document.getElementById('bingo-cancel-edit').addEventListener('mousedown',e=>e.preventDefault());
+document.getElementById('bingo-cancel-edit').addEventListener('click',()=>exitCellEdit(false));
 buildBingo();
 
 /* ============================================
