@@ -1771,23 +1771,41 @@ function initDb() {
     }
   }
 
-  // Open a Server-Sent Events stream for real-time updates from the whole party node
-  try {
-    const es = new EventSource(DB_URL + '/p/' + _partyId + '.json');
+  // Status dot in the share bar
+  const dot = document.createElement('span');
+  dot.id = 'sync-dot';
+  dot.title = 'Connecting…';
+  dot.style.cssText = 'width:8px;height:8px;border-radius:50%;background:#888;display:inline-block;flex-shrink:0;transition:background .4s';
+  if (bar) bar.prepend(dot);
+
+  function _setSyncDot(state) {
+    if (!dot) return;
+    dot.style.background = state === 'on' ? '#4caf50' : state === 'err' ? '#e53935' : '#888';
+    dot.title = state === 'on' ? 'Live — syncing' : state === 'err' ? 'Reconnecting…' : 'Connecting…';
+  }
+
+  // SSE with auto-reconnect
+  let _es = null;
+  function _openSSE() {
+    if (_es) { try { _es.close(); } catch(_) {} }
+    _es = new EventSource(DB_URL + '/p/' + _partyId + '.json');
     const onMsg = e => {
       try { const d = JSON.parse(e.data); _handleUpdate(d.path, d.data); } catch (_) {}
     };
-    es.addEventListener('put',   onMsg);
-    es.addEventListener('patch', onMsg);
-    console.info('🔥 Live sync on — party:', _partyId);
-  } catch (e) {
-    console.warn('SSE unavailable:', e);
+    _es.addEventListener('put',   onMsg);
+    _es.addEventListener('patch', onMsg);
+    _es.onopen  = () => { _setSyncDot('on');  console.info('🔥 Live sync on — party:', _partyId); };
+    _es.onerror = () => { _setSyncDot('err'); console.warn('SSE error — will retry'); setTimeout(_openSSE, 3000); };
   }
+  try { _openSSE(); } catch (e) { console.warn('SSE unavailable:', e); }
 }
 
 // Write a value to Firebase at the given sub-path
 function dbSet(path, val) {
   if (_remoteUpdate || !_partyId) return;
+  // Brief yellow flash on the dot so users can see each push
+  const dot = document.getElementById('sync-dot');
+  if (dot) { dot.style.background = '#FFC107'; setTimeout(() => { dot.style.background = '#4caf50'; }, 500); }
   fetch(DB_URL + '/p/' + _partyId + '/' + path + '.json', {
     method:  'PUT',
     headers: { 'Content-Type': 'application/json' },
@@ -1863,7 +1881,7 @@ function _applySection(key, data) {
       break;
     }
     case 'people': {
-      const arr = _toArr(data);
+      const arr = data === '__empty__' ? [] : _toArr(data);
       if (typeof people !== 'undefined') {
         people.splice(0, people.length, ...arr);
         if (typeof renderPeople === 'function') renderPeople();
@@ -2462,7 +2480,7 @@ let budget=loadBudget();
 let guests=loadGuests();
 let bridePays=loadBridePays();
 function loadPeople(){try{const v=JSON.parse(localStorage.getItem('bach_people'));return Array.isArray(v)?v:[];}catch(e){return[]}}
-function savePeople(){try{localStorage.setItem('bach_people',JSON.stringify(people))}catch(e){};dbSet('people',people)}
+function savePeople(){try{localStorage.setItem('bach_people',JSON.stringify(people))}catch(e){};dbSet('people',people.length?people:'__empty__')}
 let people=loadPeople();
 
 function loadBudget(){try{const v=JSON.parse(localStorage.getItem('bach_budget'));return v&&v.length?v:JSON.parse(JSON.stringify(DEFAULT_BUDGET));}catch(e){return JSON.parse(JSON.stringify(DEFAULT_BUDGET))}}
