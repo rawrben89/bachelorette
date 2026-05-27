@@ -1220,14 +1220,13 @@
   </div>
   </header>
 
-  <!-- Live Party Bar -->
-  <div id="live-bar" style="display:none;background:var(--wine);color:#fff;padding:16px 24px 18px;text-align:center">
-    <div style="font-size:10px;letter-spacing:.35em;text-transform:uppercase;opacity:.7;margin-bottom:10px">🎉 Share this link — everyone opens it together</div>
-    <code id="live-url" style="display:block;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);padding:10px 16px;border-radius:6px;font-size:13px;letter-spacing:.03em;word-break:break-all;white-space:normal;line-height:1.55;max-width:640px;margin:0 auto 14px;cursor:text;user-select:all"></code>
-    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-      <button id="live-copy-btn" style="background:var(--pink-hot);border:none;color:#fff;padding:9px 22px;border-radius:999px;cursor:pointer;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;touch-action:manipulation">Copy Link</button>
+  <!-- Live Party Bar — single line -->
+  <div id="live-bar" style="display:none;background:var(--wine);color:#fff;padding:10px 16px">
+    <div style="display:flex;align-items:center;gap:10px;max-width:900px;margin:0 auto;flex-wrap:wrap">
+      <span style="font-size:10px;letter-spacing:.28em;text-transform:uppercase;opacity:.65;white-space:nowrap;flex-shrink:0">🎉 Share</span>
+      <code id="live-url" style="flex:1;min-width:0;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);padding:7px 12px;border-radius:5px;font-size:12px;letter-spacing:.02em;word-break:break-all;white-space:normal;line-height:1.45;cursor:text;user-select:all"></code>
+      <button id="live-copy-btn" style="flex-shrink:0;background:var(--pink-hot);border:none;color:#fff;padding:8px 18px;border-radius:999px;cursor:pointer;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;touch-action:manipulation;white-space:nowrap">Copy</button>
     </div>
-    <div id="live-room-id" style="margin-top:10px;font-size:10px;letter-spacing:.3em;opacity:.45;text-transform:uppercase"></div>
   </div>
 
   <div class="personalize" id="personalize">
