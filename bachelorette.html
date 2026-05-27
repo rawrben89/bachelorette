@@ -237,6 +237,35 @@
   }
   .card-stage.spicy .bride-badge{display:flex}
   @media(max-width:420px){.td-switch button{padding:9px 14px;font-size:15px}}
+  /* #3 T/D stats row */
+  .td-stats{text-align:center;margin-top:10px;font-size:12px;color:var(--wine);opacity:.65;letter-spacing:.04em;min-height:18px}
+  .card-stage.spicy .td-stats{color:rgba(255,255,255,.6)}
+  /* #4 Drink happened bar */
+  .drink-happened-bar{text-align:center;margin-top:10px;font-size:12px;color:var(--wine);opacity:.7;min-height:18px}
+  /* #7 ML guests + voting */
+  .ml-guests-setup{background:var(--cream-deep);border-radius:10px;padding:14px 16px;margin-bottom:20px}
+  .ml-guests-title{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--wine);opacity:.6;margin-bottom:10px;text-align:center}
+  .ml-guest-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;min-height:10px}
+  .ml-guest-tag{display:flex;align-items:center;gap:4px;padding:4px 10px 4px 12px;background:var(--wine);color:var(--cream);border-radius:999px;font-size:12px}
+  .ml-guest-tag button{border:none;background:rgba(255,255,255,.25);color:var(--cream);border-radius:50%;width:16px;height:16px;font-size:10px;cursor:pointer;line-height:1;padding:0;display:flex;align-items:center;justify-content:center}
+  .ml-add-row{display:flex;gap:8px}
+  .ml-guest-input{flex:1;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px;font-family:'DM Sans';color:var(--wine);background:#fff}
+  .ml-guest-input:focus{outline:none;border-color:var(--pink-hot)}
+  .ml-vote-wrap{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:20px}
+  .ml-vote-btn{padding:10px 18px;border:2px solid var(--wine);border-radius:999px;background:transparent;color:var(--wine);font-size:13px;cursor:pointer;position:relative;transition:all .2s;white-space:nowrap}
+  .ml-vote-btn:hover{background:var(--cream-deep)}
+  .ml-vote-btn.my-vote{border-color:var(--pink-hot);color:var(--pink-hot);background:rgba(230,58,124,.08)}
+  .ml-vote-btn.leading{background:var(--pink-hot);border-color:var(--pink-hot);color:#fff}
+  .ml-vote-count{position:absolute;top:-9px;right:-6px;min-width:22px;height:22px;border-radius:11px;background:var(--wine);color:#fff;font-size:11px;font-weight:700;display:none;align-items:center;justify-content:center;padding:0 4px}
+  .ml-vote-btn.has-votes .ml-vote-count{display:flex}
+  .ml-winner{text-align:center;margin-top:10px;min-height:26px;font-family:"Fraunces",serif;font-size:18px;color:var(--pink-hot);font-style:italic}
+  /* #8 BL custom */
+  .bl-del-btn{border:none;background:none;color:#c9a;font-size:17px;cursor:pointer;padding:0 2px;flex-shrink:0;margin-left:auto;opacity:.6;transition:opacity .15s}
+  .bl-del-btn:hover{opacity:1;color:var(--pink-hot)}
+  #bl-add-text{width:100%;padding:10px 12px;font-size:15px;font-family:'DM Sans';border:1.5px solid var(--line);border-radius:8px;box-sizing:border-box;color:var(--wine);background:#fff;margin:8px 0}
+  #bl-add-text:focus{outline:none;border-color:var(--pink-hot);background:#fff5e9}
+  .bl-pts-row{display:flex;align-items:center;gap:10px;margin:6px 0 14px;font-size:13px;color:var(--wine)}
+  .bl-pts-row select{padding:6px 10px;border:1px solid var(--line);border-radius:6px;font-family:'DM Sans';font-size:13px;color:var(--wine)}
 
   /* ---------- SPINNER ---------- */
   /* ---------- SCAVENGER ---------- */
@@ -1444,11 +1473,13 @@
       <div class="card-stage">
         <div class="card-count" id="drink-count">Card 0 / 0</div>
         <div class="card-label">Drink if…</div>
-        <div class="card-prompt" id="drink-prompt">Tap "Next Card" to begin.</div>
+        <div class="card-prompt" id="drink-prompt">Tap a button below to begin.</div>
         <div class="card-actions">
-          <button class="btn" id="drink-next">Next Card →</button>
-          <button class="btn ghost" id="drink-reset">Reshuffle</button>
+          <button class="btn ghost" id="drink-next">→ Skip</button>
+          <button class="btn" id="drink-happened" style="background:#2d7a3d">🍹 It Happened!</button>
+          <button class="btn ghost small" id="drink-reset">Reshuffle</button>
         </div>
+        <div class="drink-happened-bar" id="drink-happened-bar"></div>
       </div>
     </div>
 
@@ -1470,8 +1501,11 @@
         <div class="card-label" id="td-label">Truth</div>
         <div class="card-prompt" id="td-prompt">Pick Truth or Dare, then tap below.</div>
         <div class="card-actions">
+          <button class="btn ghost" id="td-pass" style="display:none">↩ Pass</button>
           <button class="btn" id="td-draw">Draw →</button>
+          <button class="btn" id="td-done" style="display:none;background:#2d7a3d">✓ Done</button>
         </div>
+        <div class="td-stats" id="td-stats"></div>
       </div>
     </div>
 
@@ -1544,7 +1578,16 @@
       <div class="game-header">
         <div>
           <h3>Most Likely <em>To…</em></h3>
-          <p>Read the prompt. Everyone points at the person they think it fits. Loudest agreement wins. Tap "Next" for the next one.</p>
+          <p>Add everyone's names below, then draw a card — each person taps who they think it fits. Live tally crowns the winner.</p>
+        </div>
+      </div>
+      <!-- Guest roster -->
+      <div class="ml-guests-setup">
+        <div class="ml-guests-title">Who's playing?</div>
+        <div class="ml-guest-tags" id="ml-guest-tags"></div>
+        <div class="ml-add-row">
+          <input type="text" id="ml-guest-new" class="ml-guest-input" placeholder="Add a name…" maxlength="20" autocomplete="off" />
+          <button class="btn small" id="ml-guest-add">Add</button>
         </div>
       </div>
       <div class="card-stage">
@@ -1555,6 +1598,9 @@
           <button class="btn" id="ml-next">Next Card →</button>
           <button class="btn ghost" id="ml-reset">Reshuffle</button>
         </div>
+        <!-- Live vote buttons (shown once a prompt is active) -->
+        <div class="ml-vote-wrap" id="ml-vote-wrap" style="display:none"></div>
+        <div class="ml-winner" id="ml-winner"></div>
       </div>
     </div>
 
@@ -1696,9 +1742,12 @@
       <div class="game-header">
         <div>
           <h3>Naughty <em>Bucket List</em></h3>
-          <p>The bride's send-off dares. Aim for points, photograph the evidence, embarrass nobody who hasn't consented. Tap each item as it's completed — score saves automatically.</p>
+          <p>The bride's send-off dares. Add your own, tap each one as it's completed — score saves automatically.</p>
         </div>
-        <button class="btn ghost small" id="bl-reset">Reset</button>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn small" id="bl-add-btn">＋ Add Item</button>
+          <button class="btn ghost small" id="bl-reset">Reset</button>
+        </div>
       </div>
       <div class="hunt-score">
         <span class="hunt-score-label">Score</span>
@@ -2125,6 +2174,28 @@
   </div>
 </div>
 
+<!-- BUCKET LIST ADD ITEM MODAL -->
+<div class="modal" id="bl-add-modal">
+  <div class="modal-content">
+    <h3>Add a Dare</h3>
+    <input type="text" id="bl-add-text" placeholder="What's the dare?…" maxlength="80" autocomplete="off" />
+    <div class="bl-pts-row">
+      <label for="bl-add-pts">Points:</label>
+      <select id="bl-add-pts">
+        <option value="5">5 pts — Easy</option>
+        <option value="10" selected>10 pts — Medium</option>
+        <option value="15">15 pts — Spicy</option>
+        <option value="20">20 pts — Bold</option>
+        <option value="25">25 pts — Legendary</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn ghost small" id="bl-add-cancel">Cancel</button>
+      <button class="btn" id="bl-add-save">Add to List</button>
+    </div>
+  </div>
+</div>
+
 <!-- BINGO RANDOMIZE CONFIRM MODAL -->
 <div class="modal" id="bingo-rand-confirm-modal">
   <div class="modal-content">
@@ -2350,6 +2421,22 @@ function _applySection(key, data) {
     case 'polls':
       if (typeof window._applyPoll === 'function') window._applyPoll(data);
       break;
+    case 'bl_custom': {
+      const arr = data === '__empty__' ? [] : _toArr(data);
+      if (typeof blCustom !== 'undefined') {
+        blCustom.splice(0, blCustom.length, ...arr);
+        try{localStorage.setItem('bach_bl_custom', JSON.stringify(blCustom));}catch(e){}
+        if (typeof renderBL === 'function') renderBL(blState);
+      }
+      break;
+    }
+    case 'ml_round': {
+      if (data && data.votes && typeof mlVotes !== 'undefined') {
+        Object.assign(mlVotes, data.votes);
+        if (typeof renderMlVotes === 'function') renderMlVotes();
+      }
+      break;
+    }
   }
 }
 
@@ -2874,9 +2961,18 @@ document.querySelectorAll('.chip[data-spice]').forEach(chip=>{
     document.getElementById('drink-prompt').textContent='Deck reshuffled. Tap "Next Card".';
   });
 });
-document.getElementById('drink-next').addEventListener('click',()=>{
+let drinkHappened=0,drinkSkipped=0;
+function updateDrinkBar(){
+  const bar=document.getElementById('drink-happened-bar');
+  if(!bar)return;
+  if(drinkHappened+drinkSkipped===0){bar.textContent='';return;}
+  bar.textContent=`${drinkHappened} happened 🍹 · ${drinkSkipped} skipped`;
+}
+function _drinkAdvance(happened){
   if(drinkDeck.length===0){document.getElementById('drink-prompt').textContent='Pick at least one spice level.';return;}
   if(drinkIdx>=drinkDeck.length){buildDrinkDeck();}
+  if(happened) drinkHappened++; else drinkSkipped++;
+  updateDrinkBar();
   const promptEl=document.getElementById('drink-prompt');
   promptEl.style.opacity=0;
   setTimeout(()=>{
@@ -2885,10 +2981,13 @@ document.getElementById('drink-next').addEventListener('click',()=>{
     updateDrinkCount();
     promptEl.style.opacity=1;
   },150);
-});
+}
+document.getElementById('drink-next').addEventListener('click',()=>_drinkAdvance(false));
+document.getElementById('drink-happened').addEventListener('click',()=>_drinkAdvance(true));
 document.getElementById('drink-reset').addEventListener('click',()=>{
   buildDrinkDeck();
-  document.getElementById('drink-prompt').textContent='Deck reshuffled. Tap "Next Card".';
+  drinkHappened=0;drinkSkipped=0;updateDrinkBar();
+  document.getElementById('drink-prompt').textContent='Deck reshuffled. Tap a button below.';
 });
 buildDrinkDeck();
 
@@ -2996,11 +3095,29 @@ function _tdSetMode(mode){
       ? 'Draw a question — only the bride answers these. 🌶️'
       : 'Pick Truth or Dare, then tap below.';
 }
-document.getElementById('td-truth').addEventListener('click',()=>_tdSetMode('truth'));
-document.getElementById('td-dare').addEventListener('click', ()=>_tdSetMode('dare'));
-document.getElementById('td-spicy').addEventListener('click',()=>_tdSetMode('spicy'));
+// T/D stats — persisted per mode
+const _tdStatsKey='bach_td_stats';
+function _tdStatsDefault(){return{truth:{done:0,pass:0},dare:{done:0,pass:0},spicy:{done:0,pass:0}};}
+let _tdStats=(()=>{try{return JSON.parse(localStorage.getItem(_tdStatsKey))||_tdStatsDefault();}catch(e){return _tdStatsDefault();}}());
+let _tdCardDrawn=false;
 
-document.getElementById('td-draw').addEventListener('click',()=>{
+function _tdRenderStats(){
+  const s=_tdStats[tdMode];
+  const el=document.getElementById('td-stats');
+  el.textContent=(s.done+s.pass>0)?`${s.done} done · ${s.pass} passed`:'';
+}
+function _tdShowActions(cardVisible){
+  _tdCardDrawn=cardVisible;
+  document.getElementById('td-draw').style.display=cardVisible?'none':'';
+  document.getElementById('td-done').style.display=cardVisible?'':'none';
+  document.getElementById('td-pass').style.display=cardVisible?'':'none';
+}
+
+document.getElementById('td-truth').addEventListener('click',()=>{_tdSetMode('truth');_tdShowActions(false);_tdRenderStats();});
+document.getElementById('td-dare').addEventListener('click', ()=>{_tdSetMode('dare');_tdShowActions(false);_tdRenderStats();});
+document.getElementById('td-spicy').addEventListener('click',()=>{_tdSetMode('spicy');_tdShowActions(false);_tdRenderStats();});
+
+function _tdDrawCard(){
   const pool=tdMode==='truth'?TRUTHS:tdMode==='dare'?DARES:BRIDE_SPICY;
   const promptEl=document.getElementById('td-prompt');
   promptEl.style.opacity=0;
@@ -3008,6 +3125,21 @@ document.getElementById('td-draw').addEventListener('click',()=>{
     promptEl.textContent=personalize(pool[Math.floor(Math.random()*pool.length)]);
     promptEl.style.opacity=1;
   },150);
+  _tdShowActions(true);
+}
+
+document.getElementById('td-draw').addEventListener('click',_tdDrawCard);
+document.getElementById('td-done').addEventListener('click',()=>{
+  _tdStats[tdMode].done++;
+  try{localStorage.setItem(_tdStatsKey,JSON.stringify(_tdStats));}catch(e){}
+  _tdRenderStats();
+  _tdDrawCard();
+});
+document.getElementById('td-pass').addEventListener('click',()=>{
+  _tdStats[tdMode].pass++;
+  try{localStorage.setItem(_tdStatsKey,JSON.stringify(_tdStats));}catch(e){}
+  _tdRenderStats();
+  _tdDrawCard();
 });
 
 /* ============================================
@@ -3527,10 +3659,75 @@ const ML_PROMPTS=[
 let mlDeck=[],mlIdx=0;
 function buildMLDeck(){mlDeck=shuffle(ML_PROMPTS);mlIdx=0;updateMLCount();}
 function updateMLCount(){document.getElementById('ml-count').textContent=`Card ${mlIdx} / ${mlDeck.length}`;}
+
+// Guest roster
+let mlGuests=(()=>{try{return JSON.parse(localStorage.getItem('bach_ml_guests'))||[];}catch(e){return[];}})();
+function saveMlGuests(){try{localStorage.setItem('bach_ml_guests',JSON.stringify(mlGuests));}catch(e){}}
+function renderMlGuestTags(){
+  const wrap=document.getElementById('ml-guest-tags');
+  wrap.innerHTML='';
+  mlGuests.forEach((name,i)=>{
+    const tag=document.createElement('div');tag.className='ml-guest-tag';
+    tag.innerHTML=`${name}<button title="Remove" data-i="${i}">×</button>`;
+    tag.querySelector('button').addEventListener('click',()=>{mlGuests.splice(i,1);saveMlGuests();renderMlGuestTags();renderMlVotes();});
+    wrap.appendChild(tag);
+  });
+}
+document.getElementById('ml-guest-add').addEventListener('click',()=>{
+  const inp=document.getElementById('ml-guest-new');
+  const name=inp.value.trim();
+  if(!name||mlGuests.includes(name))return;
+  mlGuests.push(name);saveMlGuests();renderMlGuestTags();renderMlVotes();inp.value='';
+});
+document.getElementById('ml-guest-new').addEventListener('keydown',e=>{
+  if(e.key==='Enter'){e.preventDefault();document.getElementById('ml-guest-add').click();}
+});
+
+// Per-round votes
+let mlVotes={};       // {guestName: totalCount}
+let myMlVotes={};     // {guestName: true} — this device's picks this round
+function resetMlVotes(){mlVotes={};myMlVotes={};renderMlVotes();}
+function renderMlVotes(){
+  const wrap=document.getElementById('ml-vote-wrap');
+  const winnerEl=document.getElementById('ml-winner');
+  if(!wrap)return;
+  if(mlGuests.length===0){wrap.style.display='none';winnerEl.textContent='';return;}
+  wrap.style.display='flex';
+  wrap.innerHTML='';
+  const maxVotes=Math.max(0,...Object.values(mlVotes));
+  mlGuests.forEach(name=>{
+    const count=mlVotes[name]||0;
+    const btn=document.createElement('button');
+    btn.className='ml-vote-btn'+(count>0?' has-votes':'')+(myMlVotes[name]?' my-vote':'')+(count===maxVotes&&maxVotes>0?' leading':'');
+    btn.innerHTML=`${name}<span class="ml-vote-count">${count}</span>`;
+    btn.addEventListener('click',()=>{
+      if(myMlVotes[name]){
+        // unvote
+        mlVotes[name]=Math.max(0,(mlVotes[name]||1)-1);
+        delete myMlVotes[name];
+      } else {
+        mlVotes[name]=(mlVotes[name]||0)+1;
+        myMlVotes[name]=true;
+      }
+      dbSet('ml_round',{votes:mlVotes});
+      renderMlVotes();
+    });
+    wrap.appendChild(btn);
+  });
+  // Winner
+  if(maxVotes>0){
+    const winners=mlGuests.filter(n=>(mlVotes[n]||0)===maxVotes);
+    winnerEl.textContent='👑 '+winners.join(' & ');
+  } else {
+    winnerEl.textContent='';
+  }
+}
+
 document.getElementById('ml-next').addEventListener('click',()=>{
   if(mlIdx>=mlDeck.length)buildMLDeck();
   const el=document.getElementById('ml-prompt');
   el.style.opacity=0;
+  resetMlVotes();
   setTimeout(()=>{
     el.innerHTML='…<em>'+personalize(mlDeck[mlIdx])+'</em>';
     mlIdx++;updateMLCount();
@@ -3540,7 +3737,9 @@ document.getElementById('ml-next').addEventListener('click',()=>{
 document.getElementById('ml-reset').addEventListener('click',()=>{
   buildMLDeck();
   document.getElementById('ml-prompt').textContent='Deck reshuffled. Tap "Next".';
+  resetMlVotes();
 });
+renderMlGuestTags();
 buildMLDeck();
 
 /* ============================================
@@ -4121,9 +4320,16 @@ const BL_ITEMS=[
 const blList=document.getElementById('bl-list');
 const blPtsEl=document.getElementById('bl-pts');
 const blMaxEl=document.getElementById('bl-max');
+
+// Custom items: [{t, p, done}]
+function loadBLCustom(){try{return JSON.parse(localStorage.getItem('bach_bl_custom')||'[]');}catch(e){return[];}}
+function saveBLCustom(){try{localStorage.setItem('bach_bl_custom',JSON.stringify(blCustom));}catch(e){}; dbSet('bl_custom',blCustom);}
+let blCustom=loadBLCustom();
+
 function renderBL(state){
   blList.innerHTML='';
   let total=0,done=0;
+  // Built-in items
   BL_ITEMS.forEach((item,i)=>{
     total+=item.p;
     const isDone=state[i];
@@ -4131,24 +4337,63 @@ function renderBL(state){
     const row=document.createElement('div');
     row.className='hunt-item'+(isDone?' done':'');
     row.innerHTML=`<div class="hunt-check"></div><div class="hunt-text">${personalize(item.t)}</div><div class="hunt-pts">+${item.p}</div>`;
-    row.addEventListener('click',()=>{
-      state[i]=!state[i];
-      saveBL(state);
-      renderBL(state);
+    row.addEventListener('click',()=>{state[i]=!state[i];saveBL(state);renderBL(state);});
+    blList.appendChild(row);
+  });
+  // Custom items
+  blCustom.forEach((item,i)=>{
+    total+=item.p;
+    if(item.done)done+=item.p;
+    const row=document.createElement('div');
+    row.className='hunt-item'+(item.done?' done':'');
+    row.innerHTML=`<div class="hunt-check"></div><div class="hunt-text">${personalize(item.t)}</div><div class="hunt-pts">+${item.p}</div><button class="bl-del-btn" title="Delete">🗑</button>`;
+    row.querySelector('.hunt-check, .hunt-text, .hunt-pts').onclick=null;
+    // Click on row (not delete btn) = toggle done
+    row.addEventListener('click',e=>{
+      if(e.target.closest('.bl-del-btn'))return;
+      blCustom[i].done=!blCustom[i].done;
+      saveBLCustom();renderBL(state);
+    });
+    row.querySelector('.bl-del-btn').addEventListener('click',e=>{
+      e.stopPropagation();
+      blCustom.splice(i,1);saveBLCustom();renderBL(state);
     });
     blList.appendChild(row);
   });
   blPtsEl.textContent=done;
   blMaxEl.textContent=total;
 }
-function loadBL(){try{return JSON.parse(localStorage.getItem('bach_bl')||'[]')}catch(e){return[]}}
-function saveBL(s){try{localStorage.setItem('bach_bl',JSON.stringify(s))}catch(e){};dbSet('bl',s)}
+function loadBL(){try{return JSON.parse(localStorage.getItem('bach_bl')||'[]');}catch(e){return[];}}
+function saveBL(s){try{localStorage.setItem('bach_bl',JSON.stringify(s));}catch(e){}; dbSet('bl',s);}
 let blState=loadBL();
 if(blState.length!==BL_ITEMS.length)blState=new Array(BL_ITEMS.length).fill(false);
 renderBL(blState);
 document.getElementById('bl-reset').addEventListener('click',()=>{
   blState=new Array(BL_ITEMS.length).fill(false);
-  saveBL(blState);renderBL(blState);
+  blCustom.forEach(c=>{c.done=false;});
+  saveBL(blState);saveBLCustom();renderBL(blState);
+});
+
+// Add Item modal
+const _blAddModal=document.getElementById('bl-add-modal');
+document.getElementById('bl-add-btn').addEventListener('click',()=>{
+  document.getElementById('bl-add-text').value='';
+  document.getElementById('bl-add-pts').value='10';
+  _blAddModal.classList.add('open');
+  setTimeout(()=>document.getElementById('bl-add-text').focus(),80);
+});
+document.getElementById('bl-add-cancel').addEventListener('click',()=>_blAddModal.classList.remove('open'));
+_blAddModal.addEventListener('click',e=>{if(e.target===_blAddModal)_blAddModal.classList.remove('open');});
+document.getElementById('bl-add-save').addEventListener('click',()=>{
+  const text=document.getElementById('bl-add-text').value.trim();
+  if(!text)return;
+  const pts=parseInt(document.getElementById('bl-add-pts').value)||10;
+  blCustom.push({t:text,p:pts,done:false});
+  saveBLCustom();renderBL(blState);
+  _blAddModal.classList.remove('open');
+});
+document.getElementById('bl-add-text').addEventListener('keydown',e=>{
+  if(e.key==='Enter'){e.preventDefault();document.getElementById('bl-add-save').click();}
 });
 
 /* ============================================
