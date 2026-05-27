@@ -1057,9 +1057,7 @@
     .tl-title-input{font-size:16px}
   }
 </style>
-<!-- Firebase SDK (real-time sync) -->
-<script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-database-compat.js"></script>
+<!-- No SDK needed — Firebase REST API is used directly -->
 </head>
 <body>
 
@@ -1647,193 +1645,181 @@
 
 <script>
 /* ============================================
-   FIREBASE — REAL-TIME SYNC
-   ──────────────────────────────────────────
-   HOW TO SET UP (5 minutes, free):
-   1. Go to https://console.firebase.google.com
-   2. "Add project" → give it any name → Continue
-   3. Build → Realtime Database → Create database → Start in test mode
-   4. Gear icon → Project settings → Your apps → </> (Web app)
-   5. Register app → copy the firebaseConfig values below
-   6. Save & push — everyone who opens the same ?p=XXXX link
-      will share a live board automatically.
-   ──────────────────────────────────────────
-   Leave databaseURL as 'FILL_IN' to run in local-only mode.
+   REAL-TIME SYNC — Firebase REST + Server-Sent Events
+   Only the database URL is needed (no API key required
+   when Realtime Database rules are set to public).
 ============================================ */
-const FIREBASE_CONFIG = {
-  apiKey:            "FILL_IN",
-  authDomain:        "FILL_IN",
-  databaseURL:       "FILL_IN",   // https://your-project-default-rtdb.firebaseio.com
-  projectId:         "FILL_IN",
-  storageBucket:     "FILL_IN",
-  messagingSenderId: "FILL_IN",
-  appId:             "FILL_IN"
-};
+const DB_URL = 'https://bachelorette-8cd27-default-rtdb.firebaseio.com';
 
-let _db = null, _partyId = null, _remoteUpdate = false;
+let _partyId = null, _remoteUpdate = false;
 
 function initDb() {
-  try {
-    if (!FIREBASE_CONFIG.databaseURL || FIREBASE_CONFIG.databaseURL === 'FILL_IN') {
-      console.info('ℹ️  Firebase not configured — running in local-only mode.');
-      return;
-    }
-    firebase.initializeApp(FIREBASE_CONFIG);
-    _db = firebase.database();
+  if (!DB_URL) return;
 
-    // Get or create a party room ID from the URL
-    const urlParams = new URLSearchParams(window.location.search);
-    _partyId = urlParams.get('p');
-    if (!_partyId) {
-      _partyId = Math.random().toString(36).slice(2, 9).toUpperCase();
-      const newUrl = window.location.pathname + '?p=' + _partyId + window.location.hash;
-      window.history.replaceState(null, '', newUrl);
-    }
+  // Get or create a party room ID from the URL (?p=XXXXXXX)
+  const urlParams = new URLSearchParams(window.location.search);
+  _partyId = urlParams.get('p');
+  if (!_partyId) {
+    _partyId = Math.random().toString(36).slice(2, 9).toUpperCase();
+    window.history.replaceState(null, '',
+      window.location.pathname + '?p=' + _partyId + window.location.hash);
+  }
 
-    // Show the share bar
-    const bar  = document.getElementById('live-bar');
-    const urlEl = document.getElementById('live-url');
-    const copyBtn = document.getElementById('live-copy-btn');
-    if (bar && urlEl) {
-      const shareUrl = window.location.origin + window.location.pathname + '?p=' + _partyId;
-      urlEl.textContent = shareUrl;
-      bar.style.display = 'flex';
-      if (copyBtn) {
-        copyBtn.addEventListener('click', () => {
-          navigator.clipboard.writeText(shareUrl).then(() => {
-            copyBtn.textContent = '✓ Copied!';
-            setTimeout(() => { copyBtn.textContent = 'Copy Link'; }, 2200);
-          });
+  // Show the share bar
+  const bar     = document.getElementById('live-bar');
+  const urlEl   = document.getElementById('live-url');
+  const copyBtn = document.getElementById('live-copy-btn');
+  if (bar && urlEl) {
+    const shareUrl = window.location.origin + window.location.pathname + '?p=' + _partyId;
+    urlEl.textContent = shareUrl;
+    bar.style.display = 'flex';
+    if (copyBtn) {
+      copyBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(shareUrl).then(() => {
+          copyBtn.textContent = '✓ Copied!';
+          setTimeout(() => { copyBtn.textContent = 'Copy Link'; }, 2200);
         });
-      }
+      });
     }
+  }
 
-    _setupLiveListeners();
-    console.info('🔥 Firebase live — party:', _partyId);
+  // Open a Server-Sent Events stream for real-time updates from the whole party node
+  try {
+    const es = new EventSource(DB_URL + '/p/' + _partyId + '.json');
+    const onMsg = e => {
+      try { const d = JSON.parse(e.data); _handleUpdate(d.path, d.data); } catch (_) {}
+    };
+    es.addEventListener('put',   onMsg);
+    es.addEventListener('patch', onMsg);
+    console.info('🔥 Live sync on — party:', _partyId);
   } catch (e) {
-    console.warn('Firebase init failed, local-only mode:', e);
-    _db = null;
+    console.warn('SSE unavailable:', e);
   }
 }
 
-function _dbRef(path) {
-  return (_db && _partyId) ? _db.ref('p/' + _partyId + '/' + path) : null;
-}
-
-// Write value to Firebase (no-op if this update originated FROM Firebase)
+// Write a value to Firebase at the given sub-path
 function dbSet(path, val) {
-  if (_remoteUpdate) return;
-  const r = _dbRef(path);
-  if (r) r.set(val).catch(e => console.warn('db write error:', path, e));
+  if (_remoteUpdate || !_partyId) return;
+  fetch(DB_URL + '/p/' + _partyId + '/' + path + '.json', {
+    method:  'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify(val)
+  }).catch(e => console.warn('db write error:', path, e));
 }
 
-// Listen for real-time remote changes; fn(val) fires immediately + on every change
-function _dbOn(path, fn) {
-  const r = _dbRef(path);
-  if (!r) return;
-  r.on('value', snap => {
-    const v = snap.val();
-    if (v !== null && v !== undefined) {
-      _remoteUpdate = true;
-      try { fn(v); } catch (e) { console.warn('listener error:', path, e); }
-      _remoteUpdate = false;
-    }
-  });
-}
-
-// Firebase stores arrays as objects with numeric string keys — convert back
+// Firebase stores JS arrays as {0:…,1:…} objects — convert back to array
 function _toArr(v) {
+  if (!v) return [];
   if (Array.isArray(v)) return v;
-  if (v && typeof v === 'object') return Object.values(v);
+  if (typeof v === 'object') return Object.values(v);
   return [];
 }
 
-function _setupLiveListeners() {
-  // ── Personalization ──
-  _dbOn('persona', v => {
-    if (v.bride != null) {
-      localStorage.setItem('bach_bride', v.bride);
-      const el = document.getElementById('bride-input');
-      if (el && el.value !== v.bride) el.value = v.bride;
+// Dispatch an incoming Firebase update to the right render function
+function _handleUpdate(path, data) {
+  if (data === null || data === undefined) return;
+  _remoteUpdate = true;
+  try {
+    if (!path || path === '/') {
+      // Initial full snapshot — apply every section present
+      if (data && typeof data === 'object')
+        Object.entries(data).forEach(([k, v]) => _applySection(k, v));
+      return;
     }
-    if (v.groom != null) {
-      localStorage.setItem('bach_groom', v.groom);
-      const el = document.getElementById('groom-input');
-      if (el && el.value !== v.groom) el.value = v.groom;
+    const parts = path.replace(/^\//, '').split('/').filter(Boolean);
+    if (parts.length === 1) {
+      _applySection(parts[0], data);
+    } else if (parts[0] === 'persona' && parts[1]) {
+      // Sub-field write e.g. /persona/bride
+      _applyPersona({ [parts[1]]: data });
     }
-    if (v.date != null) {
-      localStorage.setItem('bach_date', v.date);
-      const el = document.getElementById('party-date-input');
-      if (el && el.value !== v.date) el.value = v.date;
-    }
-    if (typeof refreshPersonalized === 'function') refreshPersonalized();
-    if (typeof updateCountdown === 'function') updateCountdown();
-  });
+  } catch (e) { console.warn('handleUpdate error:', e); }
+  finally { _remoteUpdate = false; }
+}
 
-  // ── Bingo board ──
-  _dbOn('bingo', v => {
-    if (typeof applyBingoState === 'function') applyBingoState(_toArr(v));
-  });
+function _applySection(key, data) {
+  switch (key) {
+    case 'persona': _applyPersona(data); break;
+    case 'bingo':
+      if (typeof applyBingoState === 'function') applyBingoState(_toArr(data));
+      break;
+    case 'hunt': {
+      const arr = _toArr(data);
+      if (typeof huntState !== 'undefined') {
+        huntState.splice(0, huntState.length, ...arr);
+        if (typeof renderHunt === 'function') renderHunt(huntState);
+      }
+      break;
+    }
+    case 'bl': {
+      const arr = _toArr(data);
+      if (typeof blState !== 'undefined') {
+        blState.splice(0, blState.length, ...arr);
+        if (typeof renderBL === 'function') renderBL(blState);
+      }
+      break;
+    }
+    case 'budget': {
+      const arr = _toArr(data);
+      if (typeof budget !== 'undefined' && arr.length) {
+        budget.splice(0, budget.length, ...arr);
+        if (typeof renderBudget === 'function') renderBudget();
+      }
+      break;
+    }
+    case 'guests':
+      if (typeof guests !== 'undefined') {
+        guests = +data;
+        const el = document.getElementById('guest-count');
+        if (el) el.textContent = guests;
+        if (typeof recalc === 'function') recalc();
+      }
+      break;
+    case 'bridePays':
+      if (typeof bridePays !== 'undefined') {
+        bridePays = !!data;
+        if (typeof updateBrideToggle === 'function') updateBrideToggle();
+        if (typeof recalc === 'function') recalc();
+      }
+      break;
+    case 'mm': {
+      const arr = _toArr(data);
+      if (typeof mmData !== 'undefined' && arr.length) {
+        mmData.splice(0, mmData.length, ...arr);
+        if (typeof renderMMSetup === 'function') renderMMSetup();
+      }
+      break;
+    }
+    case 'tl': {
+      const arr = _toArr(data);
+      if (typeof tlData !== 'undefined' && arr.length) {
+        tlData.splice(0, tlData.length, ...arr);
+        if (typeof renderTL === 'function') renderTL();
+      }
+      break;
+    }
+  }
+}
 
-  // ── Scavenger Hunt ──
-  _dbOn('hunt', v => {
-    const arr = _toArr(v);
-    if (typeof huntState !== 'undefined') {
-      huntState.splice(0, huntState.length, ...arr);
-      if (typeof renderHunt === 'function') renderHunt(huntState);
-    }
-  });
-
-  // ── Bucket List ──
-  _dbOn('bl', v => {
-    const arr = _toArr(v);
-    if (typeof blState !== 'undefined') {
-      blState.splice(0, blState.length, ...arr);
-      if (typeof renderBL === 'function') renderBL(blState);
-    }
-  });
-
-  // ── Budget ──
-  _dbOn('budget', v => {
-    const arr = _toArr(v);
-    if (typeof budget !== 'undefined' && arr.length) {
-      budget.splice(0, budget.length, ...arr);
-      if (typeof renderBudget === 'function') renderBudget();
-    }
-  });
-  _dbOn('guests', v => {
-    if (typeof guests !== 'undefined') {
-      guests = +v;
-      const el = document.getElementById('guest-count');
-      if (el) el.textContent = guests;
-      if (typeof recalc === 'function') recalc();
-    }
-  });
-  _dbOn('bridePays', v => {
-    if (typeof bridePays !== 'undefined') {
-      bridePays = !!v;
-      if (typeof updateBrideToggle === 'function') updateBrideToggle();
-      if (typeof recalc === 'function') recalc();
-    }
-  });
-
-  // ── Mr & Mrs ──
-  _dbOn('mm', v => {
-    const arr = _toArr(v);
-    if (typeof mmData !== 'undefined' && arr.length) {
-      mmData.splice(0, mmData.length, ...arr);
-      if (typeof renderMMSetup === 'function') renderMMSetup();
-    }
-  });
-
-  // ── Timeline ──
-  _dbOn('tl', v => {
-    const arr = _toArr(v);
-    if (typeof tlData !== 'undefined' && arr.length) {
-      tlData.splice(0, tlData.length, ...arr);
-      if (typeof renderTL === 'function') renderTL();
-    }
-  });
+function _applyPersona(v) {
+  if (!v || typeof v !== 'object') return;
+  if (v.bride != null) {
+    localStorage.setItem('bach_bride', v.bride);
+    const el = document.getElementById('bride-input');
+    if (el && el.value !== v.bride) el.value = v.bride;
+  }
+  if (v.groom != null) {
+    localStorage.setItem('bach_groom', v.groom);
+    const el = document.getElementById('groom-input');
+    if (el && el.value !== v.groom) el.value = v.groom;
+  }
+  if (v.date != null) {
+    localStorage.setItem('bach_date', v.date);
+    const el = document.getElementById('party-date-input');
+    if (el && el.value !== v.date) el.value = v.date;
+  }
+  if (typeof refreshPersonalized === 'function') refreshPersonalized();
+  if (typeof updateCountdown === 'function') updateCountdown();
 }
 
 /* ============================================
