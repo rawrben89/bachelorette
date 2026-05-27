@@ -1866,17 +1866,15 @@ function _applySection(key, data) {
       break;
     }
     case 'budget': {
-      if (data === '__empty__') {
-        if (typeof budget !== 'undefined') {
-          budget.splice(0, budget.length);
+      const arr = data === '__empty__' ? [] : _toArr(data);
+      if (typeof budget !== 'undefined') {
+        if (typeof _budgetFocused !== 'undefined' && _budgetFocused) {
+          // User is actively editing — queue the update, apply on blur
+          _budgetQueued = arr;
+        } else {
+          budget.splice(0, budget.length, ...arr);
           if (typeof renderBudget === 'function') renderBudget();
         }
-        break;
-      }
-      const arr = _toArr(data);
-      if (typeof budget !== 'undefined') {
-        budget.splice(0, budget.length, ...arr);
-        if (typeof renderBudget === 'function') renderBudget();
       }
       break;
     }
@@ -1911,9 +1909,15 @@ function _applySection(key, data) {
       break;
     }
     case 'tl': {
-      if (data === '__empty__') { if (typeof tlData !== 'undefined') { tlData.splice(0, tlData.length); if (typeof renderTL === 'function') renderTL(); } break; }
-      const arrTl = _toArr(data);
-      if (typeof tlData !== 'undefined') { tlData.splice(0, tlData.length, ...arrTl); if (typeof renderTL === 'function') renderTL(); }
+      const arrTl = data === '__empty__' ? [] : _toArr(data);
+      if (typeof tlData !== 'undefined') {
+        if (typeof _tlFocused !== 'undefined' && _tlFocused) {
+          _tlQueued = arrTl;
+        } else {
+          tlData.splice(0, tlData.length, ...arrTl);
+          if (typeof renderTL === 'function') renderTL();
+        }
+      }
       break;
     }
   }
@@ -2479,6 +2483,8 @@ const DEFAULT_BUDGET=[
 let budget=loadBudget();
 let guests=loadGuests();
 let bridePays=loadBridePays();
+let _budgetFocused=false, _budgetQueued=null;
+let _tlFocused=false, _tlQueued=null;
 function loadPeople(){try{const v=JSON.parse(localStorage.getItem('bach_people'));return Array.isArray(v)?v:[];}catch(e){return[]}}
 function savePeople(){try{localStorage.setItem('bach_people',JSON.stringify(people))}catch(e){};dbSet('people',people.length?people:'__empty__')}
 let people=loadPeople();
@@ -2500,9 +2506,9 @@ function fmt(n){return '$'+Math.round(n).toLocaleString()}
 function renderBudget(){
   budgetBody.innerHTML='';
   budget.forEach((row,i)=>{
-    const paidByVal = row.paidBy != null ? row.paidBy : '';
-    const paidOpts = `<option value="">—</option>` +
-      people.map((p,pi)=>`<option value="${pi}"${+paidByVal===pi?' selected':''}>${p}</option>`).join('');
+    const paidByIdx = (row.paidBy !== null && row.paidBy !== undefined && row.paidBy !== '') ? +row.paidBy : null;
+    const paidOpts = `<option value="">— who paid? —</option>` +
+      people.map((p,pi)=>`<option value="${pi}"${paidByIdx===pi?' selected':''}>${p}</option>`).join('');
     const tr=document.createElement('tr');
     tr.innerHTML=`
       <td class="cat-cell"><span class="editable" contenteditable="true" data-i="${i}" data-f="cat">${row.cat}</span></td>
@@ -2518,8 +2524,24 @@ function renderBudget(){
   recalc();
 }
 
+function _budgetBlurCheck(){
+  setTimeout(()=>{
+    if(!budgetBody.querySelector(':focus')){
+      _budgetFocused=false;
+      if(_budgetQueued){
+        const arr=_budgetQueued; _budgetQueued=null;
+        _remoteUpdate=true;
+        budget.splice(0,budget.length,...arr);
+        _remoteUpdate=false;
+        renderBudget();
+      }
+    }
+  },60);
+}
+
 function attachBudgetEvents(){
   budgetBody.querySelectorAll('.editable').forEach(el=>{
+    el.addEventListener('focus',()=>{ _budgetFocused=true; });
     el.addEventListener('input',()=>{
       const i=+el.dataset.i,f=el.dataset.f;
       if(f==='base'||f==='splurge'){
@@ -2536,12 +2558,15 @@ function attachBudgetEvents(){
         const i=+el.dataset.i,f=el.dataset.f;
         el.textContent=budget[i][f];
       }
+      _budgetBlurCheck();
     });
     el.addEventListener('keydown',e=>{
       if(e.key==='Enter'){e.preventDefault();el.blur();}
     });
   });
   budgetBody.querySelectorAll('.paid-select').forEach(sel=>{
+    sel.addEventListener('focus',()=>{ _budgetFocused=true; });
+    sel.addEventListener('blur',()=>{ _budgetBlurCheck(); });
     sel.addEventListener('change',()=>{
       const i=+sel.dataset.i;
       budget[i].paidBy = sel.value==='' ? null : +sel.value;
@@ -3546,6 +3571,21 @@ function renderTL(){
     t.addEventListener('input',resize);
   });
   tlList.querySelectorAll('input,textarea').forEach(el=>{
+    el.addEventListener('focus',()=>{ _tlFocused=true; });
+    el.addEventListener('blur',()=>{
+      setTimeout(()=>{
+        if(!tlList.querySelector(':focus')){
+          _tlFocused=false;
+          if(_tlQueued){
+            const arr=_tlQueued; _tlQueued=null;
+            _remoteUpdate=true;
+            tlData.splice(0,tlData.length,...arr);
+            _remoteUpdate=false;
+            renderTL();
+          }
+        }
+      },60);
+    });
     el.addEventListener('input',()=>{
       tlData[+el.dataset.i][el.dataset.f]=el.value;
       saveTL();
