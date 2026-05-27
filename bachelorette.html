@@ -1,0 +1,3357 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="color-scheme" content="light only">
+<meta name="theme-color" content="#FFFFFF">
+<title>The Bachelorette Bash — Play & Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=DM+Sans:opsz,wght@9..40,300..700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    color-scheme: light only;
+    --cream:#FFFFFF;
+    --cream-deep:#F6F3EE;
+    --ink:#1B0A14;
+    --wine:#4A0E2C;
+    --pink:#E63A7C;
+    --pink-hot:#FF2D7F;
+    --gold:#C9924A;
+    --gold-soft:#E0B074;
+    --line:rgba(27,10,20,.18);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{
+    scroll-behavior:smooth;background:#FFFFFF;color-scheme:light only;
+    overflow-x:hidden;max-width:100vw;
+  }
+  body{
+    font-family:"DM Sans",system-ui,sans-serif;
+    background:#FFFFFF !important;
+    color:#1B0A14 !important;
+    line-height:1.55;
+    overflow-x:hidden;
+    max-width:100vw;
+    width:100%;
+  }
+  img,svg,video{max-width:100%;height:auto}
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:100;
+    opacity:.18;mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/></svg>");
+  }
+
+  .display{font-family:"Fraunces",serif;font-weight:400;font-variation-settings:"opsz" 144,"SOFT" 50;letter-spacing:-.02em;line-height:.92}
+  .italic{font-style:italic;font-variation-settings:"opsz" 144,"SOFT" 100}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 32px}
+
+  /* ---------- HERO ---------- */
+  header{position:relative;padding:36px 32px 0;border-bottom:1px solid var(--line)}
+  .topbar{display:flex;justify-content:space-between;align-items:center;text-transform:uppercase;letter-spacing:.22em;font-size:11px;color:var(--wine);flex-wrap:wrap;gap:8px}
+  .topbar span:nth-child(2){letter-spacing:.4em}
+  .hero{padding:48px 0 64px;position:relative}
+  .hero h1{font-size:clamp(46px,14vw,210px);color:var(--wine)}
+  .hero h1 .pink{color:var(--pink-hot)}
+  .hero-row{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;margin-top:24px;flex-wrap:wrap}
+  .hero-row p{max-width:420px;font-size:17px;color:#3a1226}
+  .hero-meta{text-align:right;font-family:"Fraunces",serif;font-size:14px;text-transform:uppercase;letter-spacing:.3em;color:var(--wine)}
+  .hero-meta strong{display:block;font-size:20px;letter-spacing:.15em;margin-top:6px}
+  .ornament{position:absolute;font-family:"Fraunces",serif;font-style:italic;color:var(--pink);opacity:.5;pointer-events:none}
+  .ornament.o1{top:18%;right:6%;font-size:120px;transform:rotate(-12deg)}
+
+  /* ---------- SECTIONS ---------- */
+  section{padding:80px 32px;border-bottom:1px solid var(--line);position:relative}
+  .section-label{display:flex;align-items:center;gap:14px;text-transform:uppercase;letter-spacing:.32em;font-size:11px;color:var(--wine);margin-bottom:24px}
+  .section-label::before{content:"";width:42px;height:1px;background:var(--wine)}
+  .section-title{font-size:clamp(34px,8vw,108px);color:var(--ink);margin-bottom:24px;line-height:.95}
+  .section-title .accent{color:var(--pink-hot);font-style:italic}
+  .section-sub{font-size:17px;color:#3a1226;max-width:600px;margin-bottom:40px}
+
+  /* ---------- GAME TABS ---------- */
+  .tabs{display:flex;flex-wrap:wrap;gap:0;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);margin-bottom:40px}
+  .tab{
+    flex:1;min-width:110px;background:transparent;border:none;cursor:pointer;
+    padding:18px 12px;font-family:"Fraunces",serif;font-size:17px;color:var(--wine);
+    border-right:1px solid var(--line);transition:all .2s;font-weight:500;
+    position:relative;
+  }
+  .tab:last-child{border-right:none}
+  .tab:hover{background:var(--cream-deep)}
+  .tab.active{background:var(--wine);color:#fff}
+  .tab.active::after{
+    content:"";position:absolute;bottom:-9px;left:50%;transform:translateX(-50%);
+    width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;
+    border-top:8px solid var(--wine);
+  }
+  .tab-num{display:block;font-family:"DM Sans";font-size:10px;letter-spacing:.3em;opacity:.6;margin-bottom:4px;text-transform:uppercase}
+
+  .panel{display:none;animation:fadeIn .4s ease}
+  .panel.active{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+  .game-header{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:32px;flex-wrap:wrap}
+  .game-header h3{font-family:"Fraunces",serif;font-size:clamp(32px,5vw,56px);color:var(--wine);font-weight:500;line-height:1;letter-spacing:-.01em}
+  .game-header h3 em{color:var(--pink-hot)}
+  .game-header p{font-size:15px;color:#3a1226;max-width:380px}
+
+  .btn{
+    display:inline-flex;align-items:center;gap:10px;
+    background:var(--pink-hot);color:var(--cream);border:none;cursor:pointer;
+    padding:14px 28px;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:600;
+    text-transform:uppercase;letter-spacing:.2em;border-radius:999px;
+    transition:all .2s;
+  }
+  .btn:hover{background:var(--wine);transform:translateY(-2px)}
+  .btn:active{transform:translateY(0)}
+  .btn.ghost{background:transparent;color:var(--wine);border:1px solid var(--wine)}
+  .btn.ghost:hover{background:var(--wine);color:var(--cream)}
+  .btn.small{padding:10px 18px;font-size:11px}
+
+  /* ---------- BINGO ---------- */
+  .bingo-board{
+    display:grid;grid-template-columns:repeat(5,1fr);gap:6px;
+    max-width:600px;margin:0 auto;
+  }
+  .bingo-cell{
+    aspect-ratio:1;background:var(--cream-deep);border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;text-align:center;
+    padding:8px;font-size:11px;line-height:1.2;cursor:pointer;
+    transition:all .2s;color:var(--wine);font-weight:500;position:relative;
+    user-select:none;
+  }
+  .bingo-cell:hover{background:#f0e8d8}
+  .bingo-cell.marked{background:var(--pink-hot);color:var(--cream)}
+  .bingo-cell.marked::after{
+    content:"✿";position:absolute;font-size:48px;color:rgba(255,255,255,.3);
+    font-family:"Fraunces",serif;
+  }
+  .bingo-cell[data-empty="1"]{background:#FCFAF6;color:var(--wine);opacity:.85}
+  .bingo-cell[data-empty="1"]:hover{background:#F4EDE0;opacity:1}
+  .bingo-cell.editing{background:#fff5e9 !important;outline:2px solid var(--pink-hot);outline-offset:-2px;cursor:text}
+  .bingo-cell.editing::after{display:none}
+  .bingo-cell.free{background:var(--wine);color:var(--cream);font-family:"Fraunces",serif;font-style:italic;font-size:18px}
+  .bingo-status{
+    text-align:center;margin-top:24px;font-family:"Fraunces",serif;font-style:italic;
+    font-size:24px;color:var(--wine);min-height:32px;
+  }
+  .bingo-status.win{color:var(--pink-hot);font-size:36px;animation:pulse 1s ease infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+
+  /* ---------- DRINK IF / TRUTH OR DARE CARDS ---------- */
+  .card-stage{
+    background:var(--cream-deep);
+    padding:48px 32px;
+    border-radius:4px;
+    text-align:center;
+    min-height:340px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    position:relative;
+    border:1px solid var(--line);
+  }
+  .card-label{
+    text-transform:uppercase;letter-spacing:.4em;font-size:11px;
+    color:var(--wine);margin-bottom:20px;opacity:.7;
+  }
+  .card-prompt{
+    font-family:"Fraunces",serif;font-size:clamp(24px,4vw,40px);
+    line-height:1.2;color:var(--ink);max-width:600px;font-weight:400;
+    transition:opacity .3s;
+  }
+  .card-prompt em{color:var(--pink-hot);font-style:italic}
+  .card-count{position:absolute;top:20px;right:24px;font-family:"Fraunces",serif;font-size:13px;color:var(--wine);letter-spacing:.15em}
+  .card-actions{display:flex;gap:12px;justify-content:center;margin-top:32px;flex-wrap:wrap}
+  .spice-toggle{display:flex;gap:8px;justify-content:center;margin-bottom:20px;flex-wrap:wrap}
+  .chip{
+    padding:6px 14px;border:1px solid var(--wine);background:transparent;
+    color:var(--wine);font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+    border-radius:999px;cursor:pointer;font-family:"DM Sans";
+  }
+  .chip.on{background:var(--wine);color:var(--cream)}
+
+  /* ---------- TRUTH/DARE SWITCH ---------- */
+  .td-switch{display:flex;gap:0;justify-content:center;margin-bottom:24px;border:1px solid var(--wine);border-radius:999px;padding:4px;width:fit-content;margin-left:auto;margin-right:auto}
+  .td-switch button{
+    padding:10px 28px;background:transparent;border:none;cursor:pointer;
+    font-family:"Fraunces",serif;font-size:18px;color:var(--wine);border-radius:999px;
+    transition:all .2s;
+  }
+  .td-switch button.on{background:var(--pink-hot);color:var(--cream)}
+
+  /* ---------- SPINNER ---------- */
+  /* ---------- SCAVENGER ---------- */
+  .hunt-list{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line)}
+  .hunt-item{
+    display:flex;align-items:center;gap:18px;padding:18px 8px;
+    border-bottom:1px solid var(--line);cursor:pointer;transition:background .15s;
+    user-select:none;
+  }
+  .hunt-item:hover{background:var(--cream-deep)}
+  .hunt-check{
+    width:28px;height:28px;border:2px solid var(--wine);border-radius:50%;
+    flex-shrink:0;display:flex;align-items:center;justify-content:center;
+    transition:all .2s;
+  }
+  .hunt-item.done .hunt-check{background:var(--pink-hot);border-color:var(--pink-hot)}
+  .hunt-item.done .hunt-check::after{content:"✓";color:var(--cream);font-weight:700}
+  .hunt-item.done .hunt-text{text-decoration:line-through;opacity:.5}
+  .hunt-text{flex:1;font-size:15px;color:var(--ink)}
+  .hunt-pts{font-family:"Fraunces",serif;font-size:18px;color:var(--gold);font-style:italic}
+  .hunt-score{
+    display:flex;justify-content:space-between;align-items:baseline;
+    margin-bottom:24px;padding:20px 24px;background:var(--cream-deep);
+    border-left:3px solid var(--pink-hot);
+  }
+  .hunt-score-label{text-transform:uppercase;letter-spacing:.3em;font-size:11px;color:var(--wine)}
+  .hunt-score-val{font-family:"Fraunces",serif;font-size:36px;color:var(--pink-hot)}
+
+  /* ---------- BUDGET ---------- */
+  .budget-controls{
+    display:flex;justify-content:space-between;align-items:center;gap:24px;
+    margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid var(--line);flex-wrap:wrap;
+  }
+  .guest-control{display:flex;align-items:center;gap:14px}
+  .guest-control label{text-transform:uppercase;letter-spacing:.25em;font-size:11px;color:var(--wine)}
+  .guest-stepper{display:flex;align-items:center;gap:8px}
+  .stepper-btn{
+    width:36px;height:36px;border-radius:50%;border:1px solid var(--wine);
+    background:transparent;cursor:pointer;font-size:18px;color:var(--wine);
+    display:flex;align-items:center;justify-content:center;
+    transition:all .15s;
+  }
+  .stepper-btn:hover{background:var(--wine);color:var(--cream)}
+  .guest-count{font-family:"Fraunces",serif;font-size:32px;color:var(--ink);min-width:48px;text-align:center}
+
+  .budget-totals{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-bottom:40px;
+    border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);
+  }
+  @media (max-width:680px){.budget-totals{grid-template-columns:1fr}}
+  .total-cell{
+    padding:24px;border-right:1px solid var(--line);
+  }
+  .total-cell:last-child{border-right:none;background:var(--wine);color:#fff}
+  .total-cell-label{text-transform:uppercase;letter-spacing:.28em;font-size:11px;color:var(--wine);margin-bottom:8px}
+  .total-cell:last-child .total-cell-label{color:var(--gold-soft)}
+  .total-cell-val{font-family:"Fraunces",serif;font-size:42px;line-height:1;font-weight:500}
+  .total-cell:nth-child(2) .total-cell-val{color:var(--pink-hot)}
+
+  .budget-table{width:100%;border-collapse:collapse;font-size:15px}
+  .budget-table th{
+    text-align:left;text-transform:uppercase;letter-spacing:.22em;font-size:11px;
+    color:var(--wine);padding:14px 12px;border-bottom:2px solid var(--wine);font-weight:500;
+  }
+  .budget-table th:nth-child(n+3){text-align:right}
+  .budget-table th:last-child{width:60px}
+  .budget-table tbody tr{border-bottom:1px solid var(--line);transition:background .2s}
+  .budget-table tbody tr:hover{background:rgba(230,58,124,.04)}
+  .budget-table td{padding:14px 12px;vertical-align:middle}
+  .budget-table td.cat-cell{font-family:"Fraunces",serif;font-size:18px;color:var(--wine);font-weight:500}
+  .editable{
+    outline:none;padding:6px 10px;border-radius:4px;
+    transition:background .15s;cursor:text;
+    border:1px dashed transparent;
+  }
+  .editable:hover{background:rgba(230,58,124,.08);border-color:rgba(230,58,124,.2)}
+  .editable:focus{background:#fff5e9;border:1px dashed var(--pink-hot)}
+  .amount{text-align:right;font-variant-numeric:tabular-nums;min-width:70px;display:inline-block}
+  .currency{color:var(--wine);font-weight:500}
+  .delete-row{
+    background:transparent;border:none;cursor:pointer;color:var(--wine);
+    opacity:0;transition:opacity .2s;font-size:18px;padding:4px 8px;
+  }
+  tr:hover .delete-row{opacity:.5}
+  .delete-row:hover{opacity:1 !important;color:var(--pink-hot)}
+  .add-row{
+    margin-top:20px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;
+  }
+  .save-hint{
+    margin-top:16px;font-size:12px;color:var(--wine);opacity:.6;font-style:italic;
+  }
+
+  /* ---------- DRINKS MENU ---------- */
+  .drinks-cat{
+    display:flex;align-items:baseline;gap:20px;margin:48px 0 20px;
+    padding-bottom:12px;border-bottom:1px solid var(--line);
+  }
+  .drinks-cat:first-of-type{margin-top:0}
+  .drinks-cat h3{
+    font-family:"Fraunces",serif;font-size:36px;font-weight:500;color:var(--wine);
+    letter-spacing:-.01em;
+  }
+  .drinks-cat h3 em{color:var(--pink-hot);font-style:italic}
+  .drinks-cat .cat-note{
+    font-family:"Fraunces",serif;font-style:italic;font-size:15px;color:#6b324d;
+  }
+  .drinks-grid{
+    display:grid;grid-template-columns:repeat(2,1fr);gap:0;
+    border-left:1px solid var(--line);
+  }
+  @media (max-width:780px){.drinks-grid{grid-template-columns:1fr}}
+  .drinks-three{grid-template-columns:repeat(3,1fr)}
+  @media (max-width:980px){.drinks-three{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:640px){.drinks-three{grid-template-columns:1fr}}
+  .drink{
+    padding:24px 28px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);
+    transition:background .2s;position:relative;
+  }
+  .drink:hover{background:var(--cream-deep)}
+  .drink-head{
+    display:flex;align-items:baseline;gap:12px;margin-bottom:8px;
+  }
+  .drink-head h4{
+    font-family:"Fraunces",serif;font-weight:500;font-size:24px;
+    color:var(--ink);line-height:1.1;flex-shrink:0;
+  }
+  .drink-head h4 em{color:var(--pink-hot);font-style:italic}
+  .drink-head .dots{
+    flex:1;border-bottom:1px dotted var(--line);transform:translateY(-6px);
+    min-width:20px;
+  }
+  .drink-head .glass{
+    font-family:"Fraunces",serif;font-style:italic;font-size:13px;color:var(--gold);
+    text-transform:lowercase;letter-spacing:.05em;flex-shrink:0;
+  }
+  .drink-vibe{
+    font-style:italic;font-size:13.5px;color:var(--wine);margin-bottom:12px;
+    font-family:"Fraunces",serif;
+  }
+  .drink-recipe{
+    list-style:none;font-size:13.5px;color:#3a1226;
+  }
+  .drink-recipe li{padding:3px 0;display:flex;justify-content:space-between;gap:12px}
+  .drink-recipe li span:first-child{color:var(--wine)}
+  .drink-recipe li span:last-child{font-variant-numeric:tabular-nums;color:#3a1226;text-align:right;flex-shrink:0}
+
+  .bar-stock{
+    background:var(--cream-deep);color:var(--ink);
+    padding:40px 36px;margin-top:64px;
+    display:grid;grid-template-columns:1fr 2fr;gap:48px;
+    border:1px solid var(--line);
+  }
+  @media (max-width:780px){.bar-stock{grid-template-columns:1fr;padding:28px 24px;gap:24px}}
+  .bar-stock h3{
+    font-family:"Fraunces",serif;font-size:36px;font-weight:500;
+    color:var(--wine);line-height:1;
+  }
+  .bar-stock h3 em{color:var(--pink-hot);font-style:italic}
+  .bar-stock .stock-intro{
+    font-size:14px;color:var(--wine);margin-top:12px;opacity:.7;
+    text-transform:uppercase;letter-spacing:.2em;
+  }
+  .stock-cols{
+    display:grid;grid-template-columns:1fr 1fr;gap:32px;
+  }
+  @media (max-width:480px){.stock-cols{grid-template-columns:1fr}}
+  .stock-col h5{
+    font-family:"Fraunces",serif;font-style:italic;font-size:18px;
+    color:var(--gold);margin-bottom:12px;font-weight:400;
+  }
+  .stock-col ul{list-style:none}
+  .stock-col li{
+    padding:6px 0;font-size:14px;color:var(--ink);
+    border-bottom:1px solid var(--line);
+  }
+  .stock-col li::before{content:"+ ";color:var(--pink-hot)}
+
+  /* ---------- MR & MRS SETUP ---------- */
+  .mm-setup{
+    background:var(--cream-deep);padding:28px;border-left:3px solid var(--pink-hot);
+    margin-bottom:24px;
+  }
+  .mm-setup h4{
+    font-family:"Fraunces",serif;font-size:22px;color:var(--wine);margin-bottom:8px;
+  }
+  .mm-setup p{font-size:13.5px;color:#3a1226;margin-bottom:16px}
+  .mm-q-row{
+    display:grid;grid-template-columns:1fr 1fr 40px;gap:12px;margin-bottom:10px;
+    align-items:center;
+  }
+  @media (max-width:680px){.mm-q-row{grid-template-columns:1fr;gap:6px}}
+  .mm-input{
+    width:100%;padding:10px 14px;border:1px solid var(--line);background:var(--cream);
+    font-family:"DM Sans";font-size:14px;color:var(--ink);border-radius:4px;
+  }
+  .mm-input:focus{outline:none;border-color:var(--pink-hot)}
+  .mm-input.question{font-style:italic;color:var(--wine)}
+  .mm-modes{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+  .mm-card{position:relative}
+  .mm-question{
+    font-family:"Fraunces",serif;font-size:clamp(22px,3.5vw,32px);
+    font-style:italic;color:var(--wine);margin-bottom:12px;line-height:1.2;
+  }
+  .mm-reveal{
+    background:var(--cream-deep);color:var(--ink);padding:24px;margin-top:20px;
+    font-family:"Fraunces",serif;font-size:24px;border-radius:4px;
+    border:2px solid var(--wine);
+    display:none;
+  }
+  .mm-reveal.show{display:block;animation:fadeIn .3s}
+  .mm-reveal-label{
+    text-transform:uppercase;letter-spacing:.3em;font-size:10px;
+    color:var(--wine);margin-bottom:8px;font-family:"DM Sans";opacity:.7;
+  }
+  .mm-progress{
+    display:flex;justify-content:space-between;align-items:baseline;
+    margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--line);
+  }
+  .mm-progress-label{
+    text-transform:uppercase;letter-spacing:.3em;font-size:11px;color:var(--wine);
+  }
+  .mm-score{
+    font-family:"Fraunces",serif;font-style:italic;font-size:24px;color:var(--pink-hot);
+  }
+
+  /* ---------- CHARADES TIMER ---------- */
+  .timer-display{
+    font-family:"Fraunces",serif;font-size:72px;font-weight:500;
+    color:var(--wine);line-height:1;margin:16px 0;
+    font-variant-numeric:tabular-nums;
+  }
+  .timer-display.warn{color:var(--pink-hot);animation:pulse 1s ease infinite}
+  .timer-bar{
+    width:100%;height:6px;background:var(--cream-deep);border-radius:3px;
+    overflow:hidden;margin:12px 0 24px;
+  }
+  .timer-fill{
+    height:100%;background:var(--pink-hot);width:100%;
+    transition:width .25s linear;
+  }
+  .charades-score{
+    display:flex;gap:24px;justify-content:center;margin-bottom:20px;
+  }
+  .charades-score div{
+    text-align:center;padding:0 16px;
+  }
+  .charades-score .label{
+    text-transform:uppercase;letter-spacing:.25em;font-size:10px;color:var(--wine);
+  }
+  .charades-score .val{
+    font-family:"Fraunces",serif;font-size:32px;line-height:1;
+  }
+  .charades-score .got .val{color:var(--pink-hot)}
+  .charades-score .skip .val{color:var(--gold)}
+
+  /* ---------- TIMELINE EDIT ---------- */
+  .timeline-edit{
+    list-style:none;
+  }
+  .tl-row{
+    display:grid;grid-template-columns:160px 1fr 40px;gap:24px;
+    padding:20px 0;border-top:1px solid var(--line);align-items:start;
+  }
+  .tl-row:last-child{border-bottom:1px solid var(--line)}
+  @media (max-width:680px){
+    .tl-row{grid-template-columns:1fr 30px;gap:12px}
+    .tl-row .tl-time-cell{grid-column:1 / -1}
+  }
+  .tl-time-input{
+    width:100%;font-family:"Fraunces",serif;font-style:italic;font-size:24px;
+    color:var(--pink-hot);background:transparent;border:none;padding:6px 8px;
+    border-radius:4px;transition:background .15s;
+  }
+  .tl-time-input:hover{background:var(--cream-deep)}
+  .tl-time-input:focus{outline:none;background:#fff5e9}
+  .tl-title-input{
+    width:100%;font-family:"Fraunces",serif;font-weight:500;font-size:20px;
+    color:var(--wine);background:transparent;border:none;padding:4px 8px;
+    border-radius:4px;display:block;margin-bottom:4px;
+  }
+  .tl-title-input:hover{background:var(--cream-deep)}
+  .tl-title-input:focus{outline:none;background:#fff5e9}
+  .tl-note-input{
+    width:100%;font-family:"DM Sans";font-size:14.5px;color:#3a1226;
+    background:transparent;border:none;padding:4px 8px;
+    border-radius:4px;resize:none;line-height:1.4;
+  }
+  .tl-note-input:hover{background:var(--cream-deep)}
+  .tl-note-input:focus{outline:none;background:#fff5e9}
+  .tl-delete{
+    background:transparent;border:none;cursor:pointer;color:var(--wine);
+    opacity:.3;transition:all .2s;font-size:20px;padding:8px;line-height:1;
+  }
+  .tl-delete:hover{opacity:1;color:var(--pink-hot)}
+
+  /* ---------- POLISH OR PORN ---------- */
+  .pp-stage{
+    background:var(--cream-deep);padding:40px 32px;border-radius:4px;
+    border:1px solid var(--line);text-align:center;
+    min-height:360px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    position:relative;
+  }
+  .pp-question{
+    text-transform:uppercase;letter-spacing:.4em;font-size:11px;
+    color:var(--wine);margin-bottom:24px;opacity:.7;
+  }
+  .pp-title{
+    font-family:"Fraunces",serif;font-style:italic;
+    font-size:clamp(32px,5vw,52px);color:var(--ink);
+    line-height:1.1;margin-bottom:40px;max-width:700px;
+    transition:opacity .25s;
+  }
+  .pp-choices{
+    display:grid;grid-template-columns:1fr 1fr;gap:14px;
+    width:100%;max-width:520px;
+  }
+  .pp-btn{
+    padding:22px 16px;border:2px solid var(--wine);
+    background:transparent;cursor:pointer;
+    font-family:"Fraunces",serif;font-weight:500;font-size:22px;
+    color:var(--wine);border-radius:4px;
+    transition:all .2s;letter-spacing:-.01em;
+  }
+  .pp-btn:hover{background:var(--wine);color:var(--cream);transform:translateY(-2px)}
+  .pp-btn.right{background:#2d7a3d;border-color:#2d7a3d;color:#fff;animation:bump .4s}
+  .pp-btn.wrong{background:#a32d4a;border-color:#a32d4a;color:#fff;animation:shake .4s}
+  .pp-btn.disabled{pointer-events:none;opacity:.4}
+  .pp-btn.disabled.was-correct{opacity:1;background:#2d7a3d;border-color:#2d7a3d;color:#fff}
+  @keyframes bump{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+  .pp-reveal{
+    margin-top:24px;font-family:"DM Sans";font-size:14px;
+    color:var(--wine);max-width:600px;min-height:24px;
+    text-transform:uppercase;letter-spacing:.2em;
+  }
+  .pp-reveal.right{color:#2d7a3d}
+  .pp-reveal.wrong{color:#a32d4a}
+  .pp-score-bar{
+    display:flex;justify-content:space-between;align-items:center;
+    margin-bottom:24px;padding:14px 20px;background:var(--cream-deep);
+    border-left:3px solid var(--pink-hot);
+  }
+  .pp-score-bar .label{text-transform:uppercase;letter-spacing:.3em;font-size:11px;color:var(--wine)}
+  .pp-score-bar .val{font-family:"Fraunces",serif;font-size:24px;color:var(--ink);font-style:italic}
+  .pp-score-bar .val .pink{color:var(--pink-hot)}
+  .pp-final{
+    font-family:"Fraunces",serif;font-style:italic;
+    font-size:clamp(28px,4vw,40px);color:var(--pink-hot);
+  }
+  .pp-timer-bar{
+    width:100%;max-width:520px;height:5px;background:var(--cream);
+    border-radius:3px;overflow:hidden;margin:0 0 24px;
+    border:1px solid var(--line);
+  }
+  .pp-timer-fill{
+    height:100%;background:var(--pink-hot);width:100%;
+    transition:width .1s linear;
+  }
+  .pp-timer-fill.danger{background:#a32d4a;animation:pulse .5s ease infinite}
+  .pp-streak{
+    font-family:"Fraunces",serif;font-style:italic;font-size:14px;
+    color:var(--gold);margin-left:14px;
+  }
+  .pp-streak.hot{color:var(--pink-hot)}
+
+  /* ---------- DIFFICULTY SELECTOR ---------- */
+  .diff-row{
+    display:flex;align-items:center;gap:8px;
+    justify-content:center;flex-wrap:wrap;
+    margin:0 auto 20px;padding:10px 14px;
+    background:var(--cream-deep);border-radius:20px;
+    max-width:100%;box-sizing:border-box;
+  }
+  .diff-label{
+    font-size:10px;letter-spacing:.25em;
+    text-transform:uppercase;color:var(--wine);font-weight:500;
+  }
+  .diff-row .chip{
+    padding:6px 12px;font-size:10.5px;letter-spacing:.12em;
+    white-space:nowrap;
+  }
+
+  /* ---------- PERSONALIZE BAR ---------- */
+  .personalize{
+    background:var(--cream-deep);border-bottom:1px solid var(--line);
+    padding:14px 32px;display:flex;align-items:center;justify-content:center;
+    gap:18px;flex-wrap:wrap;font-size:12px;
+  }
+  .personalize .pp-field{display:flex;align-items:center;gap:8px}
+  .personalize label{
+    font-size:10px;letter-spacing:.3em;text-transform:uppercase;
+    color:var(--wine);font-weight:500;
+  }
+  .personalize input{
+    background:#fff;border:1px solid var(--line);border-radius:6px;
+    padding:7px 10px;font-family:"DM Sans";font-size:13px;color:var(--ink);
+    width:130px;
+  }
+  .personalize input:focus{outline:none;border-color:var(--pink-hot)}
+  .personalize input[type="date"]{width:155px}
+  .personalize .save-flag{
+    font-family:"Fraunces",serif;font-style:italic;font-size:13px;
+    color:var(--pink-hot);opacity:0;transition:opacity .3s;
+  }
+  .personalize .save-flag.on{opacity:1}
+  @media (max-width:720px){
+    .personalize{padding:12px 18px;gap:10px;font-size:11px}
+    .personalize input{width:110px;font-size:12px;padding:6px 8px}
+    .personalize input[type="date"]{width:135px}
+  }
+  @media (max-width:480px){
+    .personalize{flex-direction:column;align-items:stretch;gap:8px}
+    .personalize .pp-field{justify-content:space-between}
+    .personalize input{width:60%}
+  }
+
+  /* ---------- COUNTDOWN PILL ---------- */
+  .countdown-pill{
+    color:var(--pink-hot);font-weight:600;letter-spacing:.2em;
+  }
+
+  /* ---------- CONFETTI ---------- */
+  .confetti-piece{
+    position:fixed;top:-20px;width:8px;height:14px;
+    z-index:9999;pointer-events:none;
+    animation:confetti-fall linear forwards;
+  }
+  @keyframes confetti-fall{
+    0%{transform:translateY(0) rotate(0deg);opacity:1}
+    100%{transform:translateY(110vh) rotate(720deg);opacity:0}
+  }
+
+  /* ---------- PRINT STYLES ---------- */
+  @media print{
+    body::before{display:none}
+    .personalize,.tabs,header,footer,
+    .topbar,.section-label,.budget-controls,
+    .game-header button,.btn,
+    #budget-body .delete-row,
+    #timeline-list .tl-delete,
+    .add-row,.save-hint{display:none !important}
+    body{background:#fff !important;color:#000 !important}
+    section{padding:24px 0 !important;page-break-inside:avoid;border:none}
+    .section-title{font-size:32px;margin-bottom:16px}
+    .game-header h3{font-size:24px}
+    .drinks-grid{break-inside:avoid}
+    .drink{padding:18px;border:1px solid #ccc}
+    .bar-stock{background:#f5f5f5;border:1px solid #ccc}
+    /* Print bingo cards */
+    .print-bingo{
+      display:grid;grid-template-columns:repeat(2,1fr);gap:24px;
+      padding:24px;page-break-inside:auto;
+    }
+    .print-card{
+      page-break-inside:avoid;border:2px solid #000;padding:14px;
+    }
+    .print-card-title{
+      font-family:"Fraunces",serif;text-align:center;font-size:18px;
+      margin-bottom:8px;font-style:italic;
+    }
+    .print-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:2px}
+    .print-cell{
+      border:1px solid #000;aspect-ratio:1;display:flex;
+      align-items:center;justify-content:center;text-align:center;
+      padding:4px;font-size:8px;line-height:1.1;
+    }
+    .print-cell.free{background:#000;color:#fff;font-style:italic;font-size:11px}
+  }
+
+  /* ---------- PRINT BINGO MODAL ---------- */
+  .modal{
+    position:fixed;inset:0;background:rgba(27,10,20,.7);
+    display:none;align-items:center;justify-content:center;
+    z-index:9000;padding:20px;
+  }
+  .modal.open{display:flex}
+  .modal-content{
+    background:#fff;border-radius:8px;padding:32px;
+    max-width:480px;width:100%;max-height:90vh;overflow-y:auto;
+  }
+  .modal h3{
+    font-family:"Fraunces",serif;font-size:28px;color:var(--wine);
+    font-weight:500;margin-bottom:8px;
+  }
+  .modal p{font-size:14px;color:#3a1226;margin-bottom:20px}
+  .modal .count-row{
+    display:flex;align-items:center;gap:14px;margin-bottom:20px;
+  }
+  .modal .count-row label{
+    font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--wine);
+  }
+  .modal .modal-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+
+  /* ---------- MAIN SECTION NAV ---------- */
+  .main-nav{
+    display:flex;justify-content:center;
+    background:#fff;border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    position:sticky;top:0;z-index:50;
+    overflow-x:auto;-webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  .main-nav::-webkit-scrollbar{display:none}
+  .main-nav button{
+    flex:1;min-width:90px;
+    background:transparent;border:none;cursor:pointer;
+    padding:18px 24px;
+    font-family:"Fraunces",serif;font-size:19px;font-weight:500;
+    color:var(--wine);letter-spacing:-.01em;
+    position:relative;transition:color .2s;
+    white-space:nowrap;
+  }
+  .main-nav button:hover{color:var(--pink-hot)}
+  .main-nav button.active{color:var(--pink-hot)}
+  .main-nav button.active::after{
+    content:'';position:absolute;bottom:-1px;
+    left:25%;right:25%;height:3px;
+    background:var(--pink-hot);border-radius:2px;
+  }
+  .main-nav .nav-num{
+    display:block;font-family:"DM Sans",sans-serif;
+    font-size:9px;letter-spacing:.3em;
+    text-transform:uppercase;opacity:.6;margin-bottom:2px;
+    font-weight:400;
+  }
+
+  .main-section{display:none}
+  .main-section.active{display:block;animation:section-fade .3s ease}
+  @keyframes section-fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  @media (max-width:720px){
+    .main-nav button{padding:14px 14px;font-size:16px;min-width:auto}
+    .main-nav .nav-num{font-size:8px;letter-spacing:.2em}
+  }
+  @media (max-width:380px){
+    .main-nav button{padding:12px 8px;font-size:14px}
+  }
+
+  /* ---------- SCHEDULE REMINDERS ---------- */
+  .up-next-pill{
+    display:flex;align-items:center;gap:16px;
+    background:linear-gradient(135deg,var(--wine),#6a1840);
+    color:#fff;padding:18px 24px;border-radius:12px;
+    margin-bottom:32px;flex-wrap:wrap;
+  }
+  .up-next-pill .un-icon{font-size:24px}
+  .up-next-pill .un-body{flex:1;min-width:200px}
+  .up-next-pill .un-label{
+    font-size:10px;letter-spacing:.3em;text-transform:uppercase;
+    color:var(--gold-soft);font-family:"DM Sans";margin-bottom:4px;
+  }
+  .up-next-pill .un-title{
+    font-family:"Fraunces",serif;font-size:22px;font-weight:500;
+    color:#fff;line-height:1.1;
+  }
+  .up-next-pill .un-title em{color:var(--pink-hot);font-style:italic}
+  .up-next-pill .un-time{
+    font-family:"Fraunces",serif;font-style:italic;font-size:18px;
+    color:var(--gold-soft);white-space:nowrap;
+  }
+  .up-next-pill.idle{
+    background:var(--cream-deep);color:var(--wine);
+  }
+  .up-next-pill.idle .un-label,.up-next-pill.idle .un-time{color:var(--wine);opacity:.6}
+  .up-next-pill.idle .un-title{color:var(--wine)}
+
+  /* Highlight the current row in the schedule */
+  .tl-row.now{
+    background:rgba(255,45,127,.06);
+    border-left:3px solid var(--pink-hot);
+    padding-left:13px !important;
+    margin-left:-16px;
+    border-radius:0 4px 4px 0;
+  }
+  .tl-row.now .tl-time-input{color:var(--pink-hot)}
+
+  /* Toast notification */
+  .reminder-toast{
+    position:fixed;top:20px;left:50%;
+    transform:translateX(-50%) translateY(-30px);
+    background:var(--wine);color:#fff;
+    padding:16px 20px;border-radius:12px;
+    z-index:10000;display:flex;align-items:flex-start;gap:14px;
+    max-width:min(420px,calc(100vw - 32px));
+    box-shadow:0 14px 40px rgba(74,14,44,.4);
+    opacity:0;transition:all .35s ease;
+  }
+  .reminder-toast.show{
+    transform:translateX(-50%) translateY(0);
+    opacity:1;
+  }
+  .reminder-toast .toast-icon{font-size:24px;line-height:1}
+  .reminder-toast .toast-content{flex:1;min-width:0}
+  .reminder-toast .toast-time{
+    font-family:"Fraunces",serif;font-style:italic;font-size:13px;
+    color:var(--gold-soft);letter-spacing:.05em;
+  }
+  .reminder-toast .toast-title{
+    font-family:"Fraunces",serif;font-size:18px;font-weight:500;
+    color:#fff;line-height:1.15;margin-top:2px;
+  }
+  .reminder-toast .toast-note{
+    font-size:12.5px;color:rgba(255,255,255,.7);margin-top:4px;line-height:1.3;
+  }
+  .reminder-toast .toast-close{
+    background:transparent;border:none;color:rgba(255,255,255,.7);
+    font-size:22px;line-height:1;cursor:pointer;padding:0;
+    margin-left:8px;flex-shrink:0;
+  }
+  .reminder-toast .toast-close:hover{color:#fff}
+
+  @media (max-width:480px){
+    .up-next-pill{padding:14px 18px;gap:12px;border-radius:10px}
+    .up-next-pill .un-title{font-size:18px}
+    .up-next-pill .un-time{font-size:15px}
+    .reminder-toast{top:12px;padding:14px 16px}
+    .reminder-toast .toast-title{font-size:16px}
+  }
+
+  /* ---------- REMINDER BANNER ---------- */
+  .reminder-banner{
+    position:fixed;top:20px;left:50%;transform:translateX(-50%);
+    background:var(--wine);color:#fff;padding:16px 22px;
+    border-radius:8px;box-shadow:0 12px 32px rgba(0,0,0,.2);
+    z-index:8000;max-width:400px;width:calc(100% - 40px);
+    display:none;align-items:center;gap:14px;
+    animation:banner-in .3s ease;
+  }
+  .reminder-banner.show{display:flex}
+  @keyframes banner-in{
+    from{opacity:0;transform:translate(-50%,-20px)}
+    to{opacity:1;transform:translate(-50%,0)}
+  }
+  .banner-content{flex:1;line-height:1.3}
+  .banner-time{
+    font-family:"Fraunces",serif;font-style:italic;
+    font-size:18px;color:var(--gold-soft);margin-bottom:2px;
+  }
+  .banner-title{font-weight:600;font-size:14px;margin-bottom:2px}
+  .banner-note{font-size:12px;opacity:.85}
+  .banner-close{
+    background:none;border:none;color:#fff;
+    font-size:22px;cursor:pointer;padding:0 4px;line-height:1;
+    opacity:.7;
+  }
+  .banner-close:hover{opacity:1}
+
+  /* ---------- SCHEDULE TOOLS ---------- */
+  .sched-tools{
+    display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+    margin-bottom:24px;padding:16px 20px;
+    background:var(--cream-deep);border-left:3px solid var(--pink-hot);
+  }
+  .sched-tools .next-up{
+    flex:1;min-width:200px;font-size:13px;color:var(--ink);
+  }
+  .sched-tools .next-up strong{color:var(--wine);font-family:"Fraunces",serif;font-style:italic}
+  .sched-tools .next-up.empty{color:#999;font-style:italic}
+  .notif-status{
+    font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--wine);opacity:.6;
+  }
+  .notif-status.on{color:#2d7a3d;opacity:1;font-weight:600}
+
+  /* Print: show all sections, hide top tabs */
+  @media print{
+    .top-tabs,.reminder-banner,.sched-tools{display:none !important}
+    
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer{padding:80px 32px 60px;text-align:center;background:var(--cream-deep);color:var(--ink);border-top:1px solid var(--line)}
+  footer .display{font-size:clamp(40px,7vw,80px);color:var(--wine)}
+  footer .display .pink{color:var(--pink-hot)}
+  footer p{margin-top:24px;text-transform:uppercase;letter-spacing:.4em;font-size:11px;color:var(--wine);opacity:.6}
+
+  /* ============ MOBILE ============ */
+  @media (max-width:720px){
+    section{padding:56px 18px}
+    header{padding:20px 18px 0}
+    .topbar{flex-direction:column;align-items:flex-start;gap:4px;font-size:10px}
+    .topbar span:nth-child(2){letter-spacing:.3em}
+    .hero{padding:32px 0 40px}
+    .hero-row{flex-direction:column;align-items:flex-start;margin-top:18px}
+    .hero-meta{text-align:left}
+    .ornament.o1{font-size:60px;top:8%;right:4%}
+
+    .section-label{font-size:10px;letter-spacing:.25em;margin-bottom:18px}
+    .section-label::before{width:28px}
+    .section-sub{font-size:15px;margin-bottom:28px}
+
+    /* Tabs scroll horizontally on phones instead of wrapping into 3 rows */
+    .tabs{
+      flex-wrap:nowrap;
+      overflow-x:auto;
+      overflow-y:hidden;
+      -webkit-overflow-scrolling:touch;
+      scrollbar-width:none;
+      margin-left:-18px;margin-right:-18px;
+      padding:0 18px;
+    }
+    .tabs::-webkit-scrollbar{display:none}
+    .tab{
+      flex:0 0 auto;min-width:auto;
+      padding:13px 16px;font-size:14px;
+    }
+    .tab.active::after{display:none}
+    .tab-num{font-size:9px;letter-spacing:.2em}
+
+    .game-header{flex-direction:column;align-items:flex-start;gap:14px}
+    .game-header h3{font-size:38px}
+
+    /* Bingo: shrink padding so 5x5 fits comfortably */
+    .bingo-board{gap:4px;max-width:100%}
+    .bingo-cell{font-size:9.5px;padding:4px;line-height:1.15}
+    .bingo-cell.free{font-size:14px}
+    .bingo-cell.marked::after{font-size:32px}
+    .bingo-status{font-size:18px}
+    .bingo-status.win{font-size:26px}
+
+    /* Card stage tighter */
+    .card-stage{padding:32px 18px;min-height:280px}
+    .card-prompt{font-size:22px}
+    .card-count{top:14px;right:14px;font-size:11px}
+    .card-label{font-size:10px;letter-spacing:.3em}
+    .card-actions{flex-direction:column;width:100%}
+    .card-actions .btn{width:100%;justify-content:center}
+
+    /* Truth/Dare switch */
+    .td-switch button{padding:8px 20px;font-size:16px}
+
+    /* Scavenger hunt */
+    .hunt-item{padding:14px 4px;gap:14px}
+    .hunt-text{font-size:14px}
+    .hunt-score{padding:16px 18px}
+    .hunt-score-val{font-size:28px}
+
+    /* Mr & Mrs */
+    .mm-setup{padding:20px 18px}
+    .mm-setup h4{font-size:18px}
+    .mm-q-row{margin-bottom:14px;padding-bottom:14px;border-bottom:1px dotted var(--line)}
+    .mm-q-row .tl-delete{justify-self:end;margin-top:-6px}
+    .mm-question{font-size:22px}
+    .mm-reveal{padding:18px;font-size:18px}
+    .mm-progress-label{font-size:10px}
+    .mm-score{font-size:20px}
+
+    /* Charades timer */
+    .timer-display{font-size:54px}
+    .charades-score .val{font-size:26px}
+
+    /* Polish or Porn */
+    .pp-stage{padding:30px 18px;min-height:300px}
+    .pp-title{font-size:26px;margin-bottom:28px}
+    .pp-choices{grid-template-columns:1fr;gap:10px}
+    .pp-btn{padding:18px 14px;font-size:18px}
+    .pp-final{font-size:24px}
+    .pp-score-bar{padding:12px 16px}
+    .pp-score-bar .val{font-size:20px}
+
+    /* Budget */
+    .budget-controls{gap:14px;margin-bottom:24px;padding-bottom:18px}
+    .budget-controls .guest-control{width:100%;justify-content:space-between}
+    .budget-totals{grid-template-columns:1fr;margin-bottom:28px}
+    .total-cell{padding:18px;border-right:none;border-bottom:1px solid var(--line)}
+    .total-cell:last-child{border-bottom:none}
+    .total-cell-val{font-size:32px}
+    .budget-table{font-size:13.5px}
+    .budget-table th{font-size:10px;padding:10px 6px;letter-spacing:.18em}
+    .budget-table td{padding:12px 6px}
+    .budget-table td.cat-cell{font-size:15px}
+    .budget-table .note{font-size:11.5px}
+    .budget-table th:nth-child(3),
+    .budget-table td:nth-child(3){display:none}
+    .editable{padding:4px 6px}
+    .delete-row{opacity:.4}
+
+    /* Bar stock */
+    .bar-stock{padding:28px 22px;gap:24px;margin-top:40px}
+    .bar-stock h3{font-size:28px}
+
+    /* Drinks */
+    .drink{padding:22px 20px}
+    .drink-head h4{font-size:20px}
+    .drink-head .glass{font-size:11px}
+    .drink-vibe{font-size:13px}
+    .drink-recipe{font-size:13px}
+
+    /* Timeline editing */
+    .tl-row{padding:16px 0;gap:10px}
+    .tl-time-input{font-size:20px;padding:4px 6px}
+    .tl-title-input{font-size:17px;padding:3px 6px}
+    .tl-note-input{font-size:13.5px;padding:3px 6px}
+
+    /* Footer */
+    footer{padding:56px 24px 44px}
+
+    /* Section content uses wrap padding instead */
+    section .wrap{padding:0 0}
+
+    /* Difficulty row stacks vertically with full-width chip row on phones */
+    .diff-row{
+      flex-direction:column;gap:6px;padding:10px 12px;
+      border-radius:14px;
+    }
+    .diff-row .diff-label{margin-bottom:2px}
+    .diff-row .chips-inner{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+    .diff-row .chip{padding:6px 11px;font-size:10px;letter-spacing:.08em}
+
+    /* Spice toggle (category chips) shrinks too */
+    .spice-toggle{gap:6px}
+    .spice-toggle .chip{padding:5px 11px;font-size:10px;letter-spacing:.08em}
+
+    /* Game header reset button kept reasonable */
+    .game-header .btn.small{padding:8px 14px;font-size:10px}
+  }
+
+  @media (max-width:380px){
+    section{padding:48px 14px}
+    header{padding:18px 14px 0}
+    .hero h1{font-size:40px}
+    .section-title{font-size:28px}
+    .section-sub{font-size:14px;margin-bottom:22px}
+    .game-header h3{font-size:30px}
+    .card-stage{padding:24px 14px}
+    .card-prompt{font-size:18px}
+    .pp-title{font-size:20px}
+    .pp-btn{padding:14px 12px;font-size:16px}
+    .total-cell-val{font-size:26px}
+
+    /* Bingo: even tighter cells */
+    .bingo-board{gap:3px}
+    .bingo-cell{font-size:8.5px;padding:3px;line-height:1.1}
+    .bingo-cell.free{font-size:11px}
+
+    /* Tabs even smaller */
+    .tab{padding:11px 13px;font-size:13px}
+    .tab-num{font-size:8.5px}
+
+    /* Budget */
+    .budget-table td{padding:10px 4px}
+    .budget-table td.cat-cell{font-size:14px}
+    .amount{min-width:50px}
+    .guest-control label{font-size:10px}
+    .guest-count{font-size:26px}
+    .stepper-btn{width:30px;height:30px;font-size:16px}
+
+    /* Drinks */
+    .drink{padding:18px 16px}
+    .drink-head{flex-wrap:wrap;gap:6px}
+    .drink-head h4{font-size:18px}
+    .drink-head .dots{flex:0 0 0;display:none}
+    .drink-head .glass{font-size:10px;width:100%;text-align:left;order:3}
+
+    /* Bar stock */
+    .bar-stock{padding:22px 18px}
+    .bar-stock h3{font-size:24px}
+    .stock-col li{font-size:13px}
+
+    /* Topbar */
+    .topbar{font-size:9px}
+    .topbar span:nth-child(2){letter-spacing:.2em}
+
+    /* Hunt/bucket list */
+    .hunt-item{padding:12px 2px;gap:10px}
+    .hunt-text{font-size:13px}
+    .hunt-check{width:24px;height:24px}
+    .hunt-pts{font-size:15px}
+
+    /* Mr&Mrs */
+    .mm-setup{padding:16px 14px}
+    .mm-question{font-size:19px}
+
+    /* Timeline */
+    .tl-time-input{font-size:18px}
+    .tl-title-input{font-size:16px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="topbar">
+    <span>No. 01 · Vol. Forever</span>
+    <span>The Bachelorette Issue</span>
+    <span id="countdown-slot">Sip · Play · Repeat</span>
+  </div>
+  </header>
+
+  <div class="personalize" id="personalize">
+    <div class="pp-field">
+      <label>Bride</label>
+      <input type="text" id="bride-input" placeholder="Her name" maxlength="20" />
+    </div>
+    <div class="pp-field">
+      <label>Groom</label>
+      <input type="text" id="groom-input" placeholder="His name" maxlength="20" />
+    </div>
+    <div class="pp-field">
+      <label>Party Date</label>
+      <input type="date" id="party-date-input" />
+    </div>
+    <span class="save-flag" id="save-flag">✓ saved</span>
+  </div>
+
+  <nav class="main-nav" id="main-nav" role="tablist">
+    <button data-section="games" class="active">
+      <span class="nav-num">01</span>Games
+    </button>
+    <button data-section="budget">
+      <span class="nav-num">02</span>Budget
+    </button>
+    <button data-section="drinks">
+      <span class="nav-num">03</span>Bar
+    </button>
+    <button data-section="timeline">
+      <span class="nav-num">04</span>Schedule
+    </button>
+  </nav>
+
+  <header style="border-top:1px solid var(--line);padding-top:24px">
+  <div class="hero">
+    <span class="ornament o1 italic">cheers!</span>
+    <h1 class="display">
+      Last Fling<br>
+      <span class="italic pink">before the</span><br>
+      Ring.
+    </h1>
+    <div class="hero-row">
+      <p>A complete playbook for the bride's send-off — five games you can actually play right here, a cocktail menu worth printing, and a budget you can edit live.</p>
+      <div class="hero-meta">
+        Curated for<br>
+        <strong id="hero-bride-display">The Bride-to-Be</strong>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ GAMES ============ -->
+<section id="games" class="main-section active">
+  <div class="wrap">
+    <div class="section-label">Part One — Press Play</div>
+    <h2 class="section-title display">Ten games. <span class="accent">Zero</span> setup.</h2>
+    <p class="section-sub">Pick a tab. Tap, spin, type, and play — everything runs in this page, perfect for an at-home pre-game.</p>
+
+    <div class="tabs" role="tablist">
+      <button class="tab active" data-tab="bingo"><span class="tab-num">01</span>Bingo</button>
+      <button class="tab" data-tab="drink"><span class="tab-num">02</span>Drink If…</button>
+      <button class="tab" data-tab="td"><span class="tab-num">03</span>Truth / Dare</button>
+      <button class="tab" data-tab="hunt"><span class="tab-num">04</span>Scavenger</button>
+      <button class="tab" data-tab="mm"><span class="tab-num">05</span>Mr. &amp; Mrs.</button>
+      <button class="tab" data-tab="ml"><span class="tab-num">06</span>Most Likely</button>
+      <button class="tab" data-tab="char"><span class="tab-num">07</span>Charades</button>
+      <button class="tab" data-tab="pp"><span class="tab-num">08</span>Polish / Porn</button>
+      <button class="tab" data-tab="stg"><span class="tab-num">09</span>Toy / Gadget</button>
+      <button class="tab" data-tab="bl"><span class="tab-num">10</span>Bucket List</button>
+    </div>
+
+    <!-- BINGO -->
+    <div class="panel active" id="panel-bingo">
+      <div class="game-header">
+        <div>
+          <h3>Bridal <em>Bingo</em></h3>
+          <p>Start with a blank card. Tap "Randomize" to fill with house-party prompts, or fill it in yourself. Tap squares as they happen — first row of five wins.</p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn" id="bingo-rand">🎲 Randomize</button>
+          <button class="btn ghost small" id="bingo-print">🖨 Print Cards</button>
+          <button class="btn ghost small" id="bingo-clear">Clear</button>
+        </div>
+      </div>
+      <div class="bingo-board" id="bingo-board"></div>
+      <div class="bingo-status" id="bingo-status">Tap squares as they happen…</div>
+    </div>
+
+    <!-- DRINK IF -->
+    <div class="panel" id="panel-drink">
+      <div class="game-header">
+        <div>
+          <h3>Drink <em>If…</em></h3>
+          <p>Read each prompt aloud. Anyone it applies to takes a sip. Adjust the spice level before you start.</p>
+        </div>
+      </div>
+      <div class="spice-toggle">
+        <button class="chip on" data-spice="mild">Mild</button>
+        <button class="chip on" data-spice="medium">Medium</button>
+        <button class="chip" data-spice="spicy">Spicy</button>
+      </div>
+      <div class="card-stage">
+        <div class="card-count" id="drink-count">Card 0 / 0</div>
+        <div class="card-label">Drink if…</div>
+        <div class="card-prompt" id="drink-prompt">Tap "Next Card" to begin.</div>
+        <div class="card-actions">
+          <button class="btn" id="drink-next">Next Card →</button>
+          <button class="btn ghost" id="drink-reset">Reshuffle</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRUTH OR DARE -->
+    <div class="panel" id="panel-td">
+      <div class="game-header">
+        <div>
+          <h3>Truth or <em>Dare</em></h3>
+          <p>The bridal edition. Pick your poison — get a random prompt, hand the phone over, repeat.</p>
+        </div>
+      </div>
+      <div class="td-switch">
+        <button id="td-truth" class="on">Truth</button>
+        <button id="td-dare">Dare</button>
+      </div>
+      <div class="card-stage">
+        <div class="card-label" id="td-label">Truth</div>
+        <div class="card-prompt" id="td-prompt">Pick Truth or Dare, then tap below.</div>
+        <div class="card-actions">
+          <button class="btn" id="td-draw">Draw →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCAVENGER -->
+    <div class="panel" id="panel-hunt">
+      <div class="game-header">
+        <div>
+          <h3>Scavenger <em>Hunt</em></h3>
+          <p>A checklist of dares for the bride (or the group). Tap each one as you complete it — the score updates live.</p>
+        </div>
+        <button class="btn ghost small" id="hunt-reset">Reset</button>
+      </div>
+      <div class="hunt-score">
+        <span class="hunt-score-label">Score</span>
+        <span class="hunt-score-val"><span id="hunt-pts">0</span> / <span id="hunt-max">0</span></span>
+      </div>
+      <div class="hunt-list" id="hunt-list"></div>
+    </div>
+
+    <!-- MR & MRS -->
+    <div class="panel" id="panel-mm">
+      <div class="game-header">
+        <div>
+          <h3>Mr. &amp; <em>Mrs.</em></h3>
+          <p>The classic. Before the party, the host (or maid of honor) gets the groom to answer these questions. At the party, the bride guesses — every match scores, every miss is a sip.</p>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn small ghost" id="mm-toggle">Toggle Setup</button>
+          <button class="btn small" id="mm-reset">Reset</button>
+        </div>
+      </div>
+
+      <div class="mm-setup" id="mm-setup">
+        <h4>Setup — Groom's Answers</h4>
+        <p>Edit any question, fill in the groom's answer. Saves automatically. Toggle the setup off when you're ready to play.</p>
+        <div id="mm-setup-list"></div>
+        <button class="btn small ghost" id="mm-add" style="margin-top:12px">+ Add Question</button>
+      </div>
+
+      <div class="card-stage mm-card" id="mm-play" style="display:none">
+        <div class="mm-progress">
+          <span class="mm-progress-label" id="mm-progress-text">Question 1 / 10</span>
+          <span class="mm-score">Score: <span id="mm-score">0</span></span>
+        </div>
+        <div class="card-label">She thinks he said…</div>
+        <div class="mm-question" id="mm-question">Loading…</div>
+        <div class="mm-reveal" id="mm-reveal">
+          <div class="mm-reveal-label">His Answer</div>
+          <div id="mm-answer"></div>
+        </div>
+        <div class="card-actions">
+          <button class="btn ghost" id="mm-show">Reveal Answer</button>
+          <button class="btn" id="mm-match" style="display:none;background:#2d7a3d">✓ Match</button>
+          <button class="btn" id="mm-miss" style="display:none">✗ Miss</button>
+          <button class="btn" id="mm-next" style="display:none">Next →</button>
+        </div>
+      </div>
+
+      <div class="card-stage" id="mm-done" style="display:none">
+        <div class="card-label">Final Score</div>
+        <div class="card-prompt" id="mm-final">—</div>
+        <div class="card-actions">
+          <button class="btn" id="mm-replay">Play Again</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MOST LIKELY TO -->
+    <div class="panel" id="panel-ml">
+      <div class="game-header">
+        <div>
+          <h3>Most Likely <em>To…</em></h3>
+          <p>Read the prompt. Everyone points at the person they think it fits. Loudest agreement wins. Tap "Next" for the next one.</p>
+        </div>
+      </div>
+      <div class="card-stage">
+        <div class="card-count" id="ml-count">Card 0 / 0</div>
+        <div class="card-label">Most likely to…</div>
+        <div class="card-prompt" id="ml-prompt">Tap "Next" to draw the first card.</div>
+        <div class="card-actions">
+          <button class="btn" id="ml-next">Next Card →</button>
+          <button class="btn ghost" id="ml-reset">Reshuffle</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHARADES -->
+    <div class="panel" id="panel-char">
+      <div class="game-header">
+        <div>
+          <h3>Charades <em>(Bridal)</em></h3>
+          <p>Pick a category, hit start. One person acts out the word — no talking, no pointing at objects. 30 seconds per turn.</p>
+        </div>
+      </div>
+      <div class="spice-toggle" style="margin-bottom:16px">
+        <button class="chip on" data-charcat="wedding">Wedding</button>
+        <button class="chip" data-charcat="pop">Pop Culture</button>
+        <button class="chip" data-charcat="romance">Rom-Coms</button>
+        <button class="chip" data-charcat="honeymoon">Honeymoon Spots</button>
+      </div>
+
+      <div class="diff-row">
+        <span class="diff-label">Timer</span>
+        <button class="chip" data-diff-char="10">10s · Hard</button>
+        <button class="chip on" data-diff-char="30">30s · Normal</button>
+        <button class="chip" data-diff-char="60">60s · Easy</button>
+      </div>
+
+      <div class="charades-score">
+        <div class="got"><div class="label">Got It</div><div class="val" id="char-got">0</div></div>
+        <div class="skip"><div class="label">Skipped</div><div class="val" id="char-skip">0</div></div>
+      </div>
+
+      <div class="card-stage">
+        <div class="card-count"><span id="char-timer-display">--:--</span></div>
+        <div class="card-label" id="char-cat-label">Wedding</div>
+        <div class="card-prompt" id="char-word">Tap Start to begin a round.</div>
+        <div class="timer-bar"><div class="timer-fill" id="char-timer-fill"></div></div>
+        <div class="card-actions">
+          <button class="btn" id="char-start">Start Round</button>
+          <button class="btn" id="char-got-btn" style="display:none;background:#2d7a3d">✓ Got It</button>
+          <button class="btn ghost" id="char-skip-btn" style="display:none">Skip →</button>
+          <button class="btn ghost" id="char-stop" style="display:none">Stop</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- POLISH OR PORN -->
+    <div class="panel" id="panel-pp">
+      <div class="game-header">
+        <div>
+          <h3>Polish or <em>Porn?</em></h3>
+          <p>The obvious giveaways are gone — both lists are deliberately deceptive. Pick your timer below. Wrong answers and time-outs break your streak.</p>
+        </div>
+        <button class="btn small ghost" id="pp-reset">Reset</button>
+      </div>
+
+      <div class="diff-row">
+        <span class="diff-label">Timer</span>
+        <button class="chip" data-diff-pp="10">10s · Hard</button>
+        <button class="chip on" data-diff-pp="30">30s · Normal</button>
+        <button class="chip" data-diff-pp="60">60s · Easy</button>
+      </div>
+
+      <div class="pp-score-bar">
+        <span class="label">Score <span class="pp-streak" id="pp-streak"></span></span>
+        <span class="val"><span class="pink" id="pp-correct">0</span> / <span id="pp-total">0</span></span>
+      </div>
+
+      <div class="pp-stage">
+        <div class="pp-question">It's called…</div>
+        <div class="pp-title" id="pp-title">Tap "Start" to begin.</div>
+        <div class="pp-timer-bar" id="pp-timer-bar" style="visibility:hidden"><div class="pp-timer-fill" id="pp-timer-fill"></div></div>
+        <div class="pp-choices" id="pp-choices">
+          <button class="pp-btn" data-pick="polish">💅 Nail Polish</button>
+          <button class="pp-btn" data-pick="film">🎬 Adult Film</button>
+        </div>
+        <div class="pp-reveal" id="pp-reveal">&nbsp;</div>
+        <div class="card-actions" style="margin-top:20px">
+          <button class="btn" id="pp-next" style="display:none">Next →</button>
+          <button class="btn" id="pp-start">Start Game</button>
+        </div>
+      </div>
+
+      <div class="pp-stage" id="pp-done" style="display:none">
+        <div class="pp-question">Final Score</div>
+        <div class="pp-final" id="pp-final">—</div>
+        <div class="card-actions" style="margin-top:24px">
+          <button class="btn" id="pp-replay">Play Again</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEX TOY OR KITCHEN GADGET -->
+    <div class="panel" id="panel-stg">
+      <div class="game-header">
+        <div>
+          <h3>Toy or <em>Gadget?</em></h3>
+          <p>Sex toy or kitchen gadget? Both have weirdly clinical names. Real products from both worlds — pick your timer below.</p>
+        </div>
+        <button class="btn small ghost" id="stg-reset">Reset</button>
+      </div>
+
+      <div class="diff-row">
+        <span class="diff-label">Timer</span>
+        <button class="chip" data-diff-stg="10">10s · Hard</button>
+        <button class="chip on" data-diff-stg="30">30s · Normal</button>
+        <button class="chip" data-diff-stg="60">60s · Easy</button>
+      </div>
+
+      <div class="pp-score-bar">
+        <span class="label">Score <span class="pp-streak" id="stg-streak"></span></span>
+        <span class="val"><span class="pink" id="stg-correct">0</span> / <span id="stg-total">0</span></span>
+      </div>
+
+      <div class="pp-stage">
+        <div class="pp-question">It's called…</div>
+        <div class="pp-title" id="stg-title">Tap "Start" to begin.</div>
+        <div class="pp-timer-bar" id="stg-timer-bar" style="visibility:hidden"><div class="pp-timer-fill" id="stg-timer-fill"></div></div>
+        <div class="pp-choices" id="stg-choices">
+          <button class="pp-btn" data-stg="toy">🍆 Sex Toy</button>
+          <button class="pp-btn" data-stg="gadget">🍴 Kitchen Gadget</button>
+        </div>
+        <div class="pp-reveal" id="stg-reveal">&nbsp;</div>
+        <div class="card-actions" style="margin-top:20px">
+          <button class="btn" id="stg-next" style="display:none">Next →</button>
+          <button class="btn" id="stg-start">Start Game</button>
+        </div>
+      </div>
+
+      <div class="pp-stage" id="stg-done" style="display:none">
+        <div class="pp-question">Final Score</div>
+        <div class="pp-final" id="stg-final">—</div>
+        <div class="card-actions" style="margin-top:24px">
+          <button class="btn" id="stg-replay">Play Again</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- NAUGHTY BUCKET LIST -->
+    <div class="panel" id="panel-bl">
+      <div class="game-header">
+        <div>
+          <h3>Naughty <em>Bucket List</em></h3>
+          <p>The bride's send-off dares. Aim for points, photograph the evidence, embarrass nobody who hasn't consented. Tap each item as it's completed — score saves automatically.</p>
+        </div>
+        <button class="btn ghost small" id="bl-reset">Reset</button>
+      </div>
+      <div class="hunt-score">
+        <span class="hunt-score-label">Score</span>
+        <span class="hunt-score-val"><span id="bl-pts">0</span> / <span id="bl-max">0</span></span>
+      </div>
+      <div class="hunt-list" id="bl-list"></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ BUDGET ============ -->
+<section id="budget" class="main-section">
+  <div class="wrap">
+    <div class="section-label">Part Two — The Numbers</div>
+    <h2 class="section-title display">A budget you <span class="accent">edit</span> live.</h2>
+    <p class="section-sub">Click any amount or category to edit it. Adjust the guest count and watch the per-person total recalculate.</p>
+
+    <div class="budget-controls">
+      <div class="guest-control">
+        <label>Guests</label>
+        <div class="guest-stepper">
+          <button class="stepper-btn" id="guest-minus">−</button>
+          <span class="guest-count" id="guest-count">8</span>
+          <button class="stepper-btn" id="guest-plus">+</button>
+        </div>
+      </div>
+      <div class="guest-control">
+        <label>Bride pays?</label>
+        <div class="guest-stepper">
+          <button class="chip on" id="bride-toggle">No — split her share</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="budget-totals">
+      <div class="total-cell">
+        <div class="total-cell-label">Group Total</div>
+        <div class="total-cell-val" id="total-group">$0</div>
+      </div>
+      <div class="total-cell">
+        <div class="total-cell-label">Per Guest</div>
+        <div class="total-cell-val" id="total-per">$0</div>
+      </div>
+      <div class="total-cell">
+        <div class="total-cell-label">Splurge Per Guest</div>
+        <div class="total-cell-val" id="total-splurge">$0</div>
+      </div>
+    </div>
+
+    <table class="budget-table">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Notes</th>
+          <th>Base (group)</th>
+          <th>Splurge (group)</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="budget-body"></tbody>
+    </table>
+
+    <div class="add-row">
+      <button class="btn small" id="add-row">+ Add Category</button>
+      <button class="btn small ghost" id="reset-budget">Reset to Defaults</button>
+      <span class="save-hint">Changes save to this browser automatically.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DRINKS ============ -->
+<section id="drinks" class="main-section">
+  <div class="wrap">
+    <div class="section-label">Part Three — The Bar</div>
+    <h2 class="section-title display">Three gin drinks. <span class="accent">One</span> bottle.</h2>
+    <p class="section-sub">Three classics that all start with the same bottle of gin — one easy, one bubbly, one elegant. Buy one nice gin and you're set for the night.</p>
+
+    <div class="drinks-grid drinks-three">
+
+      <article class="drink">
+        <div class="drink-head"><h4>Gin &amp; <em>Tonic</em></h4><span class="dots"></span><span class="glass">balloon glass</span></div>
+        <div class="drink-vibe">The unkillable classic. 30 seconds, no excuses.</div>
+        <ul class="drink-recipe">
+          <li><span>Good gin (Hendrick's, Tanqueray)</span><span>50 ml</span></li>
+          <li><span>Tonic water, chilled</span><span>150 ml</span></li>
+          <li><span>Fresh lime, squeezed + dropped in</span><span>1 wedge</span></li>
+          <li><span>Cucumber ribbon OR grapefruit peel</span><span>1</span></li>
+          <li><span>Big ice cubes — fill the glass</span><span></span></li>
+        </ul>
+      </article>
+
+      <article class="drink">
+        <div class="drink-head"><h4>French <em>75</em></h4><span class="dots"></span><span class="glass">champagne flute</span></div>
+        <div class="drink-vibe">The bachelorette drink. Dressed up, easy to batch.</div>
+        <ul class="drink-recipe">
+          <li><span>Gin</span><span>30 ml</span></li>
+          <li><span>Fresh lemon juice</span><span>15 ml</span></li>
+          <li><span>Simple syrup (1:1 sugar+water)</span><span>15 ml</span></li>
+          <li><span>Champagne or prosecco, top</span><span>90 ml</span></li>
+          <li><span>Shake gin/lemon/syrup with ice → strain → top with bubbles</span><span></span></li>
+          <li><span>Long lemon twist</span><span>1</span></li>
+        </ul>
+      </article>
+
+      <article class="drink">
+        <div class="drink-head"><h4><em>Negroni</em></h4><span class="dots"></span><span class="glass">rocks glass</span></div>
+        <div class="drink-vibe">Bitter, elegant, makes you look like you know things.</div>
+        <ul class="drink-recipe">
+          <li><span>Gin</span><span>30 ml</span></li>
+          <li><span>Campari</span><span>30 ml</span></li>
+          <li><span>Sweet vermouth (Carpano / Cinzano)</span><span>30 ml</span></li>
+          <li><span>Stir with ice for 20 seconds</span><span></span></li>
+          <li><span>Orange peel, expressed over top</span><span>1</span></li>
+        </ul>
+      </article>
+
+    </div>
+
+        <!-- BAR STOCK -->
+    <div class="bar-stock">
+      <div>
+        <h3>The Pro <em>Stock-Up</em></h3>
+        <p class="stock-intro">Three drinks · one shopping list.</p>
+      </div>
+      <div class="stock-cols">
+        <div class="stock-col">
+          <h5>Bottles</h5>
+          <ul>
+            <li>Gin × 1 bottle (Hendrick's, Tanqueray, or Bombay)</li>
+            <li>Campari × 1 (200 ml is plenty)</li>
+            <li>Sweet vermouth × 1 (Carpano Antica or Cinzano Rosso)</li>
+            <li>Champagne or prosecco × 1 bottle (for the 75)</li>
+            <li>Tonic water × 2 large bottles (Fever-Tree if you can)</li>
+          </ul>
+        </div>
+        <div class="stock-col">
+          <h5>Fresh &amp; Pantry</h5>
+          <ul>
+            <li>Fresh lemons × 4 (juice + twists for the 75)</li>
+            <li>Fresh oranges × 2 (peel for the Negroni)</li>
+            <li>Fresh limes × 3 (for G&amp;T wedges)</li>
+            <li>Cucumber × 1 (for G&amp;T ribbons)</li>
+            <li>White sugar × small bag (simple syrup: 1:1 sugar+hot water)</li>
+            <li>Big bag of ice — clear or large cubes ideal</li>
+            <li>Cocktail shaker + bar spoon + strainer</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ TIMELINE ============ -->
+<section id="timeline" class="main-section">
+  <div class="wrap">
+    <div class="section-label">Part Four — Your Schedule</div>
+    <h2 class="section-title display">A day you can <span class="accent">edit</span>.</h2>
+    <p class="section-sub">A sample Saturday to start with — click any time, title, or note to customize. Reminders pop up automatically when scheduled times arrive while the page is open.</p>
+
+    <div class="up-next-pill idle" id="up-next-pill">
+      <div class="un-icon">⏰</div>
+      <div class="un-body">
+        <div class="un-label">Status</div>
+        <div class="un-title" id="un-title">No items in the schedule yet.</div>
+      </div>
+      <div class="un-time" id="un-time"></div>
+    </div>
+
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:24px">
+      <button class="btn small" id="enable-notifs">🔔 Enable Reminders</button>
+      <span class="notif-status" id="notif-status" style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--wine);opacity:.6">off</span>
+      <button class="btn small ghost" id="test-notif" title="Fire a test reminder">Test</button>
+      <span style="font-size:12px;color:#6b324d;font-style:italic;flex:1;min-width:200px">Toasts always fire when the page is open. Enable for system notifications too.</span>
+    </div>
+
+    <ul class="timeline-edit" id="timeline-list"></ul>
+
+    <div class="add-row">
+      <button class="btn small" id="tl-add">+ Add Time Slot</button>
+      <button class="btn small ghost" id="tl-reset">Reset to Defaults</button>
+      <span class="save-hint">Changes save to this browser automatically.</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="display">Have the <span class="pink italic">best</span> time.</div>
+  <p>Print · Share · Customize</p>
+</footer>
+
+<!-- BINGO PRINT MODAL -->
+<div class="modal" id="bingo-print-modal">
+  <div class="modal-content">
+    <h3>Print Bingo Cards</h3>
+    <p>Generates a printable page of unique randomized Bingo cards — one per guest. Each card uses the house-themed prompts and gets a different layout.</p>
+    <div class="count-row">
+      <label>How many cards?</label>
+      <input type="number" id="bingo-card-count" value="8" min="1" max="24"
+        style="width:80px;padding:8px 10px;border:1px solid var(--line);border-radius:6px;font-family:'DM Sans';font-size:14px" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn ghost small" id="bingo-print-cancel">Cancel</button>
+      <button class="btn" id="bingo-print-go">Generate &amp; Print</button>
+    </div>
+  </div>
+</div>
+
+<!-- HIDDEN PRINT CONTAINER (only visible when printing) -->
+<div class="print-bingo" id="print-bingo-container" style="display:none"></div>
+
+<script>
+/* ============================================
+   PERSONALIZATION (bride/groom names + party date)
+============================================ */
+function getBride(){return localStorage.getItem('bach_bride')||'the bride'}
+function getGroom(){return localStorage.getItem('bach_groom')||'the groom'}
+function getDate(){return localStorage.getItem('bach_date')||''}
+
+// Replace {{B}}, {{G}}, {{Bs}}, {{Gs}} tokens in any text
+function personalize(text){
+  if(!text)return text;
+  const b=getBride();
+  const g=getGroom();
+  const bs=b==='the bride'?"the bride's":(b+"'s");
+  const gs=g==='the groom'?"the groom's":(g+"'s");
+  return String(text)
+    .replace(/\{\{Bs\}\}/g,bs)
+    .replace(/\{\{Gs\}\}/g,gs)
+    .replace(/\{\{B\}\}/g,b)
+    .replace(/\{\{G\}\}/g,g);
+}
+
+// Title-case a name for the hero display
+function titleName(n){
+  if(!n||n==='the bride'||n==='the groom')return null;
+  return n.charAt(0).toUpperCase()+n.slice(1);
+}
+
+function applyHeroName(){
+  const display=document.getElementById('hero-bride-display');
+  const b=getBride();
+  if(b==='the bride'){display.textContent='The Bride-to-Be';}
+  else{display.textContent=titleName(b);}
+}
+
+function updateCountdown(){
+  const slot=document.getElementById('countdown-slot');
+  const dateStr=getDate();
+  if(!dateStr){slot.textContent='Sip · Play · Repeat';slot.classList.remove('countdown-pill');return;}
+  const partyDate=new Date(dateStr+'T18:00:00');
+  const now=new Date();
+  const diff=partyDate-now;
+  const days=Math.ceil(diff/(1000*60*60*24));
+  slot.classList.add('countdown-pill');
+  if(days>1){slot.textContent=days+' Days To Go';}
+  else if(days===1){slot.textContent='Tomorrow!';}
+  else if(days===0){slot.textContent='Tonight is the night';}
+  else if(days===-1){slot.textContent='Yesterday — how was it?';}
+  else{slot.textContent='The Memory Lives On';}
+}
+
+let saveFlagTimer=null;
+function flashSaved(){
+  const f=document.getElementById('save-flag');
+  if(!f)return;
+  f.classList.add('on');
+  clearTimeout(saveFlagTimer);
+  saveFlagTimer=setTimeout(()=>f.classList.remove('on'),1500);
+}
+
+// Refresh dynamic content that uses {{B}} / {{G}} tokens
+function refreshPersonalized(){
+  applyHeroName();
+  // Re-render game decks that have already been built
+  if(typeof renderBL==='function' && typeof blState!=='undefined') renderBL(blState);
+  if(typeof renderHunt==='function' && typeof huntState!=='undefined') renderHunt(huntState);
+  // The other game decks are rebuilt each round, so they'll pick up the new names automatically
+}
+
+// Wire up the personalize inputs
+window.addEventListener('DOMContentLoaded',()=>{
+  const brideInput=document.getElementById('bride-input');
+  const groomInput=document.getElementById('groom-input');
+  const dateInput=document.getElementById('party-date-input');
+  if(localStorage.getItem('bach_bride'))brideInput.value=localStorage.getItem('bach_bride');
+  if(localStorage.getItem('bach_groom'))groomInput.value=localStorage.getItem('bach_groom');
+  if(getDate())dateInput.value=getDate();
+
+  brideInput.addEventListener('input',()=>{
+    const v=brideInput.value.trim();
+    if(v)localStorage.setItem('bach_bride',v);
+    else localStorage.removeItem('bach_bride');
+    flashSaved();refreshPersonalized();
+  });
+  groomInput.addEventListener('input',()=>{
+    const v=groomInput.value.trim();
+    if(v)localStorage.setItem('bach_groom',v);
+    else localStorage.removeItem('bach_groom');
+    flashSaved();refreshPersonalized();
+  });
+  dateInput.addEventListener('input',()=>{
+    if(dateInput.value)localStorage.setItem('bach_date',dateInput.value);
+    else localStorage.removeItem('bach_date');
+    flashSaved();updateCountdown();
+  });
+
+  applyHeroName();
+  updateCountdown();
+});
+
+/* ============================================
+   CONFETTI
+============================================ */
+function fireConfetti(opts){
+  opts=opts||{};
+  const count=opts.count||80;
+  const duration=opts.duration||3500;
+  const colors=['#FF2D7F','#E63A7C','#C9924A','#4A0E2C','#E0B074','#F6F3EE'];
+  for(let i=0;i<count;i++){
+    const p=document.createElement('div');
+    p.className='confetti-piece';
+    p.style.left=(Math.random()*100)+'vw';
+    p.style.background=colors[Math.floor(Math.random()*colors.length)];
+    p.style.animationDuration=(Math.random()*1.5+2.5)+'s';
+    p.style.animationDelay=(Math.random()*0.6)+'s';
+    if(Math.random()>0.5)p.style.transform='rotate(45deg)';
+    p.style.borderRadius=Math.random()>0.5?'2px':'50%';
+    document.body.appendChild(p);
+    setTimeout(()=>p.remove(),duration+700);
+  }
+}
+
+/* ============================================
+   MAIN SECTION NAV
+============================================ */
+function switchSection(id){
+  document.querySelectorAll('.main-section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.main-nav button').forEach(b=>b.classList.remove('active'));
+  const sec=document.getElementById(id);
+  const btn=document.querySelector(`.main-nav button[data-section="${id}"]`);
+  if(sec)sec.classList.add('active');
+  if(btn)btn.classList.add('active');
+  try{localStorage.setItem('bach_section',id)}catch(e){}
+  // Update URL hash without scrolling
+  if(window.history && window.history.replaceState){
+    window.history.replaceState(null,'','#'+id);
+  }
+  // Scroll the nav into view (just below the hero)
+  const nav=document.getElementById('main-nav');
+  if(nav){
+    const navTop=nav.getBoundingClientRect().top + window.scrollY;
+    window.scrollTo({top:navTop-1,behavior:'smooth'});
+  }
+  // Refresh next-up display when switching to timeline tab
+  if(id==='timeline' && typeof updateNextUp==='function')updateNextUp();
+}
+document.querySelectorAll('.main-nav button').forEach(btn=>{
+  btn.addEventListener('click',()=>switchSection(btn.dataset.section));
+});
+// Restore previous section or check hash on load
+(function initSection(){
+  const hash=window.location.hash.replace('#','');
+  const saved=localStorage.getItem('bach_section');
+  const valid=['games','budget','drinks','timeline'];
+  const initial=valid.includes(hash)?hash:(valid.includes(saved)?saved:'games');
+  if(initial!=='games'){
+    document.querySelectorAll('.main-section').forEach(s=>s.classList.remove('active'));
+    document.querySelectorAll('.main-nav button').forEach(b=>b.classList.remove('active'));
+    document.getElementById(initial).classList.add('active');
+    document.querySelector(`.main-nav button[data-section="${initial}"]`).classList.add('active');
+  }
+})();
+
+/* ============================================
+   TAB SWITCHING
+============================================ */
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-'+tab.dataset.tab).classList.add('active');
+  });
+});
+
+/* ============================================
+   GAME 1 — BINGO
+============================================ */
+const BINGO_PROMPTS = [
+  "Bride cries happy tears",
+  "Someone naps on the couch",
+  "Pizza or takeout ordered",
+  "Champagne pop",
+  "Wine spilled on the table",
+  "Group selfie taken",
+  "Bride says the groom's name",
+  "Mascara runs (laughing)",
+  "\"Remember when…\" story shared",
+  "Bride opens a gift",
+  "Engagement ring passed around",
+  "Wedding playlist plays",
+  "Charcuterie board demolished",
+  "Karaoke / singalong moment",
+  "Tiara or crown readjusted",
+  "Sash gets stained",
+  "Honeymoon Pinterest opened",
+  "Phone dies — charging crisis",
+  "Bluetooth speaker disconnects",
+  "Bottle slips on the floor",
+  "Old photos pulled up",
+  "Bride dances in the kitchen",
+  "Pet/cat steals attention",
+  "Doorbell rings — delivery!",
+  "Group hug initiated",
+  "\"I needed this\" said out loud",
+  "Someone changes into PJs",
+  "TikTok crying session",
+  "Lipstick reapplied 3+ times",
+  "Bride retells the proposal",
+  "Wedding dress brought out",
+  "Cake or dessert revealed",
+  "Someone yells \"WOOO!\"",
+  "Friend caught snoring",
+  "Glitter everywhere",
+  "Cocktail spilled",
+  "\"I love you guys!\" said",
+  "Group video call to absent friend",
+  "Bride shows off ring 3+ times",
+  "Cha-cha-slide moment",
+  "Wine glass refilled unprompted",
+  "Bride: \"I'm getting married!\""
+];
+const bingoBoard=document.getElementById('bingo-board');
+const bingoStatus=document.getElementById('bingo-status');
+function shuffle(arr){return arr.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(([,v])=>v)}
+function buildBingo(){
+  bingoBoard.innerHTML='';
+  for(let i=0;i<25;i++){
+    const cell=document.createElement('div');
+    if(i===12){
+      cell.className='bingo-cell free marked';
+      cell.textContent='FREE';
+    } else {
+      cell.className='bingo-cell';
+      cell.contentEditable='true';
+      cell.spellcheck=false;
+      cell.dataset.empty='1';
+      // Track when the cell is being edited vs just clicked to mark
+      cell.addEventListener('focus',()=>{cell.classList.add('editing')});
+      cell.addEventListener('blur',()=>{
+        cell.classList.remove('editing');
+        cell.dataset.empty=cell.textContent.trim()===''?'1':'0';
+      });
+      cell.addEventListener('click',e=>{
+        // If cell is currently focused (editing), allow text cursor — don't toggle
+        if(document.activeElement===cell)return;
+        // If cell is empty, let the click focus it for typing
+        if(cell.dataset.empty==='1'){return;}
+        // Otherwise treat tap as mark/unmark
+        e.preventDefault();
+        cell.blur();
+        cell.classList.toggle('marked');
+        checkBingo();
+      });
+      cell.addEventListener('keydown',e=>{
+        if(e.key==='Enter'){e.preventDefault();cell.blur();}
+      });
+    }
+    cell.dataset.idx=i;
+    bingoBoard.appendChild(cell);
+  }
+  bingoStatus.textContent='Blank card ready — Randomize, or tap cells to type your own.';
+  bingoStatus.classList.remove('win');
+}
+
+function randomizeBingo(){
+  const picks=shuffle(BINGO_PROMPTS).slice(0,24);
+  const cells=bingoBoard.querySelectorAll('.bingo-cell');
+  let pickIdx=0;
+  cells.forEach((cell,i)=>{
+    if(i===12)return;
+    cell.textContent=picks[pickIdx++];
+    cell.dataset.empty='0';
+    cell.classList.remove('marked');
+  });
+  bingoStatus.textContent='Card filled — tap squares as they happen.';
+  bingoStatus.classList.remove('win');
+  bingoBoard.dataset.celebrated='';
+}
+
+function clearBingo(){
+  const cells=bingoBoard.querySelectorAll('.bingo-cell');
+  cells.forEach((cell,i)=>{
+    if(i===12)return;
+    cell.textContent='';
+    cell.dataset.empty='1';
+    cell.classList.remove('marked');
+  });
+  bingoStatus.textContent='Cleared. Tap "Randomize" or tap cells to type your own.';
+  bingoStatus.classList.remove('win');
+}
+function checkBingo(){
+  const cells=[...document.querySelectorAll('.bingo-cell')].map(c=>c.classList.contains('marked'));
+  const lines=[];
+  for(let r=0;r<5;r++)lines.push([r*5,r*5+1,r*5+2,r*5+3,r*5+4]);
+  for(let c=0;c<5;c++)lines.push([c,c+5,c+10,c+15,c+20]);
+  lines.push([0,6,12,18,24]);lines.push([4,8,12,16,20]);
+  for(const line of lines){
+    if(line.every(i=>cells[i])){
+      bingoStatus.textContent='Bingo! 🥂';
+      bingoStatus.classList.add('win');
+      if(!bingoBoard.dataset.celebrated){
+        bingoBoard.dataset.celebrated='1';
+        fireConfetti({count:120});
+      }
+      return;
+    }
+  }
+  // No bingo — clear celebration flag so next bingo fires confetti again
+  bingoBoard.dataset.celebrated='';
+  const marked=cells.filter(Boolean).length-1;
+  bingoStatus.textContent=marked>0?`${marked} marked — keep going`:'Tap squares as they happen…';
+  bingoStatus.classList.remove('win');
+}
+document.getElementById('bingo-rand').addEventListener('click',randomizeBingo);
+document.getElementById('bingo-clear').addEventListener('click',clearBingo);
+buildBingo();
+
+/* ============================================
+   GAME 2 — DRINK IF
+============================================ */
+const DRINK_PROMPTS = {
+  mild:[
+    "you cried at the engagement","you've known {{B}} for 10+ years",
+    "you've stayed at {{B}}'s place","you've taken a selfie with her today",
+    "you met {{G}} before {{B}} did","you're wearing something pink",
+    "you've been to her hometown","you know her middle name",
+    "you've been a bridesmaid before","you've seen her cry over a rom-com",
+    "you've worn matching outfits with her","you've sent her a meme this week",
+    "you've slept in the same bed as her","you're in any of her instagram pinned posts"
+  ],
+  medium:[
+    "you've borrowed her clothes and not returned them","you've seen her drunk-text {{G}}",
+    "you've kept a secret of hers","you've helped her get out of a bad date",
+    "you've been on a trip with her","you've matched on a dating app with her ex",
+    "you've crashed at her place uninvited","you've FaceTimed her from the bathroom",
+    "you've ghosted someone she introduced you to","you've stolen food off her plate",
+    "you've been the third wheel with her and {{G}}","you've been hungover together"
+  ],
+  spicy:[
+    "you've kissed someone she has","you've seen her cry over an ex",
+    "you've sent her a screenshot of someone's text","you've stalked {{G}} on instagram",
+    "you've dated one of her friends","you've made out at a wedding before",
+    "you've snuck out of a sleepover with her","you've lied to your partner about being with her",
+    "you've made a fake account to look at someone","you've shared a bottle of wine with her on a weekday"
+  ]
+};
+let drinkDeck=[],drinkIdx=0;
+const spiceState={mild:true,medium:true,spicy:false};
+function buildDrinkDeck(){
+  let pool=[];
+  Object.keys(spiceState).forEach(k=>{if(spiceState[k])pool=pool.concat(DRINK_PROMPTS[k])});
+  drinkDeck=shuffle(pool);drinkIdx=0;
+  updateDrinkCount();
+}
+function updateDrinkCount(){
+  document.getElementById('drink-count').textContent=`Card ${drinkIdx} / ${drinkDeck.length}`;
+}
+document.querySelectorAll('.chip[data-spice]').forEach(chip=>{
+  chip.addEventListener('click',()=>{
+    chip.classList.toggle('on');
+    spiceState[chip.dataset.spice]=chip.classList.contains('on');
+    buildDrinkDeck();
+    document.getElementById('drink-prompt').textContent='Deck reshuffled. Tap "Next Card".';
+  });
+});
+document.getElementById('drink-next').addEventListener('click',()=>{
+  if(drinkDeck.length===0){document.getElementById('drink-prompt').textContent='Pick at least one spice level.';return;}
+  if(drinkIdx>=drinkDeck.length){buildDrinkDeck();}
+  const promptEl=document.getElementById('drink-prompt');
+  promptEl.style.opacity=0;
+  setTimeout(()=>{
+    promptEl.innerHTML='…<em>'+personalize(drinkDeck[drinkIdx])+'</em>';
+    drinkIdx++;
+    updateDrinkCount();
+    promptEl.style.opacity=1;
+  },150);
+});
+document.getElementById('drink-reset').addEventListener('click',()=>{
+  buildDrinkDeck();
+  document.getElementById('drink-prompt').textContent='Deck reshuffled. Tap "Next Card".';
+});
+buildDrinkDeck();
+
+/* ============================================
+   GAME 3 — TRUTH OR DARE
+============================================ */
+const TRUTHS=[
+  "What's the most embarrassing thing {{B}} has ever done in public?",
+  "When did you first know {{B}} and groom would get married?",
+  "What's a secret about {{B}} she'd kill us for sharing?",
+  "What's {{B}}'s worst ex story?",
+  "Most awkward thing that ever happened on a girls' trip?",
+  "What's {{B}}'s most overused phrase?",
+  "What's the wildest thing in {{B}}'s search history (that you know of)?",
+  "If {{B}} were a cocktail, what would she be and why?",
+  "What's one thing you hope {{B}} never changes?",
+  "Honest opinion of {{G}} on a 1–10?",
+  "Worst dating story you've ever heard from {{B}}?",
+  "What's the most you've ever spent on a night out with {{B}}?",
+  "What's a memory with {{B}} you'd never tell her parents?",
+  "What song will always remind you of {{B}}?"
+];
+const DARES=[
+  "Send a thirsty (but tasteful) text to {{G}} — bride approves first",
+  "Do your best impression of {{B}} for 30 seconds",
+  "Compliment a stranger from across the room — make eye contact",
+  "Get a photo with someone wearing a hat",
+  "Convince the bartender to make up a drink and name it after {{B}}",
+  "Speak only in pet names for the next round (\"honey,\" \"babe,\" etc.)",
+  "Re-enact how {{G}} proposed",
+  "Get five strangers to wave at {{B}} at the same time",
+  "Sing the chorus of {{B}}'s most-played song from this year",
+  "Text the third person in your messages \"I have something to tell you\" — then wait",
+  "Find someone with the same name as {{G}}",
+  "Lead a toast to {{B}} that includes the words \"forever,\" \"chaos,\" and \"glitter\"",
+  "Switch one item of clothing with {{B}} for the next 10 minutes",
+  "Pose for a paparazzi-style photo on the sidewalk"
+];
+let tdMode='truth';
+document.getElementById('td-truth').addEventListener('click',()=>{
+  tdMode='truth';
+  document.getElementById('td-truth').classList.add('on');
+  document.getElementById('td-dare').classList.remove('on');
+  document.getElementById('td-label').textContent='Truth';
+});
+document.getElementById('td-dare').addEventListener('click',()=>{
+  tdMode='dare';
+  document.getElementById('td-dare').classList.add('on');
+  document.getElementById('td-truth').classList.remove('on');
+  document.getElementById('td-label').textContent='Dare';
+});
+document.getElementById('td-draw').addEventListener('click',()=>{
+  const pool=tdMode==='truth'?TRUTHS:DARES;
+  const promptEl=document.getElementById('td-prompt');
+  promptEl.style.opacity=0;
+  setTimeout(()=>{
+    promptEl.textContent=personalize(pool[Math.floor(Math.random()*pool.length)]);
+    promptEl.style.opacity=1;
+  },150);
+});
+
+/* ============================================
+   GAME 4 — SCAVENGER HUNT
+============================================ */
+const HUNT_ITEMS=[
+  {t:"Get a stranger's drink recommendation",p:5},
+  {t:"Take a photo with someone in a tie",p:10},
+  {t:"Find someone with the groom's name",p:25},
+  {t:"Get a free drink for the bride",p:20},
+  {t:"Lead a group dance to a song from your high school years",p:15},
+  {t:"Collect a piece of marriage advice from a stranger",p:10},
+  {t:"Find a couple celebrating an anniversary and toast them",p:15},
+  {t:"Get a group photo with another bachelorette party",p:25},
+  {t:"Convince the DJ/bartender to dedicate a song",p:20},
+  {t:"Find someone whose first kiss story tops the bride's",p:10},
+  {t:"Get a stranger to call the bride \"Mrs.\" for the rest of the convo",p:15},
+  {t:"Photo of all guests with one item in common (sunglasses, etc.)",p:10}
+];
+const huntList=document.getElementById('hunt-list');
+const huntPts=document.getElementById('hunt-pts');
+const huntMax=document.getElementById('hunt-max');
+function renderHunt(state){
+  huntList.innerHTML='';
+  let total=0,done=0;
+  HUNT_ITEMS.forEach((item,i)=>{
+    total+=item.p;
+    const isDone=state[i];
+    if(isDone)done+=item.p;
+    const row=document.createElement('div');
+    row.className='hunt-item'+(isDone?' done':'');
+    row.innerHTML=`<div class="hunt-check"></div><div class="hunt-text">${personalize(item.t)}</div><div class="hunt-pts">+${item.p}</div>`;
+    row.addEventListener('click',()=>{
+      state[i]=!state[i];
+      saveHunt(state);
+      renderHunt(state);
+    });
+    huntList.appendChild(row);
+  });
+  huntPts.textContent=done;
+  huntMax.textContent=total;
+}
+function loadHunt(){try{return JSON.parse(localStorage.getItem('bach_hunt')||'[]')}catch(e){return[]}}
+function saveHunt(s){try{localStorage.setItem('bach_hunt',JSON.stringify(s))}catch(e){}}
+let huntState=loadHunt();
+if(huntState.length!==HUNT_ITEMS.length)huntState=new Array(HUNT_ITEMS.length).fill(false);
+renderHunt(huntState);
+document.getElementById('hunt-reset').addEventListener('click',()=>{
+  huntState=new Array(HUNT_ITEMS.length).fill(false);
+  saveHunt(huntState);
+  renderHunt(huntState);
+});
+
+/* ============================================
+   BUDGET
+============================================ */
+const DEFAULT_BUDGET=[
+  {cat:"Accommodation",note:"2 nights · airbnb vs. boutique hotel",base:640,splurge:1760},
+  {cat:"Food & Groceries",note:"Breakfasts in, snacks, charcuterie",base:360,splurge:640},
+  {cat:"Dinner Out",note:"One real reservation with service",base:560,splurge:1120},
+  {cat:"Drinks & Bar Tab",note:"Cocktails out, bottle or two at home",base:480,splurge:1280},
+  {cat:"Daytime Activity",note:"Brunch + class (cocktail, pottery, spa)",base:400,splurge:960},
+  {cat:"Decor & Games",note:"Sashes, banners, prints, prizes",base:120,splurge:280},
+  {cat:"Favors / Survival Kits",note:"Hangover kit per guest",base:120,splurge:240},
+];
+let budget=loadBudget();
+let guests=loadGuests();
+let bridePays=loadBridePays();
+
+function loadBudget(){try{const v=JSON.parse(localStorage.getItem('bach_budget'));return v&&v.length?v:JSON.parse(JSON.stringify(DEFAULT_BUDGET));}catch(e){return JSON.parse(JSON.stringify(DEFAULT_BUDGET))}}
+function saveBudget(){try{localStorage.setItem('bach_budget',JSON.stringify(budget))}catch(e){}}
+function loadGuests(){const v=parseInt(localStorage.getItem('bach_guests'));return v&&v>0?v:8}
+function saveGuests(){try{localStorage.setItem('bach_guests',String(guests))}catch(e){}}
+function loadBridePays(){return localStorage.getItem('bach_bride')==='1'}
+function saveBridePays(){try{localStorage.setItem('bach_bride',bridePays?'1':'0')}catch(e){}}
+
+const budgetBody=document.getElementById('budget-body');
+function fmt(n){return '$'+Math.round(n).toLocaleString()}
+
+function renderBudget(){
+  budgetBody.innerHTML='';
+  budget.forEach((row,i)=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td class="cat-cell"><span class="editable" contenteditable="true" data-i="${i}" data-f="cat">${row.cat}</span></td>
+      <td><span class="editable" contenteditable="true" data-i="${i}" data-f="note" style="font-size:13px;color:#6b324d">${row.note}</span></td>
+      <td><span class="currency">$</span><span class="editable amount" contenteditable="true" data-i="${i}" data-f="base">${row.base}</span></td>
+      <td><span class="currency">$</span><span class="editable amount" contenteditable="true" data-i="${i}" data-f="splurge">${row.splurge}</span></td>
+      <td><button class="delete-row" data-i="${i}" title="Delete row">×</button></td>
+    `;
+    budgetBody.appendChild(tr);
+  });
+  attachBudgetEvents();
+  recalc();
+}
+
+function attachBudgetEvents(){
+  budgetBody.querySelectorAll('.editable').forEach(el=>{
+    el.addEventListener('input',()=>{
+      const i=+el.dataset.i,f=el.dataset.f;
+      if(f==='base'||f==='splurge'){
+        const num=parseFloat(el.textContent.replace(/[^0-9.]/g,''))||0;
+        budget[i][f]=num;
+      } else {
+        budget[i][f]=el.textContent;
+      }
+      saveBudget();
+      if(f==='base'||f==='splurge')recalc();
+    });
+    el.addEventListener('blur',()=>{
+      if(el.dataset.f==='base'||el.dataset.f==='splurge'){
+        const i=+el.dataset.i,f=el.dataset.f;
+        el.textContent=budget[i][f];
+      }
+    });
+    el.addEventListener('keydown',e=>{
+      if(e.key==='Enter'){e.preventDefault();el.blur();}
+    });
+  });
+  budgetBody.querySelectorAll('.delete-row').forEach(b=>{
+    b.addEventListener('click',()=>{
+      budget.splice(+b.dataset.i,1);
+      saveBudget();renderBudget();
+    });
+  });
+}
+
+function recalc(){
+  const baseTotal=budget.reduce((s,r)=>s+(+r.base||0),0);
+  const splurgeTotal=budget.reduce((s,r)=>s+(+r.splurge||0),0);
+  const payingGuests=bridePays?guests:Math.max(guests-1,1);
+  document.getElementById('total-group').textContent=fmt(baseTotal);
+  document.getElementById('total-per').textContent=fmt(baseTotal/payingGuests);
+  document.getElementById('total-splurge').textContent=fmt(splurgeTotal/payingGuests);
+}
+
+document.getElementById('guest-count').textContent=guests;
+document.getElementById('guest-plus').addEventListener('click',()=>{guests++;saveGuests();document.getElementById('guest-count').textContent=guests;recalc();});
+document.getElementById('guest-minus').addEventListener('click',()=>{if(guests>1){guests--;saveGuests();document.getElementById('guest-count').textContent=guests;recalc();}});
+
+const brideToggle=document.getElementById('bride-toggle');
+function updateBrideToggle(){
+  brideToggle.textContent=bridePays?'Yes — even split':'No — split her share';
+  brideToggle.classList.toggle('on',!bridePays);
+}
+brideToggle.addEventListener('click',()=>{bridePays=!bridePays;saveBridePays();updateBrideToggle();recalc();});
+updateBrideToggle();
+
+document.getElementById('add-row').addEventListener('click',()=>{
+  budget.push({cat:"New Category",note:"Click to edit",base:0,splurge:0});
+  saveBudget();renderBudget();
+});
+document.getElementById('reset-budget').addEventListener('click',()=>{
+  if(confirm('Reset budget to defaults?')){
+    budget=JSON.parse(JSON.stringify(DEFAULT_BUDGET));
+    saveBudget();renderBudget();
+  }
+});
+renderBudget();
+
+/* ============================================
+   GAME 5 — MR & MRS
+============================================ */
+const DEFAULT_MM=[
+  {q:"Where did {{G}} take you on your first date?",a:""},
+  {q:"What did he wear on the day you met?",a:""},
+  {q:"Who said \"I love you\" first?",a:""},
+  {q:"What's his most annoying habit?",a:""},
+  {q:"What's {{Bs}} most annoying habit, according to him?",a:""},
+  {q:"What was his first impression of {{B}}?",a:""},
+  {q:"What's his secret talent?",a:""},
+  {q:"What song best describes your relationship?",a:""},
+  {q:"Where would he take you on a dream honeymoon?",a:""},
+  {q:"What's his favourite meal you cook?",a:""},
+  {q:"Who's better at remembering anniversaries?",a:""},
+  {q:"What three words best describe {{B}}?",a:""},
+];
+let mmData=loadMM();
+let mmIdx=0,mmScore=0,mmSetupMode=true;
+
+function loadMM(){try{const v=JSON.parse(localStorage.getItem('bach_mm'));return v&&v.length?v:JSON.parse(JSON.stringify(DEFAULT_MM));}catch(e){return JSON.parse(JSON.stringify(DEFAULT_MM))}}
+function saveMM(){try{localStorage.setItem('bach_mm',JSON.stringify(mmData))}catch(e){}}
+
+const mmSetupEl=document.getElementById('mm-setup');
+const mmPlayEl=document.getElementById('mm-play');
+const mmDoneEl=document.getElementById('mm-done');
+const mmSetupList=document.getElementById('mm-setup-list');
+
+function renderMMSetup(){
+  mmSetupList.innerHTML='';
+  mmData.forEach((row,i)=>{
+    const div=document.createElement('div');
+    div.className='mm-q-row';
+    div.innerHTML=`
+      <input class="mm-input question" placeholder="Question" value="${personalize(row.q).replace(/"/g,'&quot;')}" data-i="${i}" data-f="q" />
+      <input class="mm-input" placeholder="Groom's answer" value="${row.a.replace(/"/g,'&quot;')}" data-i="${i}" data-f="a" />
+      <button class="tl-delete" data-del="${i}" title="Remove">×</button>
+    `;
+    mmSetupList.appendChild(div);
+  });
+  mmSetupList.querySelectorAll('.mm-input').forEach(inp=>{
+    inp.addEventListener('input',()=>{
+      mmData[+inp.dataset.i][inp.dataset.f]=inp.value;
+      saveMM();
+    });
+  });
+  mmSetupList.querySelectorAll('[data-del]').forEach(b=>{
+    b.addEventListener('click',()=>{
+      mmData.splice(+b.dataset.del,1);
+      saveMM();renderMMSetup();
+    });
+  });
+}
+
+function renderMMPlay(){
+  if(mmData.length===0){
+    document.getElementById('mm-question').textContent='Add at least one question in setup.';
+    return;
+  }
+  const cur=mmData[mmIdx];
+  document.getElementById('mm-question').textContent=personalize(cur.q);
+  document.getElementById('mm-answer').textContent=cur.a||'(no answer entered)';
+  document.getElementById('mm-progress-text').textContent=`Question ${mmIdx+1} / ${mmData.length}`;
+  document.getElementById('mm-score').textContent=mmScore;
+  document.getElementById('mm-reveal').classList.remove('show');
+  document.getElementById('mm-show').style.display='inline-flex';
+  document.getElementById('mm-match').style.display='none';
+  document.getElementById('mm-miss').style.display='none';
+  document.getElementById('mm-next').style.display='none';
+}
+
+function showMMMode(mode){
+  mmSetupEl.style.display=mode==='setup'?'block':'none';
+  mmPlayEl.style.display=mode==='play'?'flex':'none';
+  mmDoneEl.style.display=mode==='done'?'flex':'none';
+}
+
+document.getElementById('mm-toggle').addEventListener('click',()=>{
+  mmSetupMode=!mmSetupMode;
+  if(mmSetupMode){showMMMode('setup');}
+  else{mmIdx=0;mmScore=0;renderMMPlay();showMMMode('play');}
+});
+
+document.getElementById('mm-add').addEventListener('click',()=>{
+  mmData.push({q:"New question?",a:""});
+  saveMM();renderMMSetup();
+});
+
+document.getElementById('mm-reset').addEventListener('click',()=>{
+  if(confirm('Reset all questions to defaults? This will erase the groom\'s answers.')){
+    mmData=JSON.parse(JSON.stringify(DEFAULT_MM));
+    saveMM();renderMMSetup();
+  }
+});
+
+document.getElementById('mm-show').addEventListener('click',()=>{
+  document.getElementById('mm-reveal').classList.add('show');
+  document.getElementById('mm-show').style.display='none';
+  document.getElementById('mm-match').style.display='inline-flex';
+  document.getElementById('mm-miss').style.display='inline-flex';
+});
+
+function mmAdvance(matched){
+  if(matched)mmScore++;
+  document.getElementById('mm-match').style.display='none';
+  document.getElementById('mm-miss').style.display='none';
+  document.getElementById('mm-next').style.display='inline-flex';
+  document.getElementById('mm-score').textContent=mmScore;
+}
+document.getElementById('mm-match').addEventListener('click',()=>mmAdvance(true));
+document.getElementById('mm-miss').addEventListener('click',()=>mmAdvance(false));
+
+document.getElementById('mm-next').addEventListener('click',()=>{
+  mmIdx++;
+  if(mmIdx>=mmData.length){
+    document.getElementById('mm-final').innerHTML=`<em>${mmScore}</em> out of <em>${mmData.length}</em> — ${mmScore>=mmData.length*0.7?'meant to be ✨':mmScore>=mmData.length*0.4?'getting there 💕':'lots to learn 🍷'}`;
+    showMMMode('done');
+    if(mmScore>=mmData.length*0.7)fireConfetti({count:100});
+  } else {
+    renderMMPlay();
+  }
+});
+
+document.getElementById('mm-replay').addEventListener('click',()=>{
+  mmIdx=0;mmScore=0;
+  renderMMPlay();
+  showMMMode('play');
+});
+
+renderMMSetup();
+
+/* ============================================
+   GAME 6 — MOST LIKELY TO
+============================================ */
+const ML_PROMPTS=[
+  "text {{B}} at 3am crying happy tears",
+  "start the dance floor at the reception",
+  "befriend the bartender within 10 minutes",
+  "cry the hardest during the vows",
+  "lose her phone tonight",
+  "call in sick to attend a brunch",
+  "get married next",
+  "send {{B}} 47 voice memos in a row",
+  "know everyone in the room within an hour",
+  "suggest doing shots",
+  "pull a full emergency kit from her bag",
+  "spill wine on her own dress",
+  "forget the wedding date",
+  "plan an elaborate birthday surprise",
+  "fight a bouncer (and win)",
+  "start an after-party that lasts till 6am",
+  "marry someone she meets on this trip",
+  "get a tattoo on impulse",
+  "fall asleep first tonight",
+  "make a speech that goes too long",
+  "have a meltdown over a missing earring",
+  "ugly-cry during a slow song",
+  "convince the DJ to play her song",
+  "steal the centerpieces",
+  "make best friends with someone in the bathroom",
+  "post the most photos from tonight",
+  "send a thirst-trap selfie tomorrow morning",
+  "borrow something and never give it back",
+  "ask the waiter for his number",
+  "pretend she's {{B}} for free drinks",
+  "still be hungover Monday",
+];
+let mlDeck=[],mlIdx=0;
+function buildMLDeck(){mlDeck=shuffle(ML_PROMPTS);mlIdx=0;updateMLCount();}
+function updateMLCount(){document.getElementById('ml-count').textContent=`Card ${mlIdx} / ${mlDeck.length}`;}
+document.getElementById('ml-next').addEventListener('click',()=>{
+  if(mlIdx>=mlDeck.length)buildMLDeck();
+  const el=document.getElementById('ml-prompt');
+  el.style.opacity=0;
+  setTimeout(()=>{
+    el.innerHTML='…<em>'+personalize(mlDeck[mlIdx])+'</em>';
+    mlIdx++;updateMLCount();
+    el.style.opacity=1;
+  },150);
+});
+document.getElementById('ml-reset').addEventListener('click',()=>{
+  buildMLDeck();
+  document.getElementById('ml-prompt').textContent='Deck reshuffled. Tap "Next".';
+});
+buildMLDeck();
+
+/* ============================================
+   GAME 7 — CHARADES
+============================================ */
+const CHARADES={
+  wedding:["bouquet toss","first dance","wedding cake","walking down the aisle","exchanging rings","saying I do","the proposal","wedding dress","veil","bridesmaid","ring bearer","flower girl","reading vows","reception","engagement photo","tossing rice","cutting the cake","speech with microphone","drunk uncle dancing","photographer","DJ","groomsmen","cocktail hour","sparkler exit"],
+  pop:["Beyoncé","Taylor Swift","Sex and the City","Bridgerton","Friends","Gossip Girl","Mean Girls","Legally Blonde","The Devil Wears Prada","Clueless","RuPaul's Drag Race","Real Housewives","Lady Gaga","Rihanna","Madonna","Britney Spears","Spice Girls","Jennifer Lopez","Ariana Grande","Dua Lipa","Olivia Rodrigo"],
+  romance:["The Notebook","Titanic","La La Land","When Harry Met Sally","Pretty Woman","Pride and Prejudice","Bridget Jones's Diary","10 Things I Hate About You","The Princess Bride","Crazy Rich Asians","Notting Hill","Dirty Dancing","Sleepless in Seattle","You've Got Mail","About Time","Love Actually","Mamma Mia","Friends With Benefits","The Wedding Planner","27 Dresses","Bride Wars"],
+  honeymoon:["Bali","Santorini","Maldives","Paris","Maui","Tulum","Iceland","Amalfi Coast","Bora Bora","Kyoto","Marrakech","Capri","Mykonos","Phuket","St. Lucia","Fiji","Lisbon","Barcelona","Cape Town","Buenos Aires","Costa Rica","Seychelles","Dubrovnik","New Zealand"]
+};
+const charCatLabels={wedding:"Wedding",pop:"Pop Culture",romance:"Rom-Coms",honeymoon:"Honeymoon Spots"};
+let CHAR_TIMER_SEC=parseInt(localStorage.getItem('bach_char_diff'))||30;
+let charRoundTotal=CHAR_TIMER_SEC;
+function setCharDiff(sec){
+  CHAR_TIMER_SEC=sec;
+  try{localStorage.setItem('bach_char_diff',String(sec))}catch(e){}
+  document.querySelectorAll('[data-diff-char]').forEach(c=>{
+    c.classList.toggle('on',+c.dataset.diffChar===sec);
+  });
+}
+let charCat='wedding';
+let charTimer=null,charTimeLeft=CHAR_TIMER_SEC,charGot=0,charSkip=0;
+let charCurrentWord='';
+
+document.querySelectorAll('.chip[data-charcat]').forEach(chip=>{
+  chip.addEventListener('click',()=>{
+    document.querySelectorAll('.chip[data-charcat]').forEach(c=>c.classList.remove('on'));
+    chip.classList.add('on');
+    charCat=chip.dataset.charcat;
+    document.getElementById('char-cat-label').textContent=charCatLabels[charCat];
+  });
+});
+
+function pickWord(){
+  const pool=CHARADES[charCat];
+  let w=pool[Math.floor(Math.random()*pool.length)];
+  if(w===charCurrentWord)w=pool[(pool.indexOf(w)+1)%pool.length];
+  charCurrentWord=w;
+  document.getElementById('char-word').innerHTML='<em>'+w+'</em>';
+}
+
+function updateCharDisplay(){
+  const min=Math.floor(charTimeLeft/60);
+  const sec=charTimeLeft%60;
+  document.getElementById('char-timer-display').textContent=`${min}:${sec<10?'0':''}${sec}`;
+  document.getElementById('char-timer-fill').style.width=(charTimeLeft/charRoundTotal*100)+'%';
+}
+
+function startCharRound(){
+  charGot=0;charSkip=0;charTimeLeft=CHAR_TIMER_SEC;
+  charRoundTotal=CHAR_TIMER_SEC;
+  document.getElementById('char-got').textContent=0;
+  document.getElementById('char-skip').textContent=0;
+  document.getElementById('char-start').style.display='none';
+  document.getElementById('char-got-btn').style.display='inline-flex';
+  document.getElementById('char-skip-btn').style.display='inline-flex';
+  document.getElementById('char-stop').style.display='inline-flex';
+  pickWord();
+  updateCharDisplay();
+  charTimer=setInterval(()=>{
+    charTimeLeft--;
+    updateCharDisplay();
+    if(charTimeLeft<=0)endCharRound();
+  },1000);
+}
+
+function endCharRound(){
+  clearInterval(charTimer);
+  document.getElementById('char-word').innerHTML=`Round over · <em>${charGot}</em> got, <em>${charSkip}</em> skipped`;
+  document.getElementById('char-start').textContent='Start New Round';
+  document.getElementById('char-start').style.display='inline-flex';
+  document.getElementById('char-got-btn').style.display='none';
+  document.getElementById('char-skip-btn').style.display='none';
+  document.getElementById('char-stop').style.display='none';
+  charTimeLeft=CHAR_TIMER_SEC;
+  document.getElementById('char-timer-display').textContent='0:00';
+}
+
+document.getElementById('char-start').addEventListener('click',startCharRound);
+document.getElementById('char-got-btn').addEventListener('click',()=>{
+  charGot++;document.getElementById('char-got').textContent=charGot;pickWord();
+});
+document.getElementById('char-skip-btn').addEventListener('click',()=>{
+  charSkip++;document.getElementById('char-skip').textContent=charSkip;pickWord();
+});
+document.getElementById('char-stop').addEventListener('click',endCharRound);
+// Wire up Charades difficulty chips
+document.querySelectorAll('[data-diff-char]').forEach(c=>{
+  c.addEventListener('click',()=>setCharDiff(+c.dataset.diffChar));
+});
+setCharDiff(CHAR_TIMER_SEC);
+
+/* ============================================
+   GAME 8 — POLISH OR PORN (HARD MODE)
+============================================ */
+// Curated for maximum deceptiveness — obvious entries removed.
+// Polishes lean racy or film-sounding. Films lean innocent or polish-sounding.
+// 5-second timer + streak tracking. Wrong answers break the streak.
+const PP_DECK=[
+  // NAIL POLISHES — real OPI / Essie / Sally Hansen names, chosen for genuine ambiguity
+  {name:"Aphrodite's Pink Nightie", type:"polish"},
+  {name:"Pussy Galore", type:"polish"},
+  {name:"Sleep With My Stylist", type:"polish"},
+  {name:"My Boyfriend Scales Walls", type:"polish"},
+  {name:"Tickle My France-y", type:"polish"},
+  {name:"Skinny Dippin' in Lake Michigan", type:"polish"},
+  {name:"Kiss Me On My Tulips", type:"polish"},
+  {name:"Don't Bossa Nova Me Around", type:"polish"},
+  {name:"Lincoln Park After Dark", type:"polish"},
+  {name:"Russian Navy", type:"polish"},
+  {name:"She's a Bad Muffuletta!", type:"polish"},
+  {name:"Crawfishin' for a Compliment", type:"polish"},
+  {name:"Worth a Pretty Penne", type:"polish"},
+  {name:"Italian Love Affair", type:"polish"},
+  {name:"Suzi Loves Cowboys", type:"polish"},
+  {name:"Squeaker of the House", type:"polish"},
+  {name:"My Chihuahua Bites!", type:"polish"},
+  {name:"You Don't Know Jacques!", type:"polish"},
+  {name:"Berlin There Done That", type:"polish"},
+  {name:"Reach for the Sky", type:"polish"},
+  {name:"Up Front & Personal", type:"polish"},
+  {name:"Black Cherry Chutney", type:"polish"},
+  {name:"Throw Me a Kiss", type:"polish"},
+  {name:"Lima Tell You About This Color", type:"polish"},
+
+  // ADULT FILM PARODIES — only the subtle, innocent-sounding ones (no Forrest Hump etc.)
+  {name:"On Golden Blonde", type:"film"},
+  {name:"Riding Miss Daisy", type:"film"},
+  {name:"Romancing the Bone", type:"film"},
+  {name:"A Clockwork Orgy", type:"film"},
+  {name:"Saturday Night Beaver", type:"film"},
+  {name:"Bareback Mountain", type:"film"},
+  {name:"The Bare Witch Project", type:"film"},
+  {name:"Position Impossible", type:"film"},
+  {name:"Frisky Business", type:"film"},
+  {name:"Inspect Her Gadget", type:"film"},
+  {name:"Jurassic Pork", type:"film"},
+  {name:"Sleeping Booty", type:"film"},
+  {name:"Cumming to America", type:"film"},
+  {name:"Lawrence of A Labia", type:"film"},
+  {name:"Genital Hospital", type:"film"},
+  {name:"Driving Miss Daisy Crazy", type:"film"},
+  {name:"The Sperminator", type:"film"},
+  {name:"Throbin Hood", type:"film"},
+  {name:"My Bare Lady", type:"film"},
+  {name:"Sex Trek: The Next Penetration", type:"film"},
+  {name:"Whore of the Rings", type:"film"},
+  {name:"Pulp Friction", type:"film"},
+  {name:"Buffy the Vampire Layer", type:"film"},
+  {name:"Honey, I Blew Everybody", type:"film"},
+];
+
+let PP_TIMER_SEC=parseInt(localStorage.getItem('bach_pp_diff'))||30;
+function setPpDiff(sec){
+  PP_TIMER_SEC=sec;
+  try{localStorage.setItem('bach_pp_diff',String(sec))}catch(e){}
+  document.querySelectorAll('[data-diff-pp]').forEach(c=>{
+    c.classList.toggle('on',+c.dataset.diffPp===sec);
+  });
+}
+let ppDeck=[], ppIdx=0, ppCorrect=0, ppTotal=0, ppAnswered=false;
+let ppStreak=0, ppBestStreak=0;
+let ppTimerInterval=null, ppTimeLeft=PP_TIMER_SEC*10; // tenths of seconds
+
+function ppShuffleDeck(){
+  ppDeck=shuffle(PP_DECK).slice(0,20);
+  ppIdx=0;ppCorrect=0;ppTotal=0;ppAnswered=false;
+  ppStreak=0;ppBestStreak=0;
+  document.getElementById('pp-correct').textContent=0;
+  document.getElementById('pp-total').textContent=0;
+  updateStreakDisplay();
+}
+
+function updateStreakDisplay(){
+  const el=document.getElementById('pp-streak');
+  if(ppStreak>=3){el.textContent='· '+ppStreak+' streak 🔥';el.classList.add('hot');}
+  else if(ppStreak>0){el.textContent='· '+ppStreak+' streak';el.classList.remove('hot');}
+  else{el.textContent='';el.classList.remove('hot');}
+}
+
+function ppStopTimer(){
+  if(ppTimerInterval){clearInterval(ppTimerInterval);ppTimerInterval=null;}
+  document.getElementById('pp-timer-fill').classList.remove('danger');
+}
+
+function ppStartTimer(){
+  ppStopTimer();
+  const total=PP_TIMER_SEC*10;  // snapshot for this round
+  const warnAt=Math.max(10,Math.floor(total*0.2));  // last 20%, min 1s
+  ppTimeLeft=total;
+  const bar=document.getElementById('pp-timer-bar');
+  const fill=document.getElementById('pp-timer-fill');
+  bar.style.visibility='visible';
+  fill.style.width='100%';
+  fill.classList.remove('danger');
+  ppTimerInterval=setInterval(()=>{
+    ppTimeLeft--;
+    fill.style.width=(ppTimeLeft/total*100)+'%';
+    if(ppTimeLeft<=warnAt)fill.classList.add('danger');
+    if(ppTimeLeft<=0){
+      ppStopTimer();
+      ppTimeOut();
+    }
+  },100);
+}
+
+function ppTimeOut(){
+  if(ppAnswered)return;
+  ppAnswered=true;
+  const cur=ppDeck[ppIdx];
+  ppTotal++;
+  ppStreak=0;
+  updateStreakDisplay();
+  document.getElementById('pp-total').textContent=ppTotal;
+  document.querySelectorAll('#panel-pp .pp-btn').forEach(b=>{
+    b.classList.add('disabled');
+    if(b.dataset.pick===cur.type)b.classList.add('was-correct');
+  });
+  const reveal=document.getElementById('pp-reveal');
+  reveal.textContent='⏱ Time! It was '+(cur.type==='polish'?'a real nail polish.':'an adult-film parody.');
+  reveal.className='pp-reveal wrong';
+  document.getElementById('pp-next').style.display='inline-flex';
+  if(ppIdx===ppDeck.length-1)document.getElementById('pp-next').textContent='See Final Score';
+}
+
+function ppRender(){
+  if(ppIdx>=ppDeck.length){ ppEnd(); return; }
+  const cur=ppDeck[ppIdx];
+  const titleEl=document.getElementById('pp-title');
+  titleEl.style.opacity=0;
+  setTimeout(()=>{
+    titleEl.textContent='"'+cur.name+'"';
+    titleEl.style.opacity=1;
+    ppStartTimer();
+  },180);
+  document.getElementById('pp-reveal').innerHTML='&nbsp;';
+  document.getElementById('pp-reveal').className='pp-reveal';
+  document.querySelectorAll('#panel-pp .pp-btn').forEach(b=>{
+    b.classList.remove('right','wrong','disabled','was-correct');
+  });
+  document.getElementById('pp-next').style.display='none';
+  ppAnswered=false;
+}
+
+function ppPick(choice){
+  if(ppAnswered)return;
+  if(!ppDeck.length || ppIdx>=ppDeck.length)return; // safety: game not started
+  ppAnswered=true;
+  ppStopTimer();
+  document.getElementById('pp-timer-bar').style.visibility='hidden';
+  const cur=ppDeck[ppIdx];
+  const isRight=choice===cur.type;
+  ppTotal++;
+  if(isRight){
+    ppCorrect++;
+    ppStreak++;
+    if(ppStreak>ppBestStreak)ppBestStreak=ppStreak;
+  } else {
+    ppStreak=0;
+  }
+  updateStreakDisplay();
+  document.getElementById('pp-correct').textContent=ppCorrect;
+  document.getElementById('pp-total').textContent=ppTotal;
+
+  document.querySelectorAll('#panel-pp .pp-btn').forEach(b=>{
+    b.classList.add('disabled');
+    if(b.dataset.pick===cur.type){
+      if(isRight)b.classList.add('right');
+      else b.classList.add('was-correct');
+    } else if(!isRight){
+      b.classList.add('wrong');
+    }
+  });
+
+  const reveal=document.getElementById('pp-reveal');
+  if(isRight){
+    reveal.textContent='✓ Correct — '+(cur.type==='polish'?'real OPI nail polish.':'real adult-film parody.');
+    reveal.className='pp-reveal right';
+  } else {
+    reveal.textContent='✗ Nope — '+(cur.type==='polish'?'real nail polish name.':'real adult-film parody.');
+    reveal.className='pp-reveal wrong';
+  }
+
+  document.getElementById('pp-start').style.display='none';
+  document.getElementById('pp-next').style.display='inline-flex';
+  document.getElementById('pp-next').textContent=ppIdx===ppDeck.length-1?'See Final Score':'Next →';
+}
+
+function ppEnd(){
+  ppStopTimer();
+  document.getElementById('pp-timer-bar').style.visibility='hidden';
+  document.querySelector('#panel-pp .pp-stage:not(#pp-done)').style.display='none';
+  const done=document.getElementById('pp-done');
+  done.style.display='flex';
+  const pct=ppTotal?Math.round(ppCorrect/ppTotal*100):0;
+  let verdict;
+  if(pct>=90)verdict='Truly filthy. Hall of fame.';
+  else if(pct>=75)verdict='Suspiciously good at this.';
+  else if(pct>=60)verdict='Better than average. Barely.';
+  else if(pct>=45)verdict='Coin-flip energy.';
+  else if(pct>=30)verdict='The polishes won.';
+  else verdict='Pure of heart, weak in the streets.';
+  document.getElementById('pp-final').innerHTML=`<em>${ppCorrect}</em> / ${ppTotal} <br><span style="font-size:.55em;color:var(--wine);font-style:normal;display:block;margin-top:12px">${verdict}</span><span style="font-size:.45em;color:var(--gold);font-style:italic;display:block;margin-top:6px">best streak: ${ppBestStreak}</span>`;
+}
+
+document.getElementById('pp-start').addEventListener('click',()=>{
+  ppShuffleDeck();
+  document.getElementById('pp-start').style.display='none';
+  document.querySelector('#panel-pp .pp-stage:not(#pp-done)').style.display='flex';
+  document.getElementById('pp-done').style.display='none';
+  ppRender();
+});
+document.getElementById('pp-next').addEventListener('click',()=>{
+  ppIdx++;
+  ppRender();
+});
+document.getElementById('pp-replay').addEventListener('click',()=>{
+  document.getElementById('pp-done').style.display='none';
+  document.querySelector('#panel-pp .pp-stage:not(#pp-done)').style.display='flex';
+  ppShuffleDeck();
+  ppRender();
+});
+document.getElementById('pp-reset').addEventListener('click',()=>{
+  ppStopTimer();
+  document.getElementById('pp-done').style.display='none';
+  document.querySelector('#panel-pp .pp-stage:not(#pp-done)').style.display='flex';
+  ppShuffleDeck();
+  document.getElementById('pp-title').textContent='Tap "Start" to begin.';
+  document.getElementById('pp-reveal').innerHTML='&nbsp;';
+  document.getElementById('pp-next').style.display='none';
+  document.getElementById('pp-start').style.display='inline-flex';
+  document.getElementById('pp-timer-bar').style.visibility='hidden';
+  document.querySelectorAll('#panel-pp .pp-btn').forEach(b=>b.classList.remove('right','wrong','disabled','was-correct'));
+});
+document.querySelectorAll('#panel-pp .pp-btn').forEach(b=>{
+  b.addEventListener('click',()=>ppPick(b.dataset.pick));
+});
+// Wire up PP difficulty chips
+document.querySelectorAll('[data-diff-pp]').forEach(c=>{
+  c.addEventListener('click',()=>setPpDiff(+c.dataset.diffPp));
+});
+setPpDiff(PP_TIMER_SEC); // set initial active state from saved value
+
+/* ============================================
+   GAME 9 — TOY OR GADGET
+============================================ */
+// Real product names. Toys lean kitchen-y, gadgets lean clinical/suggestive.
+const STG_DECK=[
+  // SEX TOYS (real brand/product names that sound kitchen-y or clinical)
+  {name:"Sona Cruise", type:"toy"},
+  {name:"Magic Wand", type:"toy"},
+  {name:"Tongue Star", type:"toy"},
+  {name:"Cobra Libre", type:"toy"},
+  {name:"Hush", type:"toy"},
+  {name:"Stronic Eins", type:"toy"},
+  {name:"Pillow Talk Sassy", type:"toy"},
+  {name:"Soraya Wave", type:"toy"},
+  {name:"Tor 2", type:"toy"},
+  {name:"Pearl Ball", type:"toy"},
+  {name:"Tenga Egg", type:"toy"},
+  {name:"Maude Drop", type:"toy"},
+  {name:"Eroscillator", type:"toy"},
+  {name:"Pulse Solo", type:"toy"},
+  {name:"Cliona", type:"toy"},
+  {name:"Crave Vesper", type:"toy"},
+  {name:"Womanizer Liberty", type:"toy"},
+  {name:"We-Vibe Touch", type:"toy"},
+  {name:"Doxy Wand", type:"toy"},
+  {name:"Lelo Ina", type:"toy"},
+
+  // KITCHEN GADGETS (real products that sound suggestive)
+  {name:"Banana Slicer", type:"gadget"},
+  {name:"Spurtle", type:"gadget"},
+  {name:"Garlic Twister", type:"gadget"},
+  {name:"Pickle Picker", type:"gadget"},
+  {name:"Cherry Pitter", type:"gadget"},
+  {name:"Egg Cuber", type:"gadget"},
+  {name:"Avocado Saver", type:"gadget"},
+  {name:"Onion Goggle", type:"gadget"},
+  {name:"Pineapple Corer", type:"gadget"},
+  {name:"Strawberry Huller", type:"gadget"},
+  {name:"Microplane", type:"gadget"},
+  {name:"Spider Skimmer", type:"gadget"},
+  {name:"Mandoline", type:"gadget"},
+  {name:"Wonder Whisk", type:"gadget"},
+  {name:"Lemon Reamer", type:"gadget"},
+  {name:"Garlic Rocker", type:"gadget"},
+  {name:"Cookie Bouncer", type:"gadget"},
+  {name:"Bench Scraper", type:"gadget"},
+  {name:"Bagel Guillotine", type:"gadget"},
+  {name:"Dough Tamer", type:"gadget"},
+];
+
+let STG_TIMER_SEC=parseInt(localStorage.getItem('bach_stg_diff'))||30;
+function setStgDiff(sec){
+  STG_TIMER_SEC=sec;
+  try{localStorage.setItem('bach_stg_diff',String(sec))}catch(e){}
+  document.querySelectorAll('[data-diff-stg]').forEach(c=>{
+    c.classList.toggle('on',+c.dataset.diffStg===sec);
+  });
+}
+let stgDeck=[], stgIdx=0, stgCorrect=0, stgTotal=0, stgAnswered=false;
+let stgStreak=0, stgTimerInterval=null, stgTimeLeft=STG_TIMER_SEC*10;
+
+function stgShuffle(){
+  stgDeck=shuffle(STG_DECK).slice(0,20);
+  stgIdx=0;stgCorrect=0;stgTotal=0;stgAnswered=false;stgStreak=0;
+  document.getElementById('stg-correct').textContent=0;
+  document.getElementById('stg-total').textContent=0;
+  stgUpdateStreak();
+}
+function stgUpdateStreak(){
+  const el=document.getElementById('stg-streak');
+  if(stgStreak>=3){el.textContent='· '+stgStreak+' streak 🔥';el.classList.add('hot');}
+  else if(stgStreak>0){el.textContent='· '+stgStreak+' streak';el.classList.remove('hot');}
+  else{el.textContent='';el.classList.remove('hot');}
+}
+function stgStopTimer(){
+  if(stgTimerInterval){clearInterval(stgTimerInterval);stgTimerInterval=null;}
+  document.getElementById('stg-timer-fill').classList.remove('danger');
+}
+function stgStartTimer(){
+  stgStopTimer();
+  const total=STG_TIMER_SEC*10;  // snapshot for this round
+  const warnAt=Math.max(10,Math.floor(total*0.2));
+  stgTimeLeft=total;
+  const bar=document.getElementById('stg-timer-bar');
+  const fill=document.getElementById('stg-timer-fill');
+  bar.style.visibility='visible';
+  fill.style.width='100%';
+  fill.classList.remove('danger');
+  stgTimerInterval=setInterval(()=>{
+    stgTimeLeft--;
+    fill.style.width=(stgTimeLeft/total*100)+'%';
+    if(stgTimeLeft<=warnAt)fill.classList.add('danger');
+    if(stgTimeLeft<=0){stgStopTimer();stgTimeOut();}
+  },100);
+}
+function stgTimeOut(){
+  if(stgAnswered)return;
+  stgAnswered=true;
+  const cur=stgDeck[stgIdx];
+  stgTotal++;stgStreak=0;stgUpdateStreak();
+  document.getElementById('stg-total').textContent=stgTotal;
+  document.querySelectorAll('[data-stg]').forEach(b=>{
+    b.classList.add('disabled');
+    if(b.dataset.stg===cur.type)b.classList.add('was-correct');
+  });
+  const reveal=document.getElementById('stg-reveal');
+  reveal.textContent='⏱ Time! It was '+(cur.type==='toy'?'a sex toy.':'a kitchen gadget.');
+  reveal.className='pp-reveal wrong';
+  document.getElementById('stg-next').style.display='inline-flex';
+  if(stgIdx===stgDeck.length-1)document.getElementById('stg-next').textContent='See Final Score';
+}
+function stgRender(){
+  if(stgIdx>=stgDeck.length){stgEnd();return;}
+  const cur=stgDeck[stgIdx];
+  const titleEl=document.getElementById('stg-title');
+  titleEl.style.opacity=0;
+  setTimeout(()=>{
+    titleEl.textContent='"'+cur.name+'"';
+    titleEl.style.opacity=1;
+    stgStartTimer();
+  },180);
+  document.getElementById('stg-reveal').innerHTML='&nbsp;';
+  document.getElementById('stg-reveal').className='pp-reveal';
+  document.querySelectorAll('[data-stg]').forEach(b=>{
+    b.classList.remove('right','wrong','disabled','was-correct');
+  });
+  document.getElementById('stg-next').style.display='none';
+  stgAnswered=false;
+}
+function stgPick(choice){
+  if(stgAnswered)return;
+  if(!stgDeck.length || stgIdx>=stgDeck.length)return; // safety: game not started
+  stgAnswered=true;stgStopTimer();
+  document.getElementById('stg-timer-bar').style.visibility='hidden';
+  const cur=stgDeck[stgIdx];
+  const isRight=choice===cur.type;
+  stgTotal++;
+  if(isRight){stgCorrect++;stgStreak++;}else{stgStreak=0;}
+  stgUpdateStreak();
+  document.getElementById('stg-correct').textContent=stgCorrect;
+  document.getElementById('stg-total').textContent=stgTotal;
+  document.querySelectorAll('[data-stg]').forEach(b=>{
+    b.classList.add('disabled');
+    if(b.dataset.stg===cur.type){
+      if(isRight)b.classList.add('right');
+      else b.classList.add('was-correct');
+    } else if(!isRight){b.classList.add('wrong');}
+  });
+  const reveal=document.getElementById('stg-reveal');
+  if(isRight){
+    reveal.textContent='✓ Correct — real '+(cur.type==='toy'?'sex toy product.':'kitchen gadget.');
+    reveal.className='pp-reveal right';
+  } else {
+    reveal.textContent='✗ Nope — actually a '+(cur.type==='toy'?'sex toy.':'kitchen gadget.');
+    reveal.className='pp-reveal wrong';
+  }
+  document.getElementById('stg-start').style.display='none';
+  document.getElementById('stg-next').style.display='inline-flex';
+  document.getElementById('stg-next').textContent=stgIdx===stgDeck.length-1?'See Final Score':'Next →';
+}
+function stgEnd(){
+  document.querySelector('#panel-stg .pp-stage:not(#stg-done)').style.display='none';
+  const done=document.getElementById('stg-done');done.style.display='flex';
+  const pct=Math.round(stgCorrect/stgTotal*100)||0;
+  if(pct>=80)fireConfetti({count:120});
+  let verdict;
+  if(pct>=80)verdict='Encyclopedic. Mildly concerning.';
+  else if(pct>=60)verdict='Solid intuition.';
+  else if(pct>=40)verdict='Coin-flip energy.';
+  else verdict='Innocent. Or just a bad cook.';
+  document.getElementById('stg-final').innerHTML=`<em>${stgCorrect}</em> / ${stgTotal} <br><span style="font-size:.6em;color:var(--wine);font-style:normal">${verdict}</span>`;
+}
+document.getElementById('stg-start').addEventListener('click',()=>{
+  stgShuffle();
+  document.getElementById('stg-start').style.display='none';
+  document.querySelector('#panel-stg .pp-stage:not(#stg-done)').style.display='flex';
+  document.getElementById('stg-done').style.display='none';
+  stgRender();
+});
+document.getElementById('stg-next').addEventListener('click',()=>{stgIdx++;stgRender();});
+document.getElementById('stg-replay').addEventListener('click',()=>{
+  document.getElementById('stg-done').style.display='none';
+  document.querySelector('#panel-stg .pp-stage:not(#stg-done)').style.display='flex';
+  stgShuffle();stgRender();
+});
+document.getElementById('stg-reset').addEventListener('click',()=>{
+  stgStopTimer();
+  document.getElementById('stg-done').style.display='none';
+  document.querySelector('#panel-stg .pp-stage:not(#stg-done)').style.display='flex';
+  stgShuffle();
+  document.getElementById('stg-title').textContent='Tap "Start" to begin.';
+  document.getElementById('stg-reveal').innerHTML='&nbsp;';
+  document.getElementById('stg-next').style.display='none';
+  document.getElementById('stg-start').style.display='inline-flex';
+  document.getElementById('stg-timer-bar').style.visibility='hidden';
+  document.querySelectorAll('[data-stg]').forEach(b=>b.classList.remove('right','wrong','disabled','was-correct'));
+});
+document.querySelectorAll('[data-stg]').forEach(b=>{
+  b.addEventListener('click',()=>stgPick(b.dataset.stg));
+});
+// Wire up STG difficulty chips
+document.querySelectorAll('[data-diff-stg]').forEach(c=>{
+  c.addEventListener('click',()=>setStgDiff(+c.dataset.diffStg));
+});
+setStgDiff(STG_TIMER_SEC);
+
+/* ============================================
+   GAME 10 — NAUGHTY BUCKET LIST
+============================================ */
+const BL_ITEMS=[
+  {t:"Get a stranger to buy {{B}} a drink",p:10},
+  {t:"Take a body shot off a friend (whipped cream counts)",p:15},
+  {t:"Get a fake phone number from someone you'll never call",p:10},
+  {t:"Convince a bartender to invent a drink and name it after {{B}}",p:20},
+  {t:"Get a stranger to sign {{Bs}} sash",p:5},
+  {t:"Find someone with {{Gs}} name and snap a photo",p:15},
+  {t:"Get a free shot from a bartender — no money exchanged",p:10},
+  {t:"Get someone to call {{B}} \"Mrs.\" for a full conversation",p:10},
+  {t:"Have {{B}} do a shot from a friend's collarbone",p:20},
+  {t:"Get {{B}} a mock marriage proposal from a stranger",p:25},
+  {t:"Whisper the dirtiest thing you've ever done to {{B}}",p:15},
+  {t:"Use a pickup line on a stranger on behalf of {{B}}",p:10},
+  {t:"Get a stranger to recite improvised wedding vows to {{B}}",p:20},
+  {t:"Make {{B}} read aloud the dirtiest text she's ever sent {{G}}",p:15},
+  {t:"Get a compliment for {{B}} from someone in uniform",p:15},
+  {t:"Have everyone dirty-text {{G}} one tasteful tease",p:10},
+  {t:"Get matching temporary tattoos as a group",p:20},
+  {t:"Convince a stranger to write something filthy on a napkin for {{B}}",p:15},
+  {t:"Have {{B}} lick frosting/sugar off a friend's finger (no judgement)",p:15},
+  {t:"Get a video of strangers toasting {{Bs}} \"last night free\"",p:10},
+  {t:"Find someone wearing {{Bs}} color and steal a photo with them",p:5},
+  {t:"Have {{B}} teach a stranger her favorite dance move",p:10},
+];
+const blList=document.getElementById('bl-list');
+const blPtsEl=document.getElementById('bl-pts');
+const blMaxEl=document.getElementById('bl-max');
+function renderBL(state){
+  blList.innerHTML='';
+  let total=0,done=0;
+  BL_ITEMS.forEach((item,i)=>{
+    total+=item.p;
+    const isDone=state[i];
+    if(isDone)done+=item.p;
+    const row=document.createElement('div');
+    row.className='hunt-item'+(isDone?' done':'');
+    row.innerHTML=`<div class="hunt-check"></div><div class="hunt-text">${personalize(item.t)}</div><div class="hunt-pts">+${item.p}</div>`;
+    row.addEventListener('click',()=>{
+      state[i]=!state[i];
+      saveBL(state);
+      renderBL(state);
+    });
+    blList.appendChild(row);
+  });
+  blPtsEl.textContent=done;
+  blMaxEl.textContent=total;
+}
+function loadBL(){try{return JSON.parse(localStorage.getItem('bach_bl')||'[]')}catch(e){return[]}}
+function saveBL(s){try{localStorage.setItem('bach_bl',JSON.stringify(s))}catch(e){}}
+let blState=loadBL();
+if(blState.length!==BL_ITEMS.length)blState=new Array(BL_ITEMS.length).fill(false);
+renderBL(blState);
+document.getElementById('bl-reset').addEventListener('click',()=>{
+  blState=new Array(BL_ITEMS.length).fill(false);
+  saveBL(blState);renderBL(blState);
+});
+
+/* ============================================
+   EDITABLE TIMELINE
+============================================ */
+const DEFAULT_TIMELINE=[
+  {time:"11:00 AM",title:"Slow Brunch In",note:"Mimosas, pastries, the bride opens a small gift from each guest."},
+  {time:"2:00 PM",title:"Activity Block",note:"Cocktail class, pottery, spa, or pool. Photogenic and gentle on the body."},
+  {time:"5:30 PM",title:"Get-Ready Hour",note:"Music on, drinks poured, play Bingo and Mr. & Mrs. while everyone does makeup."},
+  {time:"7:30 PM",title:"Dinner Reservation",note:"One real meal with table service. Toast in the middle, not the end."},
+  {time:"10:00 PM",title:"Out On The Town",note:"Pre-booked bar or club. Truth or Dare on someone's phone."},
+  {time:"1:00 AM",title:"Late-Night Snack & Home",note:"Pre-order pizza for the ride home. End on a high."},
+];
+let tlData=loadTL();
+function loadTL(){try{const v=JSON.parse(localStorage.getItem('bach_tl'));return v&&v.length?v:JSON.parse(JSON.stringify(DEFAULT_TIMELINE));}catch(e){return JSON.parse(JSON.stringify(DEFAULT_TIMELINE))}}
+function saveTL(){try{localStorage.setItem('bach_tl',JSON.stringify(tlData))}catch(e){}}
+
+const tlList=document.getElementById('timeline-list');
+function escapeAttr(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;')}
+function escapeText(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+
+function renderTL(){
+  tlList.innerHTML='';
+  tlData.forEach((row,i)=>{
+    const li=document.createElement('li');
+    li.className='tl-row';
+    li.innerHTML=`
+      <div class="tl-time-cell">
+        <input class="tl-time-input" value="${escapeAttr(row.time)}" data-i="${i}" data-f="time" />
+      </div>
+      <div>
+        <input class="tl-title-input" value="${escapeAttr(row.title)}" data-i="${i}" data-f="title" />
+        <textarea class="tl-note-input" rows="2" data-i="${i}" data-f="note">${escapeText(row.note)}</textarea>
+      </div>
+      <button class="tl-delete" data-del="${i}" title="Remove">×</button>
+    `;
+    tlList.appendChild(li);
+  });
+  tlList.querySelectorAll('textarea').forEach(t=>{
+    const resize=()=>{t.style.height='auto';t.style.height=t.scrollHeight+'px';};
+    resize();
+    t.addEventListener('input',resize);
+  });
+  tlList.querySelectorAll('input,textarea').forEach(el=>{
+    el.addEventListener('input',()=>{
+      tlData[+el.dataset.i][el.dataset.f]=el.value;
+      saveTL();
+    });
+  });
+  tlList.querySelectorAll('[data-del]').forEach(b=>{
+    b.addEventListener('click',()=>{
+      tlData.splice(+b.dataset.del,1);
+      saveTL();renderTL();
+    });
+  });
+}
+
+document.getElementById('tl-add').addEventListener('click',()=>{
+  tlData.push({time:"00:00 PM",title:"New Activity",note:"Add a description…"});
+  saveTL();renderTL();
+});
+document.getElementById('tl-reset').addEventListener('click',()=>{
+  if(confirm('Reset schedule to defaults?')){
+    tlData=JSON.parse(JSON.stringify(DEFAULT_TIMELINE));
+    saveTL();renderTL();
+  }
+});
+renderTL();
+
+/* ============================================
+   BINGO MULTI-CARD PRINT
+============================================ */
+const printModal=document.getElementById('bingo-print-modal');
+function openPrintModal(){printModal.classList.add('open')}
+function closePrintModal(){printModal.classList.remove('open')}
+document.getElementById('bingo-print').addEventListener('click',openPrintModal);
+document.getElementById('bingo-print-cancel').addEventListener('click',closePrintModal);
+printModal.addEventListener('click',e=>{if(e.target===printModal)closePrintModal()});
+
+function generatePrintCards(){
+  const n=Math.max(1,Math.min(24,parseInt(document.getElementById('bingo-card-count').value)||8));
+  const container=document.getElementById('print-bingo-container');
+  container.innerHTML='';
+  const b=getBride();
+  const title=b==='the bride'?"Bridal Bingo":titleName(b)+"'s Bingo";
+  for(let c=0;c<n;c++){
+    const picks=shuffle(BINGO_PROMPTS).slice(0,24);
+    const card=document.createElement('div');
+    card.className='print-card';
+    let cellsHtml='';
+    let pickIdx=0;
+    for(let i=0;i<25;i++){
+      if(i===12){
+        cellsHtml+='<div class="print-cell free">FREE</div>';
+      } else {
+        cellsHtml+=`<div class="print-cell">${picks[pickIdx++]}</div>`;
+      }
+    }
+    card.innerHTML=`<div class="print-card-title">${title} · Card ${c+1}</div><div class="print-grid">${cellsHtml}</div>`;
+    container.appendChild(card);
+  }
+  container.style.display='grid';
+  closePrintModal();
+  setTimeout(()=>{
+    window.print();
+    setTimeout(()=>{container.style.display='none'},500);
+  },200);
+}
+document.getElementById('bingo-print-go').addEventListener('click',generatePrintCards);
+
+/* ============================================
+   SCHEDULE REMINDERS
+============================================ */
+function parseScheduleTime(timeStr){
+  if(!timeStr)return null;
+  const m=String(timeStr).trim().match(/^(\d{1,2}):(\d{2})\s*(AM|PM)?$/i);
+  if(!m)return null;
+  let hours=parseInt(m[1]);
+  const mins=parseInt(m[2]);
+  const ampm=m[3]?m[3].toUpperCase():null;
+  if(ampm==='PM' && hours!==12)hours+=12;
+  if(ampm==='AM' && hours===12)hours=0;
+  if(hours>23||mins>59)return null;
+  const d=new Date();
+  d.setHours(hours,mins,0,0);
+  return d;
+}
+
+function formatRelative(diff){
+  if(diff<0){
+    const ago=-diff;
+    if(ago<60000)return 'just now';
+    if(ago<3600000)return Math.floor(ago/60000)+' min ago';
+    return Math.floor(ago/3600000)+'h ago';
+  }
+  if(diff<60000)return 'starting now';
+  if(diff<3600000)return 'in '+Math.floor(diff/60000)+' min';
+  const h=Math.floor(diff/3600000);
+  const m=Math.floor((diff%3600000)/60000);
+  return 'in '+h+'h'+(m>0?' '+m+'m':'');
+}
+
+function getFiredReminders(){
+  try{return new Set(JSON.parse(sessionStorage.getItem('bach_fired')||'[]'))}catch(e){return new Set()}
+}
+function saveFired(set){
+  try{sessionStorage.setItem('bach_fired',JSON.stringify([...set]))}catch(e){}
+}
+
+function showReminderToast(item){
+  const toast=document.createElement('div');
+  toast.className='reminder-toast';
+  const note=item.note?`<div class="toast-note">${item.note.replace(/</g,'&lt;')}</div>`:'';
+  toast.innerHTML=`
+    <div class="toast-icon">🥂</div>
+    <div class="toast-content">
+      <div class="toast-time">${item.time}</div>
+      <div class="toast-title">${item.title} — starting now!</div>
+      ${note}
+    </div>
+    <button class="toast-close" aria-label="Dismiss">&times;</button>
+  `;
+  document.body.appendChild(toast);
+  setTimeout(()=>toast.classList.add('show'),10);
+  const dismiss=()=>{
+    toast.classList.remove('show');
+    setTimeout(()=>toast.remove(),400);
+  };
+  toast.querySelector('.toast-close').addEventListener('click',dismiss);
+  setTimeout(dismiss,9000);
+}
+
+function updateSchedulePill(){
+  const pill=document.getElementById('up-next-pill');
+  const titleEl=document.getElementById('un-title');
+  const timeEl=document.getElementById('un-time');
+  if(!pill||!titleEl||!timeEl)return;
+  const label=pill.querySelector('.un-label');
+  if(!tlData||!tlData.length){
+    pill.classList.add('idle');
+    label.textContent='Status';
+    titleEl.textContent='No items in the schedule yet.';
+    timeEl.textContent='';
+    return;
+  }
+  const now=new Date();
+  const parsed=tlData.map((it,i)=>({time:it.time,title:it.title,note:it.note,t:parseScheduleTime(it.time),idx:i})).filter(x=>x.t);
+  if(!parsed.length){
+    pill.classList.add('idle');
+    label.textContent='Status';
+    titleEl.textContent='Add times like "7:30 PM" to enable reminders.';
+    timeEl.textContent='';
+    return;
+  }
+  parsed.sort((a,b)=>a.t-b.t);
+  let current=null,next=null;
+  for(const it of parsed){
+    if(it.t<=now){
+      if(now-it.t < 3*3600000)current=it;
+    } else {
+      if(!next)next=it;
+    }
+  }
+  if(current && !next){
+    pill.classList.remove('idle');
+    label.textContent='Happening Now';
+    titleEl.innerHTML=`<em>${current.title}</em>`;
+    timeEl.textContent=current.time;
+  } else if(next){
+    pill.classList.remove('idle');
+    label.textContent=current?'Up Next':'Up Next';
+    titleEl.innerHTML=`<em>${next.title}</em>`;
+    timeEl.textContent=next.time+' · '+formatRelative(next.t-now);
+  } else {
+    pill.classList.add('idle');
+    label.textContent='All Done';
+    titleEl.textContent="That's a wrap on the schedule.";
+    timeEl.textContent='';
+  }
+  document.querySelectorAll('#timeline-list .tl-row').forEach(r=>r.classList.remove('now'));
+  if(current){
+    const row=document.querySelectorAll('#timeline-list .tl-row')[current.idx];
+    if(row)row.classList.add('now');
+  }
+}
+
+function checkReminders(){
+  if(typeof tlData==='undefined'){updateSchedulePill();return;}
+  const now=new Date();
+  const fired=getFiredReminders();
+  let newlyFired=false;
+  tlData.forEach((item)=>{
+    const t=parseScheduleTime(item.time);
+    if(!t)return;
+    const diff=now-t;
+    if(diff>=0 && diff<=120000){
+      const key=item.time+'|'+item.title;
+      if(!fired.has(key)){
+        fired.add(key);
+        newlyFired=true;
+        showReminderToast(item);
+      }
+    }
+  });
+  if(newlyFired)saveFired(fired);
+  updateSchedulePill();
+}
+
+// Wrap renderTL so the pill refreshes after any edit
+const _origRenderTL=renderTL;
+renderTL=function(){
+  _origRenderTL.apply(this,arguments);
+  updateSchedulePill();
+};
+
+setInterval(checkReminders,30000);
+setTimeout(checkReminders,500);
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible')checkReminders();
+});
+
+/* ============================================
+   BROWSER NOTIFICATIONS (augment existing toast reminders)
+============================================ */
+function updateNotifStatus(){
+  const el=document.getElementById('notif-status');
+  if(!el)return;
+  if(!('Notification' in window)){el.textContent='not supported';return;}
+  if(Notification.permission==='granted'){el.textContent='on';el.classList.add('on');}
+  else if(Notification.permission==='denied'){el.textContent='blocked';el.classList.remove('on');}
+  else{el.textContent='off';el.classList.remove('on');}
+}
+
+function fireBrowserNotification(item){
+  if(!('Notification' in window))return;
+  if(Notification.permission!=='granted')return;
+  try{
+    new Notification('📅 '+item.time+' — '+item.title,{
+      body:item.note||'',
+      tag:'bach-'+item.time,
+    });
+  }catch(e){}
+}
+
+// Augment the existing showReminderToast so it ALSO fires browser notifications
+if(typeof showReminderToast==='function'){
+  const _origToast=showReminderToast;
+  showReminderToast=function(item){
+    _origToast(item);
+    fireBrowserNotification(item);
+  };
+}
+
+const enableNotifsBtn=document.getElementById('enable-notifs');
+if(enableNotifsBtn){
+  enableNotifsBtn.addEventListener('click',()=>{
+    if(!('Notification' in window)){
+      alert('This browser does not support notifications. In-page toasts still work.');
+      return;
+    }
+    Notification.requestPermission().then(perm=>{
+      updateNotifStatus();
+      if(perm==='granted'){
+        try{new Notification("Reminders on — you'll get a ping at each scheduled time.");}catch(e){}
+      }
+    });
+  });
+}
+const testNotifBtn=document.getElementById('test-notif');
+if(testNotifBtn){
+  testNotifBtn.addEventListener('click',()=>{
+    if(typeof showReminderToast==='function'){
+      showReminderToast({time:'Now',title:'Test Reminder',note:'This is what a real reminder looks like.'});
+    }
+  });
+}
+updateNotifStatus();
+
+/* ============================================
+   APPLY PERSONALIZATION ON LOAD
+============================================ */
+setTimeout(()=>{
+  if(typeof refreshPersonalized==='function')refreshPersonalized();
+},150);
+</script>
+
+</body>
+</html>
