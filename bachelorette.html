@@ -169,28 +169,18 @@
   .bingo-status.win{color:var(--pink-hot);font-size:36px;animation:pulse 1s ease infinite}
   @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
   /* Bingo cell edit pencil button — always visible on filled cells */
-  .bingo-cell-edit-btn{
-    position:absolute;top:2px;right:2px;width:20px;height:20px;
-    border:none;border-radius:4px;
-    background:rgba(107,50,77,.15);
-    color:var(--wine);font-size:11px;
-    display:none;align-items:center;justify-content:center;
-    padding:0;cursor:pointer;z-index:3;
-    transition:background .15s;line-height:1;
+  /* Bingo edit-mode: cells glow with dashed outline */
+  .bingo-board.edit-mode .bingo-cell:not(.free){
+    outline:2px dashed rgba(230,58,124,.45);outline-offset:-2px;cursor:text;
   }
-  /* show on all filled (non-empty, non-free) cells — no hover required */
-  .bingo-cell:not(.free):not([data-empty="1"]) .bingo-cell-edit-btn{display:flex;}
-  .bingo-cell-edit-btn:hover,.bingo-cell-edit-btn:active{background:rgba(230,58,124,.45);color:#fff}
-  /* on marked (pink) cells use a light icon so it's visible */
-  .bingo-cell.marked .bingo-cell-edit-btn{background:rgba(255,255,255,.25);color:#fff}
-  /* Bingo inline edit bar */
-  #bingo-edit-bar{
-    display:none;align-items:center;gap:10px;justify-content:center;
-    margin-top:10px;padding:9px 14px;
-    background:#fff5e9;border:1.5px solid rgba(230,58,124,.3);
-    border-radius:10px;font-size:13px;color:var(--wine);flex-wrap:wrap;
+  .bingo-board.edit-mode .bingo-cell:not(.free):hover{background:#fff5e9;}
+  /* Bingo cell edit modal input */
+  #bingo-edit-input{
+    width:100%;padding:10px 12px;font-size:15px;font-family:'DM Sans',sans-serif;
+    border:1.5px solid var(--line);border-radius:8px;box-sizing:border-box;
+    color:var(--wine);background:#fff;margin:8px 0 4px;
   }
-  #bingo-edit-bar.visible{display:flex}
+  #bingo-edit-input:focus{outline:none;border-color:var(--pink-hot);background:#fff5e9;}
 
   /* ---------- DRINK IF / TRUTH OR DARE CARDS ---------- */
   .card-stage{
@@ -1412,17 +1402,13 @@
           <p>Start with a blank card. Tap "Randomize" to fill with house-party prompts, or fill it in yourself. Tap squares as they happen — first row of five wins.</p>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn ghost small" id="bingo-edit-toggle" style="display:none">✏️ Edit</button>
           <button class="btn" id="bingo-rand">🎲 Randomize</button>
           <button class="btn ghost small" id="bingo-print">🖨 Print Cards</button>
           <button class="btn ghost small" id="bingo-clear">Clear</button>
         </div>
       </div>
       <div class="bingo-board" id="bingo-board"></div>
-      <div id="bingo-edit-bar">
-        ✏️ <strong>Editing cell</strong> — make your changes, then:
-        <button class="btn small" id="bingo-apply-edit">✓ Apply</button>
-        <button class="btn ghost small" id="bingo-cancel-edit">✕ Cancel</button>
-      </div>
       <div class="bingo-status" id="bingo-status">Tap squares as they happen…</div>
     </div>
 
@@ -2109,6 +2095,18 @@
   </div>
 </div>
 
+<!-- BINGO CELL EDIT MODAL -->
+<div class="modal" id="bingo-edit-modal">
+  <div class="modal-content">
+    <h3>Edit Cell</h3>
+    <input type="text" id="bingo-edit-input" maxlength="60" placeholder="Type something…" autocomplete="off" />
+    <div class="modal-actions">
+      <button class="btn ghost small" id="bingo-edit-modal-cancel">Cancel</button>
+      <button class="btn" id="bingo-edit-modal-apply">✓ Apply</button>
+    </div>
+  </div>
+</div>
+
 <!-- BINGO RANDOMIZE CONFIRM MODAL -->
 <div class="modal" id="bingo-rand-confirm-modal">
   <div class="modal-content">
@@ -2598,40 +2596,51 @@ function _setCellMode(cell, hasContent){
   cell.dataset.empty   = hasContent ? '0' : '1';
 }
 
-// Track which cell is currently in pencil-edit mode
+// ---- Bingo edit-mode state ----
+let _bingoEditMode   = false;
 let _bingoEditingCell = null;
-let _bingoEditingOrig = '';
 
-function enterCellEdit(cell){
-  if(_bingoEditingCell && _bingoEditingCell !== cell) exitCellEdit(false);
-  _bingoEditingCell = cell;
-  _bingoEditingOrig = cell.textContent.trim();
-  cell.contentEditable = 'true';
-  cell.dataset.empty   = '0'; // keep "filled" styles while editing
-  cell.classList.add('editing');
-  cell.focus();
-  // Move cursor to end
-  try{
-    const r=document.createRange(); r.selectNodeContents(cell); r.collapse(false);
-    const s=window.getSelection(); s.removeAllRanges(); s.addRange(r);
-  }catch(e){}
-  document.getElementById('bingo-edit-bar').classList.add('visible');
+function updateBingoEditBtn(){
+  const hasContent = [...bingoBoard.querySelectorAll('.bingo-cell')]
+    .some((c,i)=>i!==12 && c.textContent.trim()!=='');
+  const btn = document.getElementById('bingo-edit-toggle');
+  btn.style.display = hasContent ? '' : 'none';
+  if(!hasContent && _bingoEditMode) setBingoEditMode(false);
 }
 
-function exitCellEdit(apply){
-  if(!_bingoEditingCell) return;
+function setBingoEditMode(on){
+  _bingoEditMode = on;
+  bingoBoard.classList.toggle('edit-mode', on);
+  const btn = document.getElementById('bingo-edit-toggle');
+  btn.textContent = on ? '✓ Done' : '✏️ Edit';
+  if(!on && _bingoEditingCell) closeBingoCellEdit(false);
+}
+
+function openBingoCellEdit(cell){
+  _bingoEditingCell = cell;
+  const input = document.getElementById('bingo-edit-input');
+  input.value = cell.textContent.trim();
+  document.getElementById('bingo-edit-modal').classList.add('open');
+  setTimeout(()=>{ input.focus(); input.select(); }, 80);
+}
+
+function closeBingoCellEdit(apply){
   const cell = _bingoEditingCell;
   _bingoEditingCell = null;
-  cell.classList.remove('editing');
-  if(!apply){ cell.textContent = _bingoEditingOrig; }
-  const filled = cell.textContent.trim() !== '';
-  _setCellMode(cell, filled);
-  document.getElementById('bingo-edit-bar').classList.remove('visible');
-  if(apply) saveBingo();
+  document.getElementById('bingo-edit-modal').classList.remove('open');
+  if(!cell) return;
+  if(apply){
+    const newText = document.getElementById('bingo-edit-input').value.trim();
+    cell.textContent = newText;
+    const filled = newText !== '';
+    _setCellMode(cell, filled);
+    saveBingo();
+  }
 }
 
 function buildBingo(){
   bingoBoard.innerHTML='';
+  setBingoEditMode(false);
   for(let i=0;i<25;i++){
     const cell=document.createElement('div');
     if(i===12){
@@ -2642,67 +2651,38 @@ function buildBingo(){
       cell.spellcheck=false;
       _setCellMode(cell, false); // starts empty → editable
 
-      // Pencil edit button (shown on filled cells)
-      const editBtn=document.createElement('button');
-      editBtn.className='bingo-cell-edit-btn';
-      editBtn.title='Edit this cell';
-      editBtn.innerHTML='✏';
-      editBtn.addEventListener('mousedown',e=>{e.stopPropagation();e.preventDefault();});
-      editBtn.addEventListener('click',e=>{e.stopPropagation();enterCellEdit(cell);});
-      editBtn.addEventListener('touchend',e=>{e.stopPropagation();e.preventDefault();enterCellEdit(cell);});
-      cell.appendChild(editBtn);
-
       // Show typing cursor while editing an empty cell
       cell.addEventListener('focus',()=>{cell.classList.add('editing');});
       cell.addEventListener('blur',()=>{
         cell.classList.remove('editing');
-        if(_bingoEditingCell===cell)return; // pencil-edit mode: Apply/Cancel handle save
         const filled = cell.textContent.trim() !== '';
-        _setCellMode(cell, filled); // lock if now has content
+        _setCellMode(cell, filled);
+        updateBingoEditBtn();
         saveBingo();
       });
       cell.addEventListener('keydown',e=>{
-        if(e.key==='Enter'){
-          e.preventDefault();
-          if(_bingoEditingCell===cell) exitCellEdit(true);
-          else cell.blur();
-        }
-        if(e.key==='Escape' && _bingoEditingCell===cell){exitCellEdit(false);}
+        if(e.key==='Enter'){e.preventDefault();cell.blur();}
       });
 
-      // Tap / click → mark or unmark (only when filled / tap-only mode)
+      // Tap/click → edit (edit mode) or mark/unmark (play mode)
       cell.addEventListener('click',()=>{
         if(cell.contentEditable==='false'){
-          cell.classList.toggle('marked');
-          checkBingo();
-          saveBingo();
+          if(_bingoEditMode){ openBingoCellEdit(cell); }
+          else{ cell.classList.toggle('marked'); checkBingo(); saveBingo(); }
         }
-        // empty cell → browser focuses it naturally for typing
       });
 
-      // Mobile touch: fire on touchend for instant response (no 300ms delay)
+      // Mobile touch: instant response, no 300ms delay
       let _tm=false;
-      let _lpTimer=null;
-      cell.addEventListener('touchstart',()=>{
-        _tm=false;
-        // Long-press on filled cell → edit mode (mobile alternative to pencil button)
-        if(cell.contentEditable==='false'){
-          _lpTimer=setTimeout(()=>{_lpTimer=null;enterCellEdit(cell);},600);
-        }
-      },{passive:true});
-      cell.addEventListener('touchmove',()=>{_tm=true;clearTimeout(_lpTimer);_lpTimer=null;},{passive:true});
+      cell.addEventListener('touchstart',()=>{_tm=false;},{passive:true});
+      cell.addEventListener('touchmove',()=>{_tm=true;},{passive:true});
       cell.addEventListener('touchend',e=>{
         if(_tm)return;
-        clearTimeout(_lpTimer);
-        if(_lpTimer===null && _bingoEditingCell===cell)return; // long-press fired
-        _lpTimer=null;
         if(cell.contentEditable==='false'){
-          e.preventDefault(); // block synthetic click
-          cell.classList.toggle('marked');
-          checkBingo();
-          saveBingo();
+          e.preventDefault();
+          if(_bingoEditMode){ openBingoCellEdit(cell); }
+          else{ cell.classList.toggle('marked'); checkBingo(); saveBingo(); }
         }
-        // empty → let touch open the keyboard naturally
       });
     }
     cell.dataset.idx=i;
@@ -2725,6 +2705,8 @@ function randomizeBingo(){
   bingoStatus.textContent='Card filled — tap squares as they happen.';
   bingoStatus.classList.remove('win');
   bingoBoard.dataset.celebrated='';
+  setBingoEditMode(false);
+  updateBingoEditBtn();
   saveBingo();
 }
 
@@ -2738,6 +2720,8 @@ function clearBingo(){
   });
   bingoStatus.textContent='Cleared. Tap "Randomize" or tap cells to type your own.';
   bingoStatus.classList.remove('win');
+  setBingoEditMode(false);
+  updateBingoEditBtn();
   saveBingo();
 }
 function saveBingo(){
@@ -2763,6 +2747,7 @@ function applyBingoState(state){
     else cell.classList.remove('marked');
   });
   checkBingo();
+  updateBingoEditBtn();
 }
 
 function checkBingo(){
@@ -2806,11 +2791,21 @@ _bingoRandModal.addEventListener('click',e=>{
 
 document.getElementById('bingo-clear').addEventListener('click',clearBingo);
 
-// Bingo cell edit Apply / Cancel
-document.getElementById('bingo-apply-edit').addEventListener('mousedown',e=>e.preventDefault());
-document.getElementById('bingo-apply-edit').addEventListener('click',()=>exitCellEdit(true));
-document.getElementById('bingo-cancel-edit').addEventListener('mousedown',e=>e.preventDefault());
-document.getElementById('bingo-cancel-edit').addEventListener('click',()=>exitCellEdit(false));
+// Edit mode toggle
+document.getElementById('bingo-edit-toggle').addEventListener('click',()=>{
+  setBingoEditMode(!_bingoEditMode);
+});
+
+// Cell edit modal — Apply / Cancel
+const _bingoEditModal = document.getElementById('bingo-edit-modal');
+document.getElementById('bingo-edit-modal-apply').addEventListener('click',()=>closeBingoCellEdit(true));
+document.getElementById('bingo-edit-modal-cancel').addEventListener('click',()=>closeBingoCellEdit(false));
+_bingoEditModal.addEventListener('click',e=>{if(e.target===_bingoEditModal)closeBingoCellEdit(false);});
+document.getElementById('bingo-edit-input').addEventListener('keydown',e=>{
+  if(e.key==='Enter'){e.preventDefault();closeBingoCellEdit(true);}
+  if(e.key==='Escape') closeBingoCellEdit(false);
+});
+
 buildBingo();
 
 /* ============================================
