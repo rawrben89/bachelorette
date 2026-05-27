@@ -157,7 +157,7 @@
     content:"✿";position:absolute;font-size:48px;color:rgba(255,255,255,.3);
     font-family:"Fraunces",serif;
   }
-  .bingo-cell[data-empty="1"]{background:#FCFAF6;color:var(--wine);opacity:.85}
+  .bingo-cell[data-empty="1"]{background:#FCFAF6;color:var(--wine);opacity:.85;cursor:text}
   .bingo-cell[data-empty="1"]:hover{background:#F4EDE0;opacity:1}
   .bingo-cell.editing{background:#fff5e9 !important;outline:2px solid var(--pink-hot);outline-offset:-2px;cursor:text}
   .bingo-cell.editing::after{display:none}
@@ -2416,6 +2416,13 @@ const BINGO_PROMPTS = [
 const bingoBoard=document.getElementById('bingo-board');
 const bingoStatus=document.getElementById('bingo-status');
 function shuffle(arr){return arr.map(v=>[Math.random(),v]).sort((a,b)=>a[0]-b[0]).map(([,v])=>v)}
+function _setCellMode(cell, hasContent){
+  // hasContent=true  → tap-only (locked, no keyboard ever)
+  // hasContent=false → editable (empty, tap opens keyboard)
+  cell.contentEditable = hasContent ? 'false' : 'true';
+  cell.dataset.empty   = hasContent ? '0' : '1';
+}
+
 function buildBingo(){
   bingoBoard.innerHTML='';
   for(let i=0;i<25;i++){
@@ -2425,42 +2432,44 @@ function buildBingo(){
       cell.textContent='FREE';
     } else {
       cell.className='bingo-cell';
-      cell.contentEditable='true';
       cell.spellcheck=false;
-      cell.dataset.empty='1';
-      // Track when the cell is being edited vs just clicked to mark
-      cell.addEventListener('focus',()=>{cell.classList.add('editing')});
+      _setCellMode(cell, false); // starts empty → editable
+
+      // Show typing cursor while editing an empty cell
+      cell.addEventListener('focus',()=>{cell.classList.add('editing');});
       cell.addEventListener('blur',()=>{
         cell.classList.remove('editing');
-        cell.dataset.empty=cell.textContent.trim()===''?'1':'0';
-        saveBingo();
-      });
-      // Desktop click: toggle mark on filled, unfocused cells
-      cell.addEventListener('click',e=>{
-        if(document.activeElement===cell)return;
-        if(cell.dataset.empty==='1'){return;}
-        e.preventDefault();
-        cell.blur();
-        cell.classList.toggle('marked');
-        checkBingo();
-        saveBingo();
-      });
-      // Mobile touch: intercept touchend on filled cells so focus doesn't
-      // fire first and swallow the tap (contentEditable focus race condition)
-      let _bingoTouchMoved=false;
-      cell.addEventListener('touchstart',()=>{_bingoTouchMoved=false;},{passive:true});
-      cell.addEventListener('touchmove',()=>{_bingoTouchMoved=true;},{passive:true});
-      cell.addEventListener('touchend',e=>{
-        if(_bingoTouchMoved)return;
-        if(cell.dataset.empty==='1')return; // empty → let focus/type happen
-        e.preventDefault(); // block synthesised click + focus
-        if(document.activeElement===cell)cell.blur();
-        cell.classList.toggle('marked');
-        checkBingo();
+        const filled = cell.textContent.trim() !== '';
+        _setCellMode(cell, filled); // lock if now has content
         saveBingo();
       });
       cell.addEventListener('keydown',e=>{
         if(e.key==='Enter'){e.preventDefault();cell.blur();}
+      });
+
+      // Tap / click → mark or unmark (only when filled / tap-only mode)
+      cell.addEventListener('click',()=>{
+        if(cell.contentEditable==='false'){
+          cell.classList.toggle('marked');
+          checkBingo();
+          saveBingo();
+        }
+        // empty cell → browser focuses it naturally for typing
+      });
+
+      // Mobile touch: fire on touchend for instant response (no 300ms delay)
+      let _tm=false;
+      cell.addEventListener('touchstart',()=>{_tm=false;},{passive:true});
+      cell.addEventListener('touchmove', ()=>{_tm=true; },{passive:true});
+      cell.addEventListener('touchend',e=>{
+        if(_tm)return;
+        if(cell.contentEditable==='false'){
+          e.preventDefault(); // block synthetic click
+          cell.classList.toggle('marked');
+          checkBingo();
+          saveBingo();
+        }
+        // empty → let touch open the keyboard naturally
       });
     }
     cell.dataset.idx=i;
@@ -2477,7 +2486,7 @@ function randomizeBingo(){
   cells.forEach((cell,i)=>{
     if(i===12)return;
     cell.textContent=picks[pickIdx++];
-    cell.dataset.empty='0';
+    _setCellMode(cell, true); // filled → tap-only immediately
     cell.classList.remove('marked');
   });
   bingoStatus.textContent='Card filled — tap squares as they happen.';
@@ -2491,7 +2500,7 @@ function clearBingo(){
   cells.forEach((cell,i)=>{
     if(i===12)return;
     cell.textContent='';
-    cell.dataset.empty='1';
+    _setCellMode(cell, false); // back to editable
     cell.classList.remove('marked');
   });
   bingoStatus.textContent='Cleared. Tap "Randomize" or tap cells to type your own.';
@@ -2516,7 +2525,7 @@ function applyBingoState(state){
     const s=state[i];
     if(!s)return;
     cell.textContent=s.text||'';
-    cell.dataset.empty=s.empty?'1':'0';
+    _setCellMode(cell, !s.empty); // restore editable/tap-only based on content
     if(s.marked)cell.classList.add('marked');
     else cell.classList.remove('marked');
   });
