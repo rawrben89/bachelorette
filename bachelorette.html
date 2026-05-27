@@ -168,6 +168,17 @@
   }
   .bingo-status.win{color:var(--pink-hot);font-size:36px;animation:pulse 1s ease infinite}
   @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+  /* Bingo edit-mode */
+  .bingo-board.edit-mode .bingo-cell:not(.free){
+    outline:2px dashed rgba(230,58,124,.45);outline-offset:-2px;cursor:text;
+  }
+  .bingo-board.edit-mode .bingo-cell:not(.free):hover{background:#fff5e9;}
+  #bingo-edit-input{
+    width:100%;padding:10px 12px;font-size:15px;font-family:'DM Sans',sans-serif;
+    border:1.5px solid var(--line);border-radius:8px;box-sizing:border-box;
+    color:var(--wine);background:#fff;margin:8px 0 4px;
+  }
+  #bingo-edit-input:focus{outline:none;border-color:var(--pink-hot);background:#fff5e9;}
 
   /* ---------- DRINK IF / TRUTH OR DARE CARDS ---------- */
   .card-stage{
@@ -201,13 +212,29 @@
   .chip.on{background:var(--wine);color:var(--cream)}
 
   /* ---------- TRUTH/DARE SWITCH ---------- */
-  .td-switch{display:flex;gap:0;justify-content:center;margin-bottom:24px;border:1px solid var(--wine);border-radius:999px;padding:4px;width:fit-content;margin-left:auto;margin-right:auto}
+  .td-switch{display:flex;gap:0;justify-content:center;margin-bottom:24px;border:1px solid var(--wine);border-radius:999px;padding:4px;width:fit-content;margin-left:auto;margin-right:auto;flex-wrap:wrap}
   .td-switch button{
     padding:10px 28px;background:transparent;border:none;cursor:pointer;
     font-family:"Fraunces",serif;font-size:18px;color:var(--wine);border-radius:999px;
-    transition:all .2s;
+    transition:all .2s;white-space:nowrap;
   }
   .td-switch button.on{background:var(--pink-hot);color:var(--cream)}
+  #td-spicy.on{background:var(--wine);color:var(--cream)}
+  /* Spicy / bride-only card */
+  .card-stage.spicy{background:var(--wine);border-color:var(--wine)}
+  .card-stage.spicy .card-label{color:rgba(255,255,255,.55)}
+  .card-stage.spicy .card-prompt{color:var(--cream)}
+  .card-stage.spicy .btn{background:rgba(255,255,255,.15);color:var(--cream);border-color:rgba(255,255,255,.3)}
+  .card-stage.spicy .btn:hover{background:rgba(255,255,255,.25)}
+  .bride-badge{
+    display:none;align-items:center;gap:7px;
+    background:rgba(255,255,255,.12);color:var(--cream);
+    border:1px solid rgba(255,255,255,.25);border-radius:999px;
+    padding:5px 16px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+    margin-bottom:18px;
+  }
+  .card-stage.spicy .bride-badge{display:flex}
+  @media(max-width:420px){.td-switch button{padding:9px 14px;font-size:15px}}
 
   /* ---------- SPINNER ---------- */
   /* ---------- SCAVENGER ---------- */
@@ -1389,6 +1416,7 @@
           <p>Start with a blank card. Tap "Randomize" to fill with house-party prompts, or fill it in yourself. Tap squares as they happen — first row of five wins.</p>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn ghost small" id="bingo-edit-toggle" style="display:none">✏️ Edit</button>
           <button class="btn" id="bingo-rand">🎲 Randomize</button>
           <button class="btn ghost small" id="bingo-print">🖨 Print Cards</button>
           <button class="btn ghost small" id="bingo-clear">Clear</button>
@@ -1433,8 +1461,10 @@
       <div class="td-switch">
         <button id="td-truth" class="on">Truth</button>
         <button id="td-dare">Dare</button>
+        <button id="td-spicy">🌶️ Spicy</button>
       </div>
-      <div class="card-stage">
+      <div class="card-stage" id="td-card">
+        <div class="bride-badge">👰 Bride answers only</div>
         <div class="card-label" id="td-label">Truth</div>
         <div class="card-prompt" id="td-prompt">Pick Truth or Dare, then tap below.</div>
         <div class="card-actions">
@@ -2081,6 +2111,18 @@
   </div>
 </div>
 
+<!-- BINGO CELL EDIT MODAL -->
+<div class="modal" id="bingo-edit-modal">
+  <div class="modal-content">
+    <h3>Edit Cell</h3>
+    <input type="text" id="bingo-edit-input" maxlength="60" placeholder="Type something…" autocomplete="off" />
+    <div class="modal-actions">
+      <button class="btn ghost small" id="bingo-edit-modal-cancel">Cancel</button>
+      <button class="btn" id="bingo-edit-modal-apply">✓ Apply</button>
+    </div>
+  </div>
+</div>
+
 <!-- HIDDEN PRINT CONTAINER (only visible when printing) -->
 <div class="print-bingo" id="print-bingo-container" style="display:none"></div>
 
@@ -2558,6 +2600,49 @@ function _setCellMode(cell, hasContent){
   cell.dataset.empty   = hasContent ? '0' : '1';
 }
 
+// ---- Bingo edit-mode ----
+let _bingoEditMode = false;
+let _bingoEditingCell = null;
+
+function updateBingoEditBtn(){
+  const hasContent = [...bingoBoard.querySelectorAll('.bingo-cell')]
+    .some((c,i)=>i!==12 && c.textContent.trim()!=='');
+  const btn = document.getElementById('bingo-edit-toggle');
+  btn.style.display = hasContent ? '' : 'none';
+  if(!hasContent && _bingoEditMode) setBingoEditMode(false);
+}
+
+function setBingoEditMode(on){
+  _bingoEditMode = on;
+  bingoBoard.classList.toggle('edit-mode', on);
+  const btn = document.getElementById('bingo-edit-toggle');
+  btn.textContent = on ? '✓ Done' : '✏️ Edit';
+  if(!on && _bingoEditingCell) closeBingoCellEdit(false);
+}
+
+function openBingoCellEdit(cell){
+  _bingoEditingCell = cell;
+  const input = document.getElementById('bingo-edit-input');
+  input.value = cell.textContent.trim();
+  document.getElementById('bingo-edit-modal').classList.add('open');
+  setTimeout(()=>{ input.focus(); input.select(); }, 80);
+}
+
+function closeBingoCellEdit(apply){
+  const cell = _bingoEditingCell;
+  _bingoEditingCell = null;
+  document.getElementById('bingo-edit-modal').classList.remove('open');
+  if(!cell) return;
+  if(apply){
+    const newText = document.getElementById('bingo-edit-input').value.trim();
+    cell.textContent = newText;
+    const filled = newText !== '';
+    _setCellMode(cell, filled);
+    saveBingo();
+  }
+  setBingoEditMode(false);
+}
+
 function buildBingo(){
   bingoBoard.innerHTML='';
   for(let i=0;i<25;i++){
@@ -2584,6 +2669,10 @@ function buildBingo(){
 
       // Tap / click → mark or unmark (only when filled / tap-only mode)
       cell.addEventListener('click',()=>{
+        if(_bingoEditMode){
+          openBingoCellEdit(cell);
+          return;
+        }
         if(cell.contentEditable==='false'){
           cell.classList.toggle('marked');
           checkBingo();
@@ -2598,6 +2687,11 @@ function buildBingo(){
       cell.addEventListener('touchmove', ()=>{_tm=true; },{passive:true});
       cell.addEventListener('touchend',e=>{
         if(_tm)return;
+        if(_bingoEditMode){
+          e.preventDefault();
+          openBingoCellEdit(cell);
+          return;
+        }
         if(cell.contentEditable==='false'){
           e.preventDefault(); // block synthetic click
           cell.classList.toggle('marked');
@@ -2650,6 +2744,7 @@ function saveBingo(){
   );
   try{localStorage.setItem('bach_bingo',JSON.stringify(state))}catch(e){}
   dbSet('bingo',state);
+  updateBingoEditBtn();
 }
 
 function applyBingoState(state){
@@ -2665,6 +2760,7 @@ function applyBingoState(state){
     else cell.classList.remove('marked');
   });
   checkBingo();
+  updateBingoEditBtn();
 }
 
 function checkBingo(){
@@ -2692,6 +2788,17 @@ function checkBingo(){
 }
 document.getElementById('bingo-rand').addEventListener('click',randomizeBingo);
 document.getElementById('bingo-clear').addEventListener('click',clearBingo);
+document.getElementById('bingo-edit-toggle').addEventListener('click',()=>setBingoEditMode(!_bingoEditMode));
+document.getElementById('bingo-edit-modal-apply').addEventListener('click',()=>closeBingoCellEdit(true));
+document.getElementById('bingo-edit-modal-cancel').addEventListener('click',()=>closeBingoCellEdit(false));
+document.getElementById('bingo-edit-input').addEventListener('keydown',e=>{
+  if(e.key==='Enter'){e.preventDefault();closeBingoCellEdit(true);}
+  if(e.key==='Escape'){closeBingoCellEdit(false);}
+});
+// Close modal on backdrop click
+document.getElementById('bingo-edit-modal').addEventListener('click',e=>{
+  if(e.target===document.getElementById('bingo-edit-modal'))closeBingoCellEdit(false);
+});
 buildBingo();
 
 /* ============================================
@@ -2795,21 +2902,80 @@ const DARES=[
   "Switch one item of clothing with {{B}} for the next 10 minutes",
   "Pose for a paparazzi-style photo on the sidewalk"
 ];
+const BRIDE_SPICY=[
+  // --- Performance reviews ---
+  "Rate {{G}}'s performance in bed on a scale of 1–10. Now justify it out loud.",
+  "What's the one thing {{G}} does in bed that genuinely blows your mind every time?",
+  "If {{G}}'s sex life were a Yelp review, what would it say?",
+  "What's something {{G}} thinks he's great at in bed — and is he right?",
+  "If you had to give {{G}} a bedroom report card, what subject would he fail?",
+  // --- Firsts & history ---
+  "Describe the first time things got physical with {{G}} — without using any adjectives.",
+  "Be honest: who initiated your very first kiss with {{G}}? And your most recent?",
+  "What's the naughtiest thing you two did when you first started dating?",
+  "When did you first realise the chemistry with {{G}} was, uh… electric?",
+  "What's a sexual 'first' you experienced with {{G}} that you hadn't done before?",
+  // --- Fantasies & bucket list ---
+  "Name one thing that's going on the honeymoon sex bucket list — be specific.",
+  "What's a fantasy you haven't told {{G}} about yet but plan to act on?",
+  "If money and logistics were no issue, describe your ultimate intimate getaway with {{G}}.",
+  "What's a scenario or setting you want to try that you haven't suggested yet?",
+  "Walk us through your wedding-night game plan from start to finish.",
+  // --- Location, location ---
+  "Where's the most unexpected or public place you two have been intimate? Full story.",
+  "What's the riskiest place you've hooked up — and did anyone almost catch you?",
+  "Most creative location you've ever done it. Rank it out of 10 for comfort vs thrill.",
+  // --- Body & attraction ---
+  "Describe {{G}}'s best physical feature — and explain exactly why.",
+  "What body part of {{G}}'s are you most obsessed with, and what do you do about it?",
+  "What does {{G}} wear (or not wear) that you find absolutely irresistible?",
+  "What's the sexiest thing {{G}} does without even trying?",
+  // --- Confessions ---
+  "Have you ever faked it with {{G}}? Be honest. If yes, when?",
+  "What's the raciest text you've ever sent {{G}}? Read it out or describe it.",
+  "What's the most explicit photo or message you've exchanged with {{G}}?",
+  "What's one thing you'd only admit after three drinks — you've had three.",
+  "Have you two ever done anything that, if it came out, would genuinely shock this group?",
+  "What's something you do in bed that would absolutely surprise your mother?",
+  // --- Preferences & upgrades ---
+  "What's your go-to move when you want to get {{G}} in the mood?",
+  "What's one bedroom skill you wish {{G}} would level up?",
+  "If you could add one new thing to your regular rotation, what would it be?",
+  "What's something {{G}} does that you've never asked him to stop — and never will?",
+  "What's a kink or preference you've discovered since being with {{G}}?",
+  // --- Honeymoon & future ---
+  "How many times are you planning to have sex on the honeymoon? Give us a number.",
+  "What's the most adventurous thing you've already planned for the honeymoon?",
+  "Is there something you want to try on the honeymoon that {{G}} doesn't know about yet?",
+  // --- Misc spicy ---
+  "What song is permanently associated with sex for you and {{G}}? You know the one.",
+  "What's the dirtiest thing {{G}} has ever said to you? Recite it if you can.",
+  "What's something {{G}} does outside the bedroom that is — for some reason — incredibly hot?",
+  "If you had to rate your sex life as a film genre, what genre and why?",
+  "What's the longest you two have gone without, and who cracked first?"
+];
+
 let tdMode='truth';
-document.getElementById('td-truth').addEventListener('click',()=>{
-  tdMode='truth';
-  document.getElementById('td-truth').classList.add('on');
-  document.getElementById('td-dare').classList.remove('on');
-  document.getElementById('td-label').textContent='Truth';
-});
-document.getElementById('td-dare').addEventListener('click',()=>{
-  tdMode='dare';
-  document.getElementById('td-dare').classList.add('on');
-  document.getElementById('td-truth').classList.remove('on');
-  document.getElementById('td-label').textContent='Dare';
-});
+function _tdSetMode(mode){
+  tdMode=mode;
+  document.getElementById('td-truth').classList.toggle('on', mode==='truth');
+  document.getElementById('td-dare').classList.toggle('on',  mode==='dare');
+  document.getElementById('td-spicy').classList.toggle('on', mode==='spicy');
+  const card=document.getElementById('td-card');
+  card.classList.toggle('spicy', mode==='spicy');
+  const labels={truth:'Truth',dare:'Dare',spicy:'Spicy — Bride Only 🌶️'};
+  document.getElementById('td-label').textContent=labels[mode];
+  document.getElementById('td-prompt').textContent=
+    mode==='spicy'
+      ? 'Draw a card — only the bride answers. 🌶️'
+      : 'Pick Truth or Dare, then tap below.';
+}
+document.getElementById('td-truth').addEventListener('click',()=>_tdSetMode('truth'));
+document.getElementById('td-dare').addEventListener('click', ()=>_tdSetMode('dare'));
+document.getElementById('td-spicy').addEventListener('click',()=>_tdSetMode('spicy'));
+
 document.getElementById('td-draw').addEventListener('click',()=>{
-  const pool=tdMode==='truth'?TRUTHS:DARES;
+  const pool=tdMode==='truth'?TRUTHS:tdMode==='dare'?DARES:BRIDE_SPICY;
   const promptEl=document.getElementById('td-prompt');
   promptEl.style.opacity=0;
   setTimeout(()=>{
