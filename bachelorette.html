@@ -2461,6 +2461,9 @@ const DEFAULT_BUDGET=[
 let budget=loadBudget();
 let guests=loadGuests();
 let bridePays=loadBridePays();
+function loadPeople(){try{const v=JSON.parse(localStorage.getItem('bach_people'));return Array.isArray(v)?v:[];}catch(e){return[]}}
+function savePeople(){try{localStorage.setItem('bach_people',JSON.stringify(people))}catch(e){};dbSet('people',people)}
+let people=loadPeople();
 
 function loadBudget(){try{const v=JSON.parse(localStorage.getItem('bach_budget'));return v&&v.length?v:JSON.parse(JSON.stringify(DEFAULT_BUDGET));}catch(e){return JSON.parse(JSON.stringify(DEFAULT_BUDGET))}}
 function saveBudget(){
@@ -2573,10 +2576,6 @@ renderBudget();
 /* ============================================
    PEOPLE & SETTLEMENTS (Tricount-style)
 ============================================ */
-let people = loadPeople();
-
-function loadPeople(){try{const v=JSON.parse(localStorage.getItem('bach_people'));return Array.isArray(v)?v:[];}catch(e){return[]}}
-function savePeople(){try{localStorage.setItem('bach_people',JSON.stringify(people))}catch(e){};dbSet('people',people)}
 
 function renderPeople(){
   const chips=document.getElementById('people-chips');
