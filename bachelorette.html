@@ -362,6 +362,17 @@
   .settl-amt{margin-left:auto;font-family:"Fraunces",serif;font-size:22px;font-style:italic;color:var(--pink-hot)}
   .settle-note{font-style:italic;font-size:14px;color:var(--wine);opacity:.6;padding:12px 0}
 
+  /* ---------- BAR FILTER ---------- */
+  .bar-filter{
+    display:flex;flex-wrap:wrap;gap:10px;
+    margin-bottom:40px;
+  }
+  .bar-chip{
+    padding:9px 20px;font-size:12px;letter-spacing:.18em;
+    transition:all .2s;
+  }
+  .bar-chip.active{background:var(--wine);color:var(--cream)}
+
   /* ---------- DRINKS MENU ---------- */
   .drinks-cat{
     display:flex;align-items:baseline;gap:20px;margin:48px 0 20px;
@@ -947,6 +958,25 @@
   footer .display .pink{color:var(--pink-hot)}
   footer p{margin-top:24px;text-transform:uppercase;letter-spacing:.4em;font-size:11px;color:var(--wine);opacity:.6}
 
+  /* ============ TOUCH / TAP ============ */
+  button,.btn,.chip,.tab,.bingo-cell,.hunt-item,.stepper-btn,
+  .main-nav button,.pp-btn,.td-switch button{
+    -webkit-tap-highlight-color:transparent;
+    touch-action:manipulation;
+  }
+  /* Budget table safe horizontal scroll wrapper */
+  .budget-table-wrap{
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:thin;
+    scrollbar-color:var(--line) transparent;
+  }
+  .budget-table-wrap::-webkit-scrollbar{height:4px}
+  .budget-table-wrap::-webkit-scrollbar-track{background:transparent}
+  .budget-table-wrap::-webkit-scrollbar-thumb{background:var(--line);border-radius:2px}
+  /* Hero title word safety */
+  .hero h1{overflow-wrap:break-word}
+
   /* ============ MOBILE ============ */
   @media (max-width:720px){
     section{padding:56px 18px}
@@ -1036,15 +1066,30 @@
     .total-cell{padding:18px;border-right:none;border-bottom:1px solid var(--line)}
     .total-cell:last-child{border-bottom:none}
     .total-cell-val{font-size:32px}
-    .budget-table{font-size:13.5px}
-    .budget-table th{font-size:10px;padding:10px 6px;letter-spacing:.18em}
-    .budget-table td{padding:12px 6px}
+    /* Table: pull edge-to-edge so scroll area is full width */
+    .budget-table-wrap{margin:0 -18px;padding:0 18px}
+    .budget-table{font-size:13.5px;min-width:420px}
+    .budget-table th{font-size:10px;padding:10px 8px;letter-spacing:.15em}
+    .budget-table td{padding:12px 8px}
     .budget-table td.cat-cell{font-size:15px}
-    .budget-table .note{font-size:11.5px}
+    /* Mobile: hide Notes (col 2) and Splurge (col 5); show Paid By (col 3) */
+    .budget-table th:nth-child(2),
+    .budget-table td:nth-child(2){display:none}
     .budget-table th:nth-child(3),
-    .budget-table td:nth-child(3){display:none}
+    .budget-table td:nth-child(3){display:table-cell}
+    .budget-table th:nth-child(5),
+    .budget-table td:nth-child(5){display:none}
+    .paid-select{max-width:96px;font-size:11px;padding:3px 5px}
     .editable{padding:4px 6px}
-    .delete-row{opacity:.4}
+    .delete-row{opacity:.5}
+    /* Add-row buttons stack full-width */
+    .add-row{flex-direction:column;align-items:stretch;gap:8px}
+    .add-row .btn{justify-content:center;width:100%}
+    .save-hint{margin-top:0;text-align:center;width:100%}
+    /* People row: add input stretches */
+    .people-row{padding:12px 14px}
+    .person-add{flex:1;min-width:0;width:100%}
+    .person-add input{flex:1;width:auto;min-width:0}
 
     /* Bar stock */
     .bar-stock{padding:28px 22px;gap:24px;margin-top:40px}
@@ -1084,12 +1129,16 @@
 
     /* Game header reset button kept reasonable */
     .game-header .btn.small{padding:8px 14px;font-size:10px}
+
+    /* Personalize bar tighter */
+    .personalize{padding:10px 14px;gap:8px}
   }
 
   @media (max-width:380px){
     section{padding:48px 14px}
     header{padding:18px 14px 0}
     .hero h1{font-size:40px}
+    .hero-sub{font-size:15px}
     .section-title{font-size:28px}
     .section-sub{font-size:14px;margin-bottom:22px}
     .game-header h3{font-size:30px}
@@ -1109,9 +1158,12 @@
     .tab-num{font-size:8.5px}
 
     /* Budget */
-    .budget-table td{padding:10px 4px}
-    .budget-table td.cat-cell{font-size:14px}
-    .amount{min-width:50px}
+    .budget-table-wrap{margin:0 -14px;padding:0 14px}
+    .budget-table{min-width:360px}
+    .budget-table td{padding:10px 5px}
+    .budget-table td.cat-cell{font-size:13px}
+    .paid-select{max-width:80px;font-size:10.5px}
+    .amount{min-width:44px}
     .guest-control label{font-size:10px}
     .guest-count{font-size:26px}
     .stepper-btn{width:30px;height:30px;font-size:16px}
@@ -1145,6 +1197,15 @@
     /* Timeline */
     .tl-time-input{font-size:18px}
     .tl-title-input{font-size:16px}
+
+    /* Main nav very tight */
+    .main-nav button{padding:12px 10px;font-size:14px;min-width:72px}
+    .main-nav .nav-num{font-size:8px}
+
+    /* Personalize full-width inputs */
+    .personalize{flex-direction:column;align-items:stretch;gap:7px;padding:10px 14px}
+    .personalize .pp-field{justify-content:space-between;width:100%}
+    .personalize input,.personalize input[type="date"]{flex:1;width:auto;min-width:0}
   }
 </style>
 <!-- No SDK needed — Firebase REST API is used directly -->
@@ -1582,6 +1643,7 @@
       </div>
     </div>
 
+    <div class="budget-table-wrap">
     <table class="budget-table">
       <thead>
         <tr>
@@ -1595,6 +1657,7 @@
       </thead>
       <tbody id="budget-body"></tbody>
     </table>
+    </div>
 
     <div class="add-row">
       <button class="btn small" id="add-row">+ Add Category</button>
@@ -1623,10 +1686,22 @@
 <section id="drinks" class="main-section">
   <div class="wrap">
     <div class="section-label">Part Three — The Bar</div>
-    <h2 class="section-title display">Three gin drinks. <span class="accent">One</span> bottle.</h2>
-    <p class="section-sub">Three classics that all start with the same bottle of gin — one easy, one bubbly, one elegant. Buy one nice gin and you're set for the night.</p>
+    <h2 class="section-title display">Build your <span class="accent">bar</span>.</h2>
+    <p class="section-sub">Filter by what you're serving tonight — gin classics or soda &amp; mocktails. The shopping list updates to match.</p>
 
-    <div class="drinks-grid drinks-three">
+    <!-- BAR FILTER -->
+    <div class="bar-filter">
+      <button class="chip bar-chip active" data-bar="all">✦ All Drinks</button>
+      <button class="chip bar-chip" data-bar="gin">🍸 Gin-Based</button>
+      <button class="chip bar-chip" data-bar="soda">🫧 Soda &amp; Mocktails</button>
+    </div>
+
+    <!-- GIN DRINKS -->
+    <div class="drinks-cat bar-cat" data-barcat="gin">
+      <h3>Gin <em>Classics</em></h3>
+      <span class="cat-note">One bottle, three parties.</span>
+    </div>
+    <div class="drinks-grid drinks-three bar-cat" data-barcat="gin">
 
       <article class="drink">
         <div class="drink-head"><h4>Gin &amp; <em>Tonic</em></h4><span class="dots"></span><span class="glass">balloon glass</span></div>
@@ -1667,11 +1742,59 @@
 
     </div>
 
-        <!-- BAR STOCK -->
-    <div class="bar-stock">
+    <!-- SODA / MOCKTAIL DRINKS -->
+    <div class="drinks-cat bar-cat" data-barcat="soda">
+      <h3>Soda <em>&amp; Mocktails</em></h3>
+      <span class="cat-note">Sprite, Fresca, ginger ale — zero excuses to skip.</span>
+    </div>
+    <div class="drinks-grid drinks-three bar-cat" data-barcat="soda">
+
+      <article class="drink">
+        <div class="drink-head"><h4>Shirley <em>Temple</em></h4><span class="dots"></span><span class="glass">highball glass</span></div>
+        <div class="drink-vibe">The original party starter. Pink, sweet, everyone loves it.</div>
+        <ul class="drink-recipe">
+          <li><span>Sprite or 7UP, chilled</span><span>180 ml</span></li>
+          <li><span>Grenadine syrup</span><span>2 tbsp</span></li>
+          <li><span>Fresh orange juice (optional)</span><span>30 ml</span></li>
+          <li><span>Ice cubes</span><span>full glass</span></li>
+          <li><span>Maraschino cherry + orange slice, garnish</span><span>1 each</span></li>
+          <li><span>Pour grenadine first — it sinks for a sunrise effect</span><span></span></li>
+        </ul>
+      </article>
+
+      <article class="drink">
+        <div class="drink-head"><h4>Fresca <em>Paloma</em></h4><span class="dots"></span><span class="glass">rocks glass</span></div>
+        <div class="drink-vibe">Grapefruity, tart, and dangerously refreshing.</div>
+        <ul class="drink-recipe">
+          <li><span>Fresca (grapefruit soda), chilled</span><span>200 ml</span></li>
+          <li><span>Fresh lime juice</span><span>30 ml</span></li>
+          <li><span>Pinch of salt or Tajín on the rim</span><span></span></li>
+          <li><span>Ice cubes</span><span>full glass</span></li>
+          <li><span>Grapefruit wedge, garnish</span><span>1</span></li>
+          <li><span>Rim the glass, add ice, pour Fresca, squeeze lime in</span><span></span></li>
+        </ul>
+      </article>
+
+      <article class="drink">
+        <div class="drink-head"><h4>Cucumber <em>Mint Spritz</em></h4><span class="dots"></span><span class="glass">wine glass</span></div>
+        <div class="drink-vibe">Looks spa-fancy, tastes incredible, done in 2 minutes.</div>
+        <ul class="drink-recipe">
+          <li><span>Sprite or lemon soda, chilled</span><span>180 ml</span></li>
+          <li><span>Fresh cucumber slices</span><span>3–4</span></li>
+          <li><span>Fresh mint leaves, muddled</span><span>6–8</span></li>
+          <li><span>Fresh lime juice</span><span>15 ml</span></li>
+          <li><span>Ice cubes</span><span>full glass</span></li>
+          <li><span>Muddle mint + cucumber with lime → add ice → top with Sprite</span><span></span></li>
+        </ul>
+      </article>
+
+    </div>
+
+    <!-- STOCK LIST — GIN -->
+    <div class="bar-stock" id="stock-gin" style="display:none">
       <div>
-        <h3>The Pro <em>Stock-Up</em></h3>
-        <p class="stock-intro">Three drinks · one shopping list.</p>
+        <h3>Gin Bar <em>Stock-Up</em></h3>
+        <p class="stock-intro">3 drinks · one shopping list.</p>
       </div>
       <div class="stock-cols">
         <div class="stock-col">
@@ -1694,6 +1817,73 @@
             <li>White sugar × small bag (simple syrup: 1:1 sugar+hot water)</li>
             <li>Big bag of ice — clear or large cubes ideal</li>
             <li>Cocktail shaker + bar spoon + strainer</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- STOCK LIST — SODA (hidden by default) -->
+    <div class="bar-stock" id="stock-soda" style="display:none">
+      <div>
+        <h3>Soda Bar <em>Stock-Up</em></h3>
+        <p class="stock-intro">3 mocktails · one shopping list.</p>
+      </div>
+      <div class="stock-cols">
+        <div class="stock-col">
+          <h5>Sodas</h5>
+          <ul>
+            <li>Sprite or 7UP × 2 large bottles (chilled)</li>
+            <li>Fresca (grapefruit soda) × 2 cans or 1 bottle</li>
+            <li>Grenadine syrup × 1 bottle (Rose's or Stirrings)</li>
+          </ul>
+        </div>
+        <div class="stock-col">
+          <h5>Fresh &amp; Pantry</h5>
+          <ul>
+            <li>Fresh limes × 4 (Paloma + Spritz juice)</li>
+            <li>Fresh oranges × 2 (Shirley Temple garnish)</li>
+            <li>Cucumber × 1 (Mint Spritz slices)</li>
+            <li>Fresh mint × 1 bunch (Mint Spritz muddling)</li>
+            <li>Maraschino cherries × 1 jar (Shirley Temple)</li>
+            <li>Tajín or salt (Paloma rim, optional)</li>
+            <li>Big bag of ice + muddler</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- STOCK LIST — ALL (shown when "All Drinks" selected) -->
+    <div class="bar-stock" id="stock-all">
+      <div>
+        <h3>Full Bar <em>Stock-Up</em></h3>
+        <p class="stock-intro">All 6 drinks · one list.</p>
+      </div>
+      <div class="stock-cols">
+        <div class="stock-col">
+          <h5>Bottles &amp; Sodas</h5>
+          <ul>
+            <li>Gin × 1 bottle (Hendrick's, Tanqueray, or Bombay)</li>
+            <li>Campari × 1 (200 ml)</li>
+            <li>Sweet vermouth × 1 (Carpano Antica or Cinzano Rosso)</li>
+            <li>Champagne or prosecco × 1 bottle</li>
+            <li>Tonic water × 2 large bottles</li>
+            <li>Sprite or 7UP × 2 large bottles</li>
+            <li>Fresca (grapefruit soda) × 2 cans or 1 bottle</li>
+            <li>Grenadine syrup × 1 bottle</li>
+          </ul>
+        </div>
+        <div class="stock-col">
+          <h5>Fresh &amp; Pantry</h5>
+          <ul>
+            <li>Fresh lemons × 4 (French 75)</li>
+            <li>Fresh limes × 5 (G&amp;T, Paloma, Spritz)</li>
+            <li>Fresh oranges × 3 (Negroni peel + garnishes)</li>
+            <li>Cucumber × 1 (G&amp;T ribbons + Spritz slices)</li>
+            <li>Fresh mint × 1 bunch</li>
+            <li>Maraschino cherries × 1 jar</li>
+            <li>Tajín or salt (Paloma rim, optional)</li>
+            <li>White sugar × small bag (simple syrup)</li>
+            <li>Big bag of ice + cocktail shaker + muddler + strainer</li>
           </ul>
         </div>
       </div>
@@ -2219,14 +2409,26 @@ function buildBingo(){
         cell.dataset.empty=cell.textContent.trim()===''?'1':'0';
         saveBingo();
       });
+      // Desktop click: toggle mark on filled, unfocused cells
       cell.addEventListener('click',e=>{
-        // If cell is currently focused (editing), allow text cursor — don't toggle
         if(document.activeElement===cell)return;
-        // If cell is empty, let the click focus it for typing
         if(cell.dataset.empty==='1'){return;}
-        // Otherwise treat tap as mark/unmark
         e.preventDefault();
         cell.blur();
+        cell.classList.toggle('marked');
+        checkBingo();
+        saveBingo();
+      });
+      // Mobile touch: intercept touchend on filled cells so focus doesn't
+      // fire first and swallow the tap (contentEditable focus race condition)
+      let _bingoTouchMoved=false;
+      cell.addEventListener('touchstart',()=>{_bingoTouchMoved=false;},{passive:true});
+      cell.addEventListener('touchmove',()=>{_bingoTouchMoved=true;},{passive:true});
+      cell.addEventListener('touchend',e=>{
+        if(_bingoTouchMoved)return;
+        if(cell.dataset.empty==='1')return; // empty → let focus/type happen
+        e.preventDefault(); // block synthesised click + focus
+        if(document.activeElement===cell)cell.blur();
         cell.classList.toggle('marked');
         checkBingo();
         saveBingo();
@@ -3904,6 +4106,34 @@ setTimeout(()=>{
     const saved=JSON.parse(localStorage.getItem('bach_bingo')||'null');
     if(saved&&saved.length===25)applyBingoState(saved);
   }catch(e){}
+})();
+
+/* ============================================
+   BAR FILTER
+============================================ */
+(function initBarFilter(){
+  const chips=document.querySelectorAll('.bar-chip');
+  const cats=document.querySelectorAll('.bar-cat');
+  const stockGin=document.getElementById('stock-gin');
+  const stockSoda=document.getElementById('stock-soda');
+  const stockAll=document.getElementById('stock-all');
+
+  function applyFilter(cat){
+    chips.forEach(c=>c.classList.toggle('active',c.dataset.bar===cat));
+    cats.forEach(el=>{
+      const show=(cat==='all'||el.dataset.barcat===cat);
+      el.style.display=show?'':'none';
+    });
+    stockGin.style.display  =(cat==='gin' ) ? '' : 'none';
+    stockSoda.style.display =(cat==='soda') ? '' : 'none';
+    stockAll.style.display  =(cat==='all' ) ? '' : 'none';
+  }
+
+  chips.forEach(chip=>{
+    chip.addEventListener('click',()=>applyFilter(chip.dataset.bar));
+  });
+
+  applyFilter('all'); // default
 })();
 
 // Start Firebase live sync (connects, sets up listeners, shows share bar)
