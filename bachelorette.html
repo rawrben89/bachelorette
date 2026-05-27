@@ -362,6 +362,77 @@
   .settl-amt{margin-left:auto;font-family:"Fraunces",serif;font-size:22px;font-style:italic;color:var(--pink-hot)}
   .settle-note{font-style:italic;font-size:14px;color:var(--wine);opacity:.6;padding:12px 0}
 
+  /* ---------- HERO NAME ANIMATION ---------- */
+  @keyframes hero-name-in{
+    from{opacity:0;transform:translateY(6px)}
+    to{opacity:1;transform:none}
+  }
+  .hero-curated-name.name-in{animation:hero-name-in .4s ease forwards}
+
+  /* ---------- BUDGET ACTUAL COLUMN ---------- */
+  .actual-under{color:#2d7a3d;font-weight:600}
+  .actual-over{color:#a32d4a;font-weight:600}
+  .actual-empty{color:var(--line)}
+  .actual-delta{font-size:10px;display:block;font-family:'DM Sans';font-weight:400;margin-top:1px;opacity:.75}
+
+  /* ---------- POLL GAME ---------- */
+  .poll-q-input{
+    width:100%;padding:14px 16px;border:1px solid var(--line);
+    background:#fff;font-family:"Fraunces",serif;font-style:italic;
+    font-size:20px;color:var(--wine);border-radius:4px;margin-bottom:12px;
+  }
+  .poll-q-input:focus{outline:none;border-color:var(--pink-hot)}
+  .poll-opt-input{
+    width:100%;padding:11px 14px;border:1px solid var(--line);
+    background:#fff;font-family:"DM Sans";font-size:14px;color:var(--ink);
+    border-radius:4px;margin-bottom:8px;
+  }
+  .poll-opt-input:focus{outline:none;border-color:var(--pink-hot)}
+  .poll-question-display{
+    font-family:"Fraunces",serif;font-size:clamp(22px,4vw,36px);
+    font-style:italic;color:var(--wine);margin-bottom:24px;line-height:1.2;
+    text-align:center;
+  }
+  .poll-opt-btn{
+    display:block;width:100%;padding:16px 20px;
+    border:2px solid var(--wine);background:transparent;
+    cursor:pointer;font-family:"Fraunces",serif;font-size:18px;
+    color:var(--wine);border-radius:4px;margin-bottom:10px;
+    text-align:left;transition:all .2s;touch-action:manipulation;
+  }
+  .poll-opt-btn:hover{background:var(--cream-deep)}
+  .poll-opt-btn.poll-voted{background:var(--wine);color:#fff;cursor:default;pointer-events:none}
+  .poll-bar-row{margin-bottom:14px}
+  .poll-bar-label{
+    display:flex;justify-content:space-between;align-items:baseline;
+    font-size:14px;color:var(--ink);margin-bottom:5px;
+  }
+  .poll-bar-label .poll-opt-name{font-weight:500;color:var(--wine)}
+  .poll-bar-label .poll-opt-stat{font-size:12px;color:#6b324d;opacity:.8}
+  .poll-bar-track{
+    height:10px;background:var(--cream-deep);border-radius:5px;overflow:hidden;
+    border:1px solid var(--line);
+  }
+  .poll-bar-fill{
+    height:100%;background:var(--pink-hot);border-radius:5px;
+    transition:width .5s cubic-bezier(.4,0,.2,1);
+  }
+  .poll-your-vote{
+    padding:11px 16px;background:var(--cream-deep);border-left:3px solid var(--pink-hot);
+    font-size:13px;color:var(--wine);margin-top:16px;font-style:italic;
+  }
+  .poll-results-head{
+    display:flex;align-items:center;gap:14px;text-transform:uppercase;
+    letter-spacing:.28em;font-size:11px;color:var(--wine);
+    margin:32px 0 16px;padding-top:24px;border-top:1px solid var(--line);
+  }
+  .poll-results-head::before{content:"";width:28px;height:1px;background:var(--wine)}
+  .poll-total{font-size:12px;color:var(--wine);opacity:.55;margin-top:10px;font-style:italic}
+  .poll-status{
+    padding:20px;text-align:center;font-family:"Fraunces",serif;
+    font-style:italic;font-size:18px;color:var(--wine);opacity:.6;
+  }
+
   /* ---------- BAR FILTER ---------- */
   .bar-filter{
     display:flex;flex-wrap:wrap;gap:10px;
@@ -1072,13 +1143,13 @@
     .budget-table th{font-size:10px;padding:10px 8px;letter-spacing:.15em}
     .budget-table td{padding:12px 8px}
     .budget-table td.cat-cell{font-size:15px}
-    /* Mobile: hide Notes (col 2) and Splurge (col 5); show Paid By (col 3) */
+    /* Mobile: hide Notes (col 2) and Splurge (col 6); show Paid By (col 3) + Actual (col 5) */
     .budget-table th:nth-child(2),
     .budget-table td:nth-child(2){display:none}
     .budget-table th:nth-child(3),
     .budget-table td:nth-child(3){display:table-cell}
-    .budget-table th:nth-child(5),
-    .budget-table td:nth-child(5){display:none}
+    .budget-table th:nth-child(6),
+    .budget-table td:nth-child(6){display:none}
     .paid-select{max-width:96px;font-size:11px;padding:3px 5px}
     .editable{padding:4px 6px}
     .delete-row{opacity:.5}
@@ -1163,7 +1234,7 @@
 
     /* Budget */
     .budget-table-wrap{margin:0 -14px;padding:0 14px}
-    .budget-table{min-width:360px}
+    .budget-table{min-width:380px}
     .budget-table td{padding:10px 5px}
     .budget-table td.cat-cell{font-size:13px}
     .paid-select{max-width:80px;font-size:10.5px}
@@ -1234,6 +1305,7 @@
       <div style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap">
         <code id="live-url" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);padding:8px 14px;border-radius:6px;font-size:12px;letter-spacing:.02em;word-break:break-all;white-space:normal;line-height:1.5;cursor:text;user-select:all;max-width:100%"></code>
         <button id="live-copy-btn" style="flex-shrink:0;background:var(--pink-hot);border:none;color:#fff;padding:9px 22px;border-radius:999px;cursor:pointer;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;touch-action:manipulation;white-space:nowrap">Copy Link</button>
+        <button id="live-new-btn" style="flex-shrink:0;background:transparent;border:1px solid rgba(255,255,255,.45);color:#fff;padding:9px 18px;border-radius:999px;cursor:pointer;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;touch-action:manipulation;white-space:nowrap">✦ New Room</button>
       </div>
     </div>
   </div>
@@ -1292,7 +1364,7 @@
 <section id="games" class="main-section active">
   <div class="wrap">
     <div class="section-label">Part One — Press Play</div>
-    <h2 class="section-title display">Ten games. <span class="accent">Zero</span> setup.</h2>
+    <h2 class="section-title display">Eleven games. <span class="accent">Zero</span> setup.</h2>
     <p class="section-sub">Pick a tab. Tap, spin, type, and play — everything runs in this page, perfect for an at-home pre-game.</p>
 
     <div class="tabs" role="tablist">
@@ -1306,6 +1378,7 @@
       <button class="tab" data-tab="pp"><span class="tab-num">08</span>Polish / Porn</button>
       <button class="tab" data-tab="stg"><span class="tab-num">09</span>Toy / Gadget</button>
       <button class="tab" data-tab="bl"><span class="tab-num">10</span>Bucket List</button>
+      <button class="tab" data-tab="vote"><span class="tab-num">11</span>Live Vote</button>
     </div>
 
     <!-- BINGO -->
@@ -1602,6 +1675,48 @@
       <div class="hunt-list" id="bl-list"></div>
     </div>
 
+    <!-- LIVE VOTE -->
+    <div class="panel" id="panel-vote">
+      <div class="game-header">
+        <div>
+          <h3>Live <em>Vote</em></h3>
+          <p>Type a question, add options, launch. Everyone taps their answer and results update live for the whole room.</p>
+        </div>
+        <button class="btn ghost small" id="poll-reset-btn">Reset</button>
+      </div>
+
+      <!-- Editor (when no active poll) -->
+      <div id="poll-editor">
+        <input type="text" id="poll-q" class="poll-q-input" placeholder="Ask a question… e.g. Best song of the night?" maxlength="120" />
+        <div id="poll-opts-wrap">
+          <input type="text" class="poll-opt-input" data-opt="0" placeholder="Option 1" maxlength="60" />
+          <input type="text" class="poll-opt-input" data-opt="1" placeholder="Option 2" maxlength="60" />
+          <input type="text" class="poll-opt-input" data-opt="2" placeholder="Option 3 (optional)" maxlength="60" />
+          <input type="text" class="poll-opt-input" data-opt="3" placeholder="Option 4 (optional)" maxlength="60" />
+        </div>
+        <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap">
+          <button class="btn" id="poll-launch">🗳 Launch Poll</button>
+        </div>
+      </div>
+
+      <!-- Active poll — voting buttons -->
+      <div id="poll-active" style="display:none">
+        <div class="poll-question-display" id="poll-question-display"></div>
+        <div id="poll-vote-btns"></div>
+        <div id="poll-your-vote" class="poll-your-vote" style="display:none"></div>
+        <button class="btn ghost small" id="poll-close" style="margin-top:20px">✓ Close Poll</button>
+      </div>
+
+      <!-- Live results (shown whenever votes exist) -->
+      <div id="poll-results" style="display:none">
+        <div class="poll-results-head">Live Results</div>
+        <div id="poll-bars"></div>
+        <div id="poll-total-votes" class="poll-total"></div>
+      </div>
+
+      <div id="poll-idle" class="poll-status">No active poll — type a question above and launch it.</div>
+    </div>
+
   </div>
 </section>
 
@@ -1641,12 +1756,16 @@
 
     <div class="budget-totals">
       <div class="total-cell">
-        <div class="total-cell-label">Group Total</div>
+        <div class="total-cell-label">Planned Total</div>
         <div class="total-cell-val" id="total-group">$0</div>
       </div>
       <div class="total-cell">
         <div class="total-cell-label">Per Guest</div>
         <div class="total-cell-val" id="total-per">$0</div>
+      </div>
+      <div class="total-cell" id="total-actual-cell" style="display:none">
+        <div class="total-cell-label">Actual Total</div>
+        <div class="total-cell-val" id="total-actual">$0</div>
       </div>
       <div class="total-cell">
         <div class="total-cell-label">Splurge Per Guest</div>
@@ -1662,6 +1781,7 @@
           <th>Notes</th>
           <th>Paid by</th>
           <th>Base (group)</th>
+          <th>Actual $</th>
           <th>Splurge (group)</th>
           <th></th>
         </tr>
@@ -1700,11 +1820,14 @@
     <h2 class="section-title display">Build your <span class="accent">bar</span>.</h2>
     <p class="section-sub">Filter by what you're serving tonight — gin classics or soda &amp; mocktails. The shopping list updates to match.</p>
 
-    <!-- BAR FILTER -->
-    <div class="bar-filter">
-      <button class="chip bar-chip active" data-bar="all">✦ All Drinks</button>
-      <button class="chip bar-chip" data-bar="gin">🍸 Gin-Based</button>
-      <button class="chip bar-chip" data-bar="soda">🫧 Soda &amp; Mocktails</button>
+    <!-- BAR FILTER + PRINT -->
+    <div class="bar-filter" style="justify-content:space-between;align-items:center">
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="chip bar-chip active" data-bar="all">✦ All Drinks</button>
+        <button class="chip bar-chip" data-bar="gin">🍸 Gin-Based</button>
+        <button class="chip bar-chip" data-bar="soda">🫧 Soda &amp; Mocktails</button>
+      </div>
+      <button class="btn ghost small" id="print-bar-btn" style="white-space:nowrap">🖨 Print Menu</button>
     </div>
 
     <!-- GIN DRINKS -->
@@ -2168,6 +2291,9 @@ function _applySection(key, data) {
       }
       break;
     }
+    case 'polls':
+      if (typeof window._applyPoll === 'function') window._applyPoll(data);
+      break;
   }
 }
 
@@ -2221,9 +2347,15 @@ function titleName(n){
 
 function applyHeroName(){
   const display=document.getElementById('hero-bride-display');
+  if(!display)return;
   const b=getBride();
-  if(b==='the bride'){display.textContent='The Bride-to-Be';}
-  else{display.textContent=titleName(b);}
+  const newText=(b==='the bride')?'The Bride-to-Be':titleName(b);
+  if(display.textContent!==newText){
+    display.classList.remove('name-in');
+    void display.offsetWidth; // trigger reflow so animation restarts
+    display.textContent=newText;
+    display.classList.add('name-in');
+  }
 }
 
 function updateCountdown(){
@@ -2741,13 +2873,13 @@ document.getElementById('hunt-reset').addEventListener('click',()=>{
    BUDGET
 ============================================ */
 const DEFAULT_BUDGET=[
-  {cat:"Accommodation",note:"2 nights · airbnb vs. boutique hotel",base:640,splurge:1760},
-  {cat:"Food & Groceries",note:"Breakfasts in, snacks, charcuterie",base:360,splurge:640},
-  {cat:"Dinner Out",note:"One real reservation with service",base:560,splurge:1120},
-  {cat:"Drinks & Bar Tab",note:"Cocktails out, bottle or two at home",base:480,splurge:1280},
-  {cat:"Daytime Activity",note:"Brunch + class (cocktail, pottery, spa)",base:400,splurge:960},
-  {cat:"Decor & Games",note:"Sashes, banners, prints, prizes",base:120,splurge:280},
-  {cat:"Favors / Survival Kits",note:"Hangover kit per guest",base:120,splurge:240},
+  {cat:"Accommodation",note:"2 nights · airbnb vs. boutique hotel",base:640,splurge:1760,actual:'',paidBy:null},
+  {cat:"Food & Groceries",note:"Breakfasts in, snacks, charcuterie",base:360,splurge:640,actual:'',paidBy:null},
+  {cat:"Dinner Out",note:"One real reservation with service",base:560,splurge:1120,actual:'',paidBy:null},
+  {cat:"Drinks & Bar Tab",note:"Cocktails out, bottle or two at home",base:480,splurge:1280,actual:'',paidBy:null},
+  {cat:"Daytime Activity",note:"Brunch + class (cocktail, pottery, spa)",base:400,splurge:960,actual:'',paidBy:null},
+  {cat:"Decor & Games",note:"Sashes, banners, prints, prizes",base:120,splurge:280,actual:'',paidBy:null},
+  {cat:"Favors / Survival Kits",note:"Hangover kit per guest",base:120,splurge:240,actual:'',paidBy:null},
 ];
 let budget=loadBudget();
 let guests=loadGuests();
@@ -2778,12 +2910,23 @@ function renderBudget(){
     const paidByIdx = (row.paidBy !== null && row.paidBy !== undefined && row.paidBy !== '') ? +row.paidBy : null;
     const paidOpts = `<option value="">— who paid? —</option>` +
       people.map((p,pi)=>`<option value="${pi}"${paidByIdx===pi?' selected':''}>${p}</option>`).join('');
+    // Actual column colouring
+    const actualVal = row.actual != null && row.actual !== '' ? +row.actual : null;
+    const base = +row.base || 0;
+    let actualCls = 'actual-empty', actualDelta = '';
+    if (actualVal !== null) {
+      actualCls = actualVal <= base ? 'actual-under' : 'actual-over';
+      const diff = Math.abs(actualVal - base);
+      actualDelta = `<span class="actual-delta">${actualVal <= base ? '−' : '+'}${fmt(diff)} vs plan</span>`;
+    }
+    const actualDisplay = actualVal !== null ? actualVal : '';
     const tr=document.createElement('tr');
     tr.innerHTML=`
       <td class="cat-cell"><span class="editable" contenteditable="true" data-i="${i}" data-f="cat">${row.cat}</span></td>
       <td><span class="editable" contenteditable="true" data-i="${i}" data-f="note" style="font-size:13px;color:#6b324d">${row.note}</span></td>
       <td><select class="paid-select" data-i="${i}">${paidOpts}</select></td>
       <td><span class="currency">$</span><span class="editable amount" contenteditable="true" data-i="${i}" data-f="base">${row.base}</span></td>
+      <td><span class="currency ${actualCls}">$</span><span class="editable amount ${actualCls}" contenteditable="true" data-i="${i}" data-f="actual">${actualDisplay}</span>${actualDelta}</td>
       <td><span class="currency">$</span><span class="editable amount" contenteditable="true" data-i="${i}" data-f="splurge">${row.splurge}</span></td>
       <td><button class="delete-row" data-i="${i}" title="Delete row">×</button></td>
     `;
@@ -2813,19 +2956,20 @@ function attachBudgetEvents(){
     el.addEventListener('focus',()=>{ _budgetFocused=true; });
     el.addEventListener('input',()=>{
       const i=+el.dataset.i,f=el.dataset.f;
-      if(f==='base'||f==='splurge'){
-        const num=parseFloat(el.textContent.replace(/[^0-9.]/g,''))||0;
-        budget[i][f]=num;
+      if(f==='base'||f==='splurge'||f==='actual'){
+        const raw=el.textContent.replace(/[^0-9.]/g,'');
+        budget[i][f]=raw===''?'':parseFloat(raw)||0;
       } else {
         budget[i][f]=el.textContent;
       }
       saveBudget();
-      if(f==='base'||f==='splurge')recalc();
+      if(f==='base'||f==='splurge'||f==='actual')recalc();
     });
     el.addEventListener('blur',()=>{
-      if(el.dataset.f==='base'||el.dataset.f==='splurge'){
-        const i=+el.dataset.i,f=el.dataset.f;
-        el.textContent=budget[i][f];
+      const f=el.dataset.f;
+      if(f==='base'||f==='splurge'||f==='actual'){
+        const i=+el.dataset.i;
+        el.textContent=budget[i][f]??'';
       }
       _budgetBlurCheck();
     });
@@ -2858,6 +3002,23 @@ function recalc(){
   document.getElementById('total-group').textContent=fmt(baseTotal);
   document.getElementById('total-per').textContent=fmt(baseTotal/payingGuests);
   document.getElementById('total-splurge').textContent=fmt(splurgeTotal/payingGuests);
+  // Actual total — only show cell when at least one row has an actual value
+  const actualRows=budget.filter(r=>r.actual!=null&&r.actual!=='');
+  const actualCell=document.getElementById('total-actual-cell');
+  if(actualCell){
+    if(actualRows.length>0){
+      const actualTotal=actualRows.reduce((s,r)=>s+(+r.actual||0),0);
+      document.getElementById('total-actual').textContent=fmt(actualTotal);
+      actualCell.style.display='';
+      // Colour the cell based on over/under
+      const over=actualTotal>baseTotal;
+      actualCell.style.background=over?'rgba(163,45,74,.08)':'rgba(45,122,61,.08)';
+      actualCell.querySelector('.total-cell-label').style.color=over?'#a32d4a':'#2d7a3d';
+      document.getElementById('total-actual').style.color=over?'#a32d4a':'#2d7a3d';
+    } else {
+      actualCell.style.display='none';
+    }
+  }
   renderSettlements();
 }
 
@@ -2874,7 +3035,7 @@ brideToggle.addEventListener('click',()=>{bridePays=!bridePays;saveBridePays();u
 updateBrideToggle();
 
 document.getElementById('add-row').addEventListener('click',()=>{
-  budget.push({cat:"New Category",note:"Click to edit",base:0,splurge:0,paidBy:null});
+  budget.push({cat:"New Category",note:"Click to edit",base:0,splurge:0,actual:'',paidBy:null});
   saveBudget();renderBudget();
 });
 document.getElementById('reset-budget').addEventListener('click',()=>{
@@ -4172,6 +4333,296 @@ setTimeout(()=>{
   });
 
   applyFilter('all'); // default
+})();
+
+/* ============================================
+   SWIPE NAVIGATION (Feature 4)
+============================================ */
+(function initSwipeNav(){
+  let _sx=0, _sy=0, _target=null;
+  const sections=['games','budget','drinks','timeline'];
+
+  document.addEventListener('touchstart', e=>{
+    _sx = e.touches[0].clientX;
+    _sy = e.touches[0].clientY;
+    _target = e.target;
+  }, {passive:true});
+
+  document.addEventListener('touchend', e=>{
+    const dx = e.changedTouches[0].clientX - _sx;
+    const dy = e.changedTouches[0].clientY - _sy;
+    // Need horizontal swipe, at least 60px, more horizontal than vertical
+    if (Math.abs(dx) < 60) return;
+    if (Math.abs(dy) > Math.abs(dx) * 0.75) return;
+    // Skip if swipe started inside a scroll/input container
+    if (_target && _target.closest('.tabs,.bingo-board,.budget-table-wrap,.timeline-edit,.poll-q-input,.poll-opt-input')) return;
+    if (document.activeElement && ['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)) return;
+    // Find current section
+    const cur = sections.findIndex(s => {
+      const el = document.getElementById(s);
+      return el && el.classList.contains('active');
+    });
+    if (cur === -1) return;
+    if (dx < 0 && cur < sections.length - 1) switchSection(sections[cur + 1]);
+    if (dx > 0 && cur > 0) switchSection(sections[cur - 1]);
+  }, {passive:true});
+})();
+
+/* ============================================
+   LIVE VOTE / POLL (Feature 8)
+============================================ */
+(function initPoll(){
+  // Voter ID — one per browser so same guest can't double-vote
+  let _voterId = localStorage.getItem('bach_voter_id');
+  if (!_voterId) {
+    _voterId = Math.random().toString(36).slice(2, 11);
+    try { localStorage.setItem('bach_voter_id', _voterId); } catch(e){}
+  }
+
+  // State
+  let _pollState = null; // {q, opts:[], votes:{}, open:bool}
+
+  // Elements
+  const elEditor     = document.getElementById('poll-editor');
+  const elActive     = document.getElementById('poll-active');
+  const elResults    = document.getElementById('poll-results');
+  const elIdle       = document.getElementById('poll-idle');
+  const elQ          = document.getElementById('poll-q');
+  const elLaunch     = document.getElementById('poll-launch');
+  const elClose      = document.getElementById('poll-close');
+  const elReset      = document.getElementById('poll-reset-btn');
+  const elQDisplay   = document.getElementById('poll-question-display');
+  const elVoteBtns   = document.getElementById('poll-vote-btns');
+  const elYourVote   = document.getElementById('poll-your-vote');
+  const elBars       = document.getElementById('poll-bars');
+  const elTotalVotes = document.getElementById('poll-total-votes');
+
+  if (!elEditor) return; // panel not in DOM
+
+  // ----- render helpers -----
+  function renderResults(state){
+    if (!state || !state.opts) return;
+    const votes = state.votes || {};
+    const total = Object.values(votes).length;
+    const counts = {};
+    state.opts.forEach((_,i) => counts[i] = 0);
+    Object.values(votes).forEach(v => { if (v != null) counts[v] = (counts[v]||0) + 1; });
+    const max = Math.max(1, ...Object.values(counts));
+
+    elBars.innerHTML = state.opts.map((opt, i) => {
+      const c = counts[i] || 0;
+      const pct = total ? Math.round(c / total * 100) : 0;
+      const barW = Math.round(c / max * 100);
+      return `<div class="poll-bar-row">
+        <div class="poll-bar-label">
+          <span class="poll-opt-name">${escHtml(opt)}</span>
+          <span class="poll-opt-stat">${c} vote${c!==1?'s':''} · ${pct}%</span>
+        </div>
+        <div class="poll-bar-track"><div class="poll-bar-fill" style="width:${barW}%"></div></div>
+      </div>`;
+    }).join('');
+    elTotalVotes.textContent = total + ' vote' + (total!==1?'s':'') + ' total';
+    elResults.style.display = '';
+  }
+
+  function renderVoteButtons(state){
+    if (!state || !state.opts) return;
+    const myVote = (state.votes || {})[_voterId];
+    elQDisplay.textContent = state.q || '';
+    elVoteBtns.innerHTML = state.opts.map((opt, i) => {
+      const voted = myVote === i;
+      return `<button class="poll-opt-btn${voted?' poll-voted':''}" data-opt="${i}">${escHtml(opt)}${voted?' ✓':''}</button>`;
+    }).join('');
+    elVoteBtns.querySelectorAll('.poll-opt-btn').forEach(btn => {
+      btn.addEventListener('click', () => castVote(+btn.dataset.opt));
+    });
+    if (myVote != null) {
+      elYourVote.textContent = 'You voted: ' + escHtml(state.opts[myVote]);
+      elYourVote.style.display = '';
+    } else {
+      elYourVote.style.display = 'none';
+    }
+    elActive.style.display = '';
+  }
+
+  function renderIdle(){
+    elActive.style.display = 'none';
+    elResults.style.display = 'none';
+    elIdle.style.display = '';
+  }
+
+  function escHtml(s){ return (s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+  // ----- apply incoming poll state -----
+  window._applyPoll = function(raw){
+    if (!raw || raw === '__empty__') {
+      _pollState = null;
+      renderIdle();
+      return;
+    }
+    _pollState = raw;
+    if (_pollState.open) {
+      renderVoteButtons(_pollState);
+      renderResults(_pollState);
+      elIdle.style.display = 'none';
+    } else {
+      // Poll closed — show results only
+      elActive.style.display = 'none';
+      elIdle.style.display = 'none';
+      renderResults(_pollState);
+    }
+  };
+
+  // ----- Firebase write helpers -----
+  function writePoll(obj, cb){
+    if (!_partyId || !DB_URL) return;
+    const url = DB_URL + '/p/' + _partyId + '/polls.json';
+    fetch(url, {method:'PUT', body:JSON.stringify(obj)})
+      .then(()=>{ if(cb) cb(); })
+      .catch(err=>console.warn('poll write error',err));
+  }
+
+  // ----- cast vote -----
+  function castVote(optIdx){
+    if (!_pollState || !_pollState.open) return;
+    const newState = JSON.parse(JSON.stringify(_pollState));
+    if (!newState.votes) newState.votes = {};
+    newState.votes[_voterId] = optIdx;
+    writePoll(newState);
+  }
+
+  // ----- launch poll -----
+  if (elLaunch) {
+    elLaunch.addEventListener('click', () => {
+      const q = elQ.value.trim();
+      if (!q) { elQ.focus(); return; }
+      const opts = Array.from(document.querySelectorAll('.poll-opt-input'))
+        .map(el => el.value.trim())
+        .filter(Boolean);
+      if (opts.length < 2) {
+        document.querySelector('.poll-opt-input').focus();
+        return;
+      }
+      const state = { q, opts, votes:{}, open:true };
+      writePoll(state, () => {
+        elIdle.style.display = 'none';
+      });
+    });
+  }
+
+  // ----- close poll -----
+  if (elClose) {
+    elClose.addEventListener('click', () => {
+      if (!_pollState) return;
+      const newState = JSON.parse(JSON.stringify(_pollState));
+      newState.open = false;
+      writePoll(newState);
+    });
+  }
+
+  // ----- reset poll -----
+  if (elReset) {
+    elReset.addEventListener('click', () => {
+      writePoll('__empty__', () => {
+        elQ.value = '';
+        document.querySelectorAll('.poll-opt-input').forEach(el=>el.value='');
+        _pollState = null;
+        renderIdle();
+      });
+    });
+  }
+
+  renderIdle();
+})();
+
+/* ============================================
+   PRINT BAR MENU
+============================================ */
+(function initPrintBar(){
+  const btn = document.getElementById('print-bar-btn');
+  if (!btn) return;
+
+  btn.addEventListener('click', () => {
+    // Figure out which filter is active
+    const activeChip = document.querySelector('.bar-chip.active');
+    const activeFilter = activeChip ? activeChip.dataset.bar : 'all';
+
+    // Collect visible drink sections HTML
+    const catEls = document.querySelectorAll('.bar-cat');
+    let drinksHTML = '';
+    catEls.forEach(el => {
+      if (el.style.display === 'none') return;
+      drinksHTML += el.outerHTML;
+    });
+
+    // Collect the right stock list
+    let stockHTML = '';
+    const stockMap = { gin:'stock-gin', soda:'stock-soda', all:'stock-all' };
+    const stockId = stockMap[activeFilter] || 'stock-all';
+    const stockEl = document.getElementById(stockId);
+    if (stockEl) stockHTML = stockEl.outerHTML;
+
+    // Get bride name for header
+    let brideName = 'The Bride-to-Be';
+    try {
+      const n = JSON.parse(localStorage.getItem('bach_state')||'{}').bride||'';
+      if (n && n !== 'the bride') brideName = n.charAt(0).toUpperCase() + n.slice(1);
+    } catch(e){}
+
+    const filterLabel = activeChip ? activeChip.textContent.trim() : 'All Drinks';
+
+    const win = window.open('', '_blank', 'width=800,height=900');
+    win.document.write(`<!doctype html><html><head>
+<meta charset="utf-8">
+<title>Bar Menu — ${brideName}</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=DM+Sans:opsz,wght@9..40,300..700&display=swap" rel="stylesheet">
+<style>
+  :root{--wine:#4A0E2C;--pink:#E63A7C;--pink-hot:#FF2D7F;--ink:#1B0A14;--line:rgba(27,10,20,.18);--cream-deep:#F6F3EE}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:"DM Sans",sans-serif;color:#1B0A14;background:#fff;padding:40px;max-width:760px;margin:0 auto}
+  h1{font-family:"Fraunces",serif;font-size:36px;color:var(--wine);margin-bottom:4px}
+  .print-sub{font-size:13px;letter-spacing:.25em;text-transform:uppercase;color:var(--wine);opacity:.6;margin-bottom:32px}
+  .drinks-cat{margin-bottom:6px;margin-top:28px}
+  .drinks-cat h3{font-family:"Fraunces",serif;font-size:22px;color:var(--ink)}
+  .drinks-cat h3 em{color:var(--pink-hot);font-style:italic}
+  .cat-note{font-size:12px;color:#6b324d;opacity:.7}
+  .drinks-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+  .drink{background:var(--cream-deep);border-radius:8px;padding:16px}
+  .drink-head{display:flex;align-items:baseline;gap:6px;margin-bottom:6px}
+  .drink-head h4{font-family:"Fraunces",serif;font-size:16px;color:var(--ink);flex:1}
+  .drink-head h4 em{color:var(--pink-hot);font-style:italic}
+  .glass{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--wine);opacity:.5;white-space:nowrap}
+  .drink-vibe{font-size:12px;color:#4a1a30;margin-bottom:10px;font-style:italic;line-height:1.4}
+  .drink-recipe{list-style:none;font-size:11.5px;line-height:1.6}
+  .drink-recipe li{display:flex;justify-content:space-between;gap:8px;border-bottom:1px solid rgba(27,10,20,.07);padding:3px 0}
+  .drink-recipe li:last-child{border-bottom:none}
+  .drink-recipe li span:last-child{white-space:nowrap;color:var(--wine);font-weight:600;font-size:11px}
+  .bar-stock{background:var(--cream-deep);border-radius:10px;padding:24px;margin-top:32px;page-break-inside:avoid}
+  .bar-stock h3{font-family:"Fraunces",serif;font-size:22px;margin-bottom:4px}
+  .bar-stock h3 em{color:var(--pink-hot);font-style:italic}
+  .stock-intro{font-size:13px;color:#6b324d;opacity:.7;margin-bottom:16px}
+  .stock-cols{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .stock-col h5{font-size:11px;letter-spacing:.25em;text-transform:uppercase;color:var(--wine);margin-bottom:8px}
+  .stock-col ul{list-style:none;font-size:13px;line-height:1.8}
+  .stock-col li::before{content:"□ ";color:var(--wine)}
+  .print-footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:11px;color:#6b324d;opacity:.5;text-align:center}
+  .dots{flex:1;border-bottom:1px dotted rgba(27,10,20,.18)}
+  @media print{
+    body{padding:20px}
+    button{display:none}
+    .bar-chip{display:none}
+  }
+</style>
+</head><body>
+<h1>Bar Menu</h1>
+<div class="print-sub">${filterLabel} &nbsp;·&nbsp; ${brideName}'s Bachelorette</div>
+${drinksHTML}
+${stockHTML}
+<div class="print-footer">Printed from The Bachelorette Bash planner</div>
+<script>window.onload=()=>window.print();<\/script>
+</body></html>`);
+    win.document.close();
+  });
 })();
 
 // Start Firebase live sync (connects, sets up listeners, shows share bar)
