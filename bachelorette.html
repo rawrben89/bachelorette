@@ -263,6 +263,28 @@
   .hunt-score-label{text-transform:uppercase;letter-spacing:.3em;font-size:11px;color:var(--wine)}
   .hunt-score-val{font-family:"Fraunces",serif;font-size:36px;color:var(--pink-hot)}
 
+  /* ---------- NEVER HAVE I EVER ---------- */
+  .nhie-fingers{display:flex;justify-content:center;gap:8px;margin:28px 0 8px;flex-wrap:wrap}
+  .nhie-f{
+    font-size:clamp(36px,9vw,56px);cursor:pointer;
+    transition:transform .2s,filter .2s;user-select:none;
+    display:inline-block;
+  }
+  .nhie-f:hover{transform:scale(1.15)}
+  .nhie-f.down{filter:grayscale(1) opacity(.25);transform:rotate(90deg)}
+  @keyframes nhie-bounce{0%{transform:scale(1.4)}60%{transform:scale(.9)}100%{transform:scale(1)}}
+  .nhie-f.bounce{animation:nhie-bounce .35s ease forwards}
+  .nhie-count{
+    text-align:center;font-family:"Fraunces",serif;font-style:italic;
+    font-size:20px;color:var(--wine);margin-bottom:20px;letter-spacing:-.01em;
+  }
+  .nhie-count.zero{color:var(--pink-hot);font-size:26px}
+  .nhie-out{
+    text-align:center;margin-top:20px;padding:16px 24px;
+    background:#fff5e9;border-radius:10px;border:1px solid rgba(230,58,124,.3);
+    font-family:"Fraunces",serif;font-style:italic;font-size:18px;color:var(--pink-hot);
+  }
+
   /* ---------- BUDGET ---------- */
   .budget-controls{
     display:flex;justify-content:space-between;align-items:center;gap:24px;
@@ -1430,7 +1452,8 @@
       <button class="tab" data-tab="pp"><span class="tab-num">08</span>Polish / Porn</button>
       <button class="tab" data-tab="stg"><span class="tab-num">09</span>Toy / Gadget</button>
       <button class="tab" data-tab="bl"><span class="tab-num">10</span>Bucket List</button>
-      <button class="tab" data-tab="vote"><span class="tab-num">11</span>Live Vote</button>
+      <button class="tab" data-tab="nhie"><span class="tab-num">11</span>Never Have I</button>
+      <button class="tab" data-tab="vote"><span class="tab-num">12</span>Live Vote</button>
     </div>
 
     <!-- BINGO -->
@@ -1731,6 +1754,47 @@
     </div>
 
     <!-- LIVE VOTE -->
+    <!-- NEVER HAVE I EVER -->
+    <div class="panel" id="panel-nhie">
+      <div class="game-header">
+        <div>
+          <h3>Never Have <em>I Ever…</em></h3>
+          <p>Everyone starts with 5 fingers up. If you've done it — put one down and drink. First to zero buys the next round.</p>
+        </div>
+        <button class="btn ghost small" id="nhie-reset">Reset</button>
+      </div>
+
+      <!-- Finger display -->
+      <div class="nhie-fingers" id="nhie-fingers">
+        <span class="nhie-f" data-i="0">🖐</span>
+        <span class="nhie-f" data-i="1">🖐</span>
+        <span class="nhie-f" data-i="2">🖐</span>
+        <span class="nhie-f" data-i="3">🖐</span>
+        <span class="nhie-f" data-i="4">🖐</span>
+      </div>
+      <div class="nhie-count" id="nhie-count">5 fingers left</div>
+
+      <!-- Spice filter -->
+      <div class="spice-toggle" style="margin-bottom:12px">
+        <button class="chip on" data-nhie-spice="mild">Mild</button>
+        <button class="chip on" data-nhie-spice="spicy">Spicy 🌶️</button>
+      </div>
+
+      <!-- Card -->
+      <div class="card-stage" id="nhie-card">
+        <div class="card-count" id="nhie-deck-count">Card 0 / 0</div>
+        <div class="card-label">Never have I ever…</div>
+        <div class="card-prompt" id="nhie-prompt">Tap "Draw" to begin.</div>
+        <div class="card-actions">
+          <button class="btn ghost" id="nhie-skip">→ Skip</button>
+          <button class="btn" id="nhie-done" style="background:#b52a4a">🖐 I've Done It</button>
+        </div>
+      </div>
+      <div class="nhie-out" id="nhie-out" style="display:none">
+        🍹 You're out! Finish your drink and sit out the next round.
+      </div>
+    </div>
+
     <div class="panel" id="panel-vote">
       <div class="game-header">
         <div>
@@ -4186,6 +4250,154 @@ document.getElementById('bl-reset').addEventListener('click',()=>{
   blState=new Array(BL_ITEMS.length).fill(false);
   saveBL(blState);renderBL(blState);
 });
+
+/* ============================================
+   GAME 11 — NEVER HAVE I EVER
+============================================ */
+const NHIE_PROMPTS={
+  mild:[
+    "…been to a bachelorette party before",
+    "…cried at a wedding",
+    "…caught the bouquet",
+    "…been a bridesmaid more than twice",
+    "…given a wedding toast",
+    "…stayed up all night on a girls' trip",
+    "…sent a text to the wrong person",
+    "…called in sick when I wasn't",
+    "…ghosted someone",
+    "…been on a blind date",
+    "…stalked an ex on social media this week",
+    "…eaten an entire pizza by myself",
+    "…forgotten someone's name mid-conversation",
+    "…ugly-cried at a romantic movie this year",
+    "…lied about my age",
+    "…matched with someone and never said a word",
+    "…fallen asleep on public transport and missed my stop",
+    "…bought something expensive and hidden it from someone",
+    "…re-gifted a present",
+    "…pretended to be busy to avoid plans",
+    "…cried at a TV commercial",
+    "…taken a selfie in someone else's bathroom",
+    "…left a passive-aggressive note for a neighbour",
+    "…fake-laughed at a joke I didn't get",
+    "…ordered dessert and eaten it before the main arrived",
+    "…danced when I thought no one was watching — but someone was",
+    "…accidentally liked something from years deep in someone's profile",
+    "…worn the same outfit two days in a row",
+    "…showed up to something on the wrong day"
+  ],
+  spicy:[
+    "…kissed someone in this room",
+    "…kissed my best friend",
+    "…had a situationship",
+    "…hooked up at a wedding",
+    "…had a one-night stand",
+    "…dated two people at the same time",
+    "…slid into someone's DMs after midnight",
+    "…made out in a car in a car park",
+    "…been caught in a compromising situation",
+    "…lied to my partner about where I was",
+    "…sent a spicy photo to the wrong person",
+    "…hooked up with someone whose name I didn't know",
+    "…done something I'd never tell my mother about — tonight",
+    "…made up a fake name on a night out",
+    "…kissed someone who was in a relationship",
+    "…woken up somewhere and not known exactly where",
+    "…been someone's dirty little secret",
+    "…had feelings for someone in this room",
+    "…walked out of a date early",
+    "…been walked in on",
+    "…done something on a dare I immediately regretted"
+  ]
+};
+
+let nhieFingers=5;
+let nhieDeck=[],nhieIdx=0;
+const nhieSpiceState={mild:true,spicy:true};
+
+function nhieBuildDeck(){
+  let pool=[];
+  if(nhieSpiceState.mild) pool=pool.concat(NHIE_PROMPTS.mild);
+  if(nhieSpiceState.spicy) pool=pool.concat(NHIE_PROMPTS.spicy);
+  nhieDeck=shuffle(pool);nhieIdx=0;
+  document.getElementById('nhie-deck-count').textContent=`Card 0 / ${nhieDeck.length}`;
+}
+
+function nhieRenderFingers(){
+  const fingers=document.querySelectorAll('.nhie-f');
+  fingers.forEach((f,i)=>{
+    f.classList.toggle('down', i>=nhieFingers);
+  });
+  const countEl=document.getElementById('nhie-count');
+  if(nhieFingers===0){
+    countEl.textContent='No fingers left! 🍹';
+    countEl.classList.add('zero');
+    document.getElementById('nhie-out').style.display='';
+    document.getElementById('nhie-done').disabled=true;
+    fireConfetti({count:80,colors:['#E63A7C','#C9924A','#4A0E2C']});
+  } else {
+    countEl.textContent=nhieFingers===1?'1 finger left':`${nhieFingers} fingers left`;
+    countEl.classList.remove('zero');
+    document.getElementById('nhie-out').style.display='none';
+    document.getElementById('nhie-done').disabled=false;
+  }
+}
+
+function nhieAdvance(putDown){
+  if(nhieDeck.length===0){
+    document.getElementById('nhie-prompt').textContent='Pick at least one spice level.';
+    return;
+  }
+  if(nhieIdx>=nhieDeck.length){nhieBuildDeck();}
+  if(putDown && nhieFingers>0){
+    nhieFingers--;
+    // Bounce the next finger to go down
+    const fingers=document.querySelectorAll('.nhie-f');
+    const target=fingers[nhieFingers];
+    if(target){target.classList.add('bounce');setTimeout(()=>target.classList.remove('bounce'),400);}
+    nhieRenderFingers();
+  }
+  const promptEl=document.getElementById('nhie-prompt');
+  promptEl.style.opacity=0;
+  setTimeout(()=>{
+    promptEl.textContent=nhieDeck[nhieIdx];
+    nhieIdx++;
+    document.getElementById('nhie-deck-count').textContent=`Card ${nhieIdx} / ${nhieDeck.length}`;
+    promptEl.style.opacity=1;
+  },150);
+}
+
+document.getElementById('nhie-done').addEventListener('click',()=>nhieAdvance(true));
+document.getElementById('nhie-skip').addEventListener('click',()=>nhieAdvance(false));
+document.getElementById('nhie-reset').addEventListener('click',()=>{
+  nhieFingers=5;
+  nhieRenderFingers();
+  nhieBuildDeck();
+  document.getElementById('nhie-prompt').textContent='Tap "I\'ve Done It" or Skip to begin.';
+});
+
+// Individual finger tap — put that finger down directly
+document.querySelectorAll('.nhie-f').forEach(f=>{
+  f.addEventListener('click',()=>{
+    const i=+f.dataset.i;
+    // Only allow putting down fingers that are still up (index < nhieFingers)
+    if(i>=nhieFingers)return;
+    // Put down from the top finger down to this one
+    nhieFingers=i;
+    nhieRenderFingers();
+  });
+});
+
+// Spice chips
+document.querySelectorAll('[data-nhie-spice]').forEach(chip=>{
+  chip.addEventListener('click',()=>{
+    chip.classList.toggle('on');
+    nhieSpiceState[chip.dataset.nhieSpice]=chip.classList.contains('on');
+    nhieBuildDeck();
+  });
+});
+
+nhieBuildDeck();
 
 /* ============================================
    EDITABLE TIMELINE
