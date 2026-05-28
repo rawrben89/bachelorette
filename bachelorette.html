@@ -285,33 +285,131 @@
     font-family:"Fraunces",serif;font-style:italic;font-size:18px;color:var(--pink-hot);
   }
 
-  /* ---------- BUDGET (simple) ---------- */
-  .budget-simple{
-    display:flex;flex-direction:column;align-items:center;justify-content:center;
-    padding:64px 32px;text-align:center;
+  /* ---------- BUDGET ---------- */
+  .budget-controls{
+    display:flex;justify-content:space-between;align-items:center;gap:24px;
+    margin-bottom:32px;padding-bottom:24px;border-bottom:1px solid var(--line);flex-wrap:wrap;
   }
-  .budget-simple-label{
-    text-transform:uppercase;letter-spacing:.32em;font-size:11px;
-    color:var(--wine);margin-bottom:20px;
+  .guest-control{display:flex;align-items:center;gap:14px}
+  .guest-control label{text-transform:uppercase;letter-spacing:.25em;font-size:11px;color:var(--wine)}
+  .guest-stepper{display:flex;align-items:center;gap:8px}
+  .stepper-btn{
+    width:36px;height:36px;border-radius:50%;border:1px solid var(--wine);
+    background:transparent;cursor:pointer;font-size:18px;color:var(--wine);
+    display:flex;align-items:center;justify-content:center;
+    transition:all .15s;
   }
-  .budget-simple-input-wrap{
-    display:flex;align-items:baseline;gap:6px;
-    border-bottom:2px solid var(--wine);padding-bottom:8px;margin-bottom:20px;
+  .stepper-btn:hover{background:var(--wine);color:var(--cream)}
+  .guest-count{font-family:"Fraunces",serif;font-size:32px;color:var(--ink);min-width:48px;text-align:center}
+
+  .budget-totals{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-bottom:40px;
+    border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);
   }
-  .budget-simple-dollar{
-    font-family:"Fraunces",serif;font-size:clamp(36px,8vw,72px);
-    color:var(--wine);line-height:1;
+  @media (max-width:680px){.budget-totals{grid-template-columns:1fr}}
+  .total-cell{
+    padding:24px;border-right:1px solid var(--line);
   }
-  .budget-simple-input{
-    font-family:"Fraunces",serif;font-size:clamp(36px,8vw,72px);
-    color:var(--ink);border:none;outline:none;background:transparent;
-    width:6ch;min-width:3ch;max-width:9ch;text-align:left;
-    -moz-appearance:textfield;line-height:1;
+  .total-cell:last-child{border-right:none;background:var(--wine);color:#fff}
+  .total-cell-label{text-transform:uppercase;letter-spacing:.28em;font-size:11px;color:var(--wine);margin-bottom:8px}
+  .total-cell:last-child .total-cell-label{color:var(--gold-soft)}
+  .total-cell-val{font-family:"Fraunces",serif;font-size:42px;line-height:1;font-weight:500}
+  .total-cell:nth-child(2) .total-cell-val{color:var(--pink-hot)}
+
+  .budget-table{width:100%;border-collapse:collapse;font-size:15px}
+  .budget-table th{
+    text-align:left;text-transform:uppercase;letter-spacing:.22em;font-size:11px;
+    color:var(--wine);padding:14px 12px;border-bottom:2px solid var(--wine);font-weight:500;
   }
-  .budget-simple-input::-webkit-outer-spin-button,
-  .budget-simple-input::-webkit-inner-spin-button{-webkit-appearance:none}
-  .budget-simple-input::placeholder{color:var(--line)}
-  .budget-simple-hint{font-size:13px;color:var(--wine);opacity:.5;font-style:italic}
+  .budget-table th:nth-child(n+3){text-align:right}
+  .budget-table th:last-child{width:60px}
+  .budget-table tbody tr{border-bottom:1px solid var(--line);transition:background .2s}
+  .budget-table tbody tr:hover{background:rgba(230,58,124,.04)}
+  .budget-table td{padding:14px 12px;vertical-align:middle}
+  .budget-table td.cat-cell{font-family:"Fraunces",serif;font-size:18px;color:var(--wine);font-weight:500}
+  .editable{
+    outline:none;padding:6px 10px;border-radius:4px;
+    transition:background .15s;cursor:text;
+    border:1px dashed transparent;
+  }
+  .editable:hover{background:rgba(230,58,124,.08);border-color:rgba(230,58,124,.2)}
+  .editable:focus{background:#fff5e9;border:1px dashed var(--pink-hot)}
+  .amount{text-align:right;font-variant-numeric:tabular-nums;min-width:70px;display:inline-block}
+  .currency{color:var(--wine);font-weight:500}
+  .delete-row{
+    background:transparent;border:none;cursor:pointer;color:var(--wine);
+    opacity:0;transition:opacity .2s;font-size:18px;padding:4px 8px;
+  }
+  tr:hover .delete-row{opacity:.5}
+  .delete-row:hover{opacity:1 !important;color:var(--pink-hot)}
+  .add-row{
+    margin-top:20px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;
+  }
+  .save-hint{
+    margin-top:16px;font-size:12px;color:var(--wine);opacity:.6;font-style:italic;
+  }
+
+  /* ---------- PEOPLE / SPLITS ---------- */
+  .people-row{
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+    margin-bottom:28px;padding:16px 20px;
+    background:var(--cream-deep);border-left:3px solid var(--wine);
+  }
+  .people-label{
+    text-transform:uppercase;letter-spacing:.28em;font-size:11px;
+    color:var(--wine);font-weight:500;flex-shrink:0;
+  }
+  .person-chip{
+    display:inline-flex;align-items:center;gap:5px;
+    background:var(--wine);color:#fff;
+    padding:5px 10px 5px 13px;border-radius:999px;
+    font-family:"Fraunces",serif;font-style:italic;font-size:14px;
+  }
+  .person-chip .rm{
+    background:rgba(255,255,255,.22);border:none;color:#fff;
+    width:18px;height:18px;border-radius:50%;cursor:pointer;
+    font-size:13px;line-height:1;display:flex;align-items:center;justify-content:center;
+  }
+  .person-chip .rm:hover{background:rgba(255,255,255,.45)}
+  .person-add{display:flex;gap:6px;align-items:center;flex-shrink:0}
+  .person-add input{
+    background:#fff;border:1px solid var(--line);border-radius:6px;
+    padding:6px 10px;font-family:"DM Sans";font-size:13px;color:var(--ink);width:120px;
+  }
+  .person-add input:focus{outline:none;border-color:var(--pink-hot)}
+  .paid-select{
+    background:#fff;border:1px solid var(--line);border-radius:4px;
+    padding:4px 6px;font-family:"DM Sans";font-size:12px;color:var(--ink);
+    cursor:pointer;max-width:115px;
+  }
+  .paid-select:focus{outline:none;border-color:var(--pink-hot)}
+  /* Settlements panel */
+  .settle-wrap{margin-top:52px;border-top:1px solid var(--ink);padding-top:40px}
+  .settle-wrap>.section-label{margin-bottom:24px}
+  .settle-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);margin-bottom:32px}
+  @media(max-width:680px){.settle-grid{grid-template-columns:1fr}}
+  .settle-grid-col{padding:24px;border-right:1px solid var(--line)}
+  .settle-grid-col:last-child{border-right:none}
+  .settle-col-title{text-transform:uppercase;letter-spacing:.28em;font-size:11px;color:var(--wine);margin-bottom:16px}
+  .bal-row{
+    display:flex;align-items:baseline;justify-content:space-between;
+    padding:10px 0;border-bottom:1px solid var(--line);
+  }
+  .bal-row:last-child{border-bottom:none}
+  .bal-name{font-family:"Fraunces",serif;font-size:17px;color:var(--wine)}
+  .bal-amt{font-family:"Fraunces",serif;font-size:20px;font-style:italic;font-weight:500}
+  .bal-amt.pos{color:#2d7a3d}
+  .bal-amt.neg{color:#a32d4a}
+  .bal-amt.zero{color:var(--wine);opacity:.4;font-size:15px}
+  .settl-row{
+    display:flex;align-items:center;gap:10px;
+    padding:14px 16px;margin-bottom:6px;
+    background:var(--cream-deep);border-radius:4px;flex-wrap:wrap;
+  }
+  .settl-from,.settl-to{font-family:"Fraunces",serif;font-size:17px;color:var(--ink)}
+  .settl-arrow{color:var(--pink-hot);font-size:20px;line-height:1;flex-shrink:0}
+  .settl-amt{margin-left:auto;font-family:"Fraunces",serif;font-size:22px;font-style:italic;color:var(--pink-hot)}
+  .settle-note{font-style:italic;font-size:14px;color:var(--wine);opacity:.6;padding:12px 0}
 
   /* ---------- HERO NAME ANIMATION ---------- */
   @keyframes hero-name-in{
@@ -319,6 +417,12 @@
     to{opacity:1;transform:none}
   }
   .hero-curated-name.name-in{animation:hero-name-in .4s ease forwards}
+
+  /* ---------- BUDGET ACTUAL COLUMN ---------- */
+  .actual-under{color:#2d7a3d;font-weight:600}
+  .actual-over{color:#a32d4a;font-weight:600}
+  .actual-empty{color:var(--line)}
+  .actual-delta{font-size:10px;display:block;font-family:'DM Sans';font-weight:400;margin-top:1px;opacity:.75}
 
   /* ---------- POLL GAME ---------- */
   .poll-q-input{
@@ -994,6 +1098,16 @@
     -webkit-tap-highlight-color:transparent;
     touch-action:manipulation;
   }
+  /* Budget table safe horizontal scroll wrapper */
+  .budget-table-wrap{
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:thin;
+    scrollbar-color:var(--line) transparent;
+  }
+  .budget-table-wrap::-webkit-scrollbar{height:4px}
+  .budget-table-wrap::-webkit-scrollbar-track{background:transparent}
+  .budget-table-wrap::-webkit-scrollbar-thumb{background:var(--line);border-radius:2px}
   /* Hero title word safety */
   .hero h1{overflow-wrap:break-word}
 
@@ -1729,15 +1843,91 @@
 <section id="budget" class="main-section">
   <div class="wrap">
     <div class="section-label">Part Two — The Numbers</div>
-    <h2 class="section-title display">Your party <span class="accent">budget</span>.</h2>
-    <div class="budget-simple">
-      <div class="budget-simple-label">Total Budget</div>
-      <div class="budget-simple-input-wrap">
-        <span class="budget-simple-dollar">$</span>
-        <input type="number" id="budget-amount" class="budget-simple-input"
-               placeholder="0" min="0" step="1" inputmode="numeric" />
+    <h2 class="section-title display">A budget you <span class="accent">edit</span> live.</h2>
+    <p class="section-sub">Click any amount or category to edit it. Adjust the guest count and watch the per-person total recalculate.</p>
+
+    <!-- Participants for split tracking -->
+    <div class="people-row" id="people-row">
+      <span class="people-label">Who's going</span>
+      <div id="people-chips" style="display:contents"></div>
+      <div class="person-add">
+        <input type="text" id="person-input" placeholder="Add name…" maxlength="20" />
+        <button class="btn small" id="add-person">+ Add</button>
       </div>
-      <div class="budget-simple-hint">Syncs live across all devices in this room.</div>
+    </div>
+
+    <div class="budget-controls">
+      <div class="guest-control">
+        <label>Guests</label>
+        <div class="guest-stepper">
+          <button class="stepper-btn" id="guest-minus">−</button>
+          <span class="guest-count" id="guest-count">8</span>
+          <button class="stepper-btn" id="guest-plus">+</button>
+        </div>
+      </div>
+      <div class="guest-control">
+        <label>Bride pays?</label>
+        <div class="guest-stepper">
+          <button class="chip on" id="bride-toggle">No — split her share</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="budget-totals">
+      <div class="total-cell">
+        <div class="total-cell-label">Planned Total</div>
+        <div class="total-cell-val" id="total-group">$0</div>
+      </div>
+      <div class="total-cell">
+        <div class="total-cell-label">Per Guest</div>
+        <div class="total-cell-val" id="total-per">$0</div>
+      </div>
+      <div class="total-cell" id="total-actual-cell" style="display:none">
+        <div class="total-cell-label">Actual Total</div>
+        <div class="total-cell-val" id="total-actual">$0</div>
+      </div>
+      <div class="total-cell">
+        <div class="total-cell-label">Splurge Per Guest</div>
+        <div class="total-cell-val" id="total-splurge">$0</div>
+      </div>
+    </div>
+
+    <div class="budget-table-wrap">
+    <table class="budget-table">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Notes</th>
+          <th>Paid by</th>
+          <th>Base (group)</th>
+          <th>Actual $</th>
+          <th>Splurge (group)</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="budget-body"></tbody>
+    </table>
+    </div>
+
+    <div class="add-row">
+      <button class="btn small" id="add-row">+ Add Category</button>
+      <button class="btn small ghost" id="reset-budget">Reset to Defaults</button>
+      <span class="save-hint">Changes save to this browser automatically.</span>
+    </div>
+
+    <!-- WHO OWES WHO -->
+    <div class="settle-wrap" id="settle-wrap" style="display:none">
+      <div class="section-label">Who Owes Who</div>
+      <div class="settle-grid">
+        <div class="settle-grid-col">
+          <div class="settle-col-title">Balances</div>
+          <div id="bal-list"></div>
+        </div>
+        <div class="settle-grid-col">
+          <div class="settle-col-title">Settle Up</div>
+          <div id="settle-list"></div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -2082,8 +2272,8 @@ function initDb() {
       newBtn.addEventListener('click', () => {
         const newId = Math.random().toString(36).slice(2, 9).toUpperCase();
         // Clear all game data from localStorage so the new room starts blank
-        ['bach_bingo','bach_hunt','bach_bl','bach_budget_total',
-         'bach_tl','bach_mm','bach_section'].forEach(k=>localStorage.removeItem(k));
+        ['bach_bingo','bach_hunt','bach_bl','bach_budget','bach_people',
+         'bach_guests','bach_tl','bach_mm','bach_section'].forEach(k=>localStorage.removeItem(k));
         window.location.href = window.location.pathname + '?p=' + newId;
       });
     }
@@ -2201,14 +2391,43 @@ function _applySection(key, data) {
       }
       break;
     }
-    case 'budget_total': {
-      const inp = document.getElementById('budget-amount');
-      if (inp && data != null) {
-        inp.value = data === 0 ? '' : data;
-        try { localStorage.setItem('bach_budget_total', String(data)); } catch(e) {}
+    case 'budget': {
+      const arr = data === '__empty__' ? [] : _toArr(data);
+      if (typeof budget !== 'undefined') {
+        if (typeof _budgetFocused !== 'undefined' && _budgetFocused) {
+          // User is actively editing — queue the update, apply on blur
+          _budgetQueued = arr;
+        } else {
+          budget.splice(0, budget.length, ...arr);
+          if (typeof renderBudget === 'function') renderBudget();
+        }
       }
       break;
     }
+    case 'people': {
+      const arr = data === '__empty__' ? [] : _toArr(data);
+      if (typeof people !== 'undefined') {
+        people.splice(0, people.length, ...arr);
+        if (typeof renderPeople === 'function') renderPeople();
+        if (typeof renderBudget === 'function') renderBudget();
+      }
+      break;
+    }
+    case 'guests':
+      if (typeof guests !== 'undefined') {
+        guests = +data;
+        const el = document.getElementById('guest-count');
+        if (el) el.textContent = guests;
+        if (typeof recalc === 'function') recalc();
+      }
+      break;
+    case 'bridePays':
+      if (typeof bridePays !== 'undefined') {
+        bridePays = !!data;
+        if (typeof updateBrideToggle === 'function') updateBrideToggle();
+        if (typeof recalc === 'function') recalc();
+      }
+      break;
     case 'mm': {
       if (data === '__empty__') { if (typeof mmData !== 'undefined') { mmData.splice(0, mmData.length); if (typeof renderMMSetup === 'function') renderMMSetup(); } break; }
       const arrMm = _toArr(data);
@@ -2938,19 +3157,300 @@ document.getElementById('hunt-reset').addEventListener('click',()=>{
 });
 
 /* ============================================
-   BUDGET (simple total field)
+   BUDGET
 ============================================ */
-(()=>{
-  const inp=document.getElementById('budget-amount');
-  if(!inp)return;
-  try{const v=localStorage.getItem('bach_budget_total');if(v)inp.value=v;}catch(e){}
-  inp.addEventListener('input',()=>{
-    const v=inp.value;
-    try{localStorage.setItem('bach_budget_total',v);}catch(e){}
-    dbSet('budget_total',v?parseFloat(v):0);
-  });
-})();
+const DEFAULT_BUDGET=[
+  {cat:"Accommodation",note:"2 nights · airbnb vs. boutique hotel",base:640,splurge:1760,actual:'',paidBy:null},
+  {cat:"Food & Groceries",note:"Breakfasts in, snacks, charcuterie",base:360,splurge:640,actual:'',paidBy:null},
+  {cat:"Dinner Out",note:"One real reservation with service",base:560,splurge:1120,actual:'',paidBy:null},
+  {cat:"Drinks & Bar Tab",note:"Cocktails out, bottle or two at home",base:480,splurge:1280,actual:'',paidBy:null},
+  {cat:"Daytime Activity",note:"Brunch + class (cocktail, pottery, spa)",base:400,splurge:960,actual:'',paidBy:null},
+  {cat:"Decor & Games",note:"Sashes, banners, prints, prizes",base:120,splurge:280,actual:'',paidBy:null},
+  {cat:"Favors / Survival Kits",note:"Hangover kit per guest",base:120,splurge:240,actual:'',paidBy:null},
+];
+let budget=loadBudget();
+let guests=loadGuests();
+let bridePays=loadBridePays();
+let _budgetFocused=false, _budgetQueued=null;
+let _tlFocused=false, _tlQueued=null;
+function loadPeople(){try{const v=JSON.parse(localStorage.getItem('bach_people'));return Array.isArray(v)?v:[];}catch(e){return[]}}
+function savePeople(){try{localStorage.setItem('bach_people',JSON.stringify(people))}catch(e){};dbSet('people',people.length?people:'__empty__')}
+let people=loadPeople();
 
+function loadBudget(){try{const v=JSON.parse(localStorage.getItem('bach_budget'));return v&&v.length?v:JSON.parse(JSON.stringify(DEFAULT_BUDGET));}catch(e){return JSON.parse(JSON.stringify(DEFAULT_BUDGET))}}
+function saveBudget(){
+  try{localStorage.setItem('bach_budget',JSON.stringify(budget))}catch(e){}
+  // Firebase deletes nodes set to null/empty — use a sentinel when array is empty
+  dbSet('budget', budget.length ? budget : '__empty__');
+}
+function loadGuests(){const v=parseInt(localStorage.getItem('bach_guests'));return v&&v>0?v:8}
+function saveGuests(){try{localStorage.setItem('bach_guests',String(guests))}catch(e){};dbSet('guests',guests)}
+function loadBridePays(){return localStorage.getItem('bach_bride_pays')==='1'}
+function saveBridePays(){try{localStorage.setItem('bach_bride_pays',bridePays?'1':'0')}catch(e){};dbSet('bridePays',bridePays)}
+
+const budgetBody=document.getElementById('budget-body');
+function fmt(n){return '$'+Math.round(n).toLocaleString()}
+
+function renderBudget(){
+  budgetBody.innerHTML='';
+  budget.forEach((row,i)=>{
+    const paidByIdx = (row.paidBy !== null && row.paidBy !== undefined && row.paidBy !== '') ? +row.paidBy : null;
+    const paidOpts = `<option value="">— who paid? —</option>` +
+      people.map((p,pi)=>`<option value="${pi}"${paidByIdx===pi?' selected':''}>${p}</option>`).join('');
+    // Actual column colouring
+    const actualVal = row.actual != null && row.actual !== '' ? +row.actual : null;
+    const base = +row.base || 0;
+    let actualCls = 'actual-empty', actualDelta = '';
+    if (actualVal !== null) {
+      actualCls = actualVal <= base ? 'actual-under' : 'actual-over';
+      const diff = Math.abs(actualVal - base);
+      actualDelta = `<span class="actual-delta">${actualVal <= base ? '−' : '+'}${fmt(diff)} vs plan</span>`;
+    }
+    const actualDisplay = actualVal !== null ? actualVal : '';
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td class="cat-cell"><span class="editable" contenteditable="true" data-i="${i}" data-f="cat">${row.cat}</span></td>
+      <td><span class="editable" contenteditable="true" data-i="${i}" data-f="note" style="font-size:13px;color:#6b324d">${row.note}</span></td>
+      <td><select class="paid-select" data-i="${i}">${paidOpts}</select></td>
+      <td><span class="currency">$</span><span class="editable amount" contenteditable="true" data-i="${i}" data-f="base">${row.base}</span></td>
+      <td><span class="currency ${actualCls}">$</span><span class="editable amount ${actualCls}" contenteditable="true" data-i="${i}" data-f="actual">${actualDisplay}</span>${actualDelta}</td>
+      <td><span class="currency">$</span><span class="editable amount" contenteditable="true" data-i="${i}" data-f="splurge">${row.splurge}</span></td>
+      <td><button class="delete-row" data-i="${i}" title="Delete row">×</button></td>
+    `;
+    budgetBody.appendChild(tr);
+  });
+  attachBudgetEvents();
+  recalc();
+}
+
+function _budgetBlurCheck(){
+  setTimeout(()=>{
+    if(!budgetBody.querySelector(':focus')){
+      _budgetFocused=false;
+      if(_budgetQueued){
+        const arr=_budgetQueued; _budgetQueued=null;
+        _remoteUpdate=true;
+        budget.splice(0,budget.length,...arr);
+        _remoteUpdate=false;
+        renderBudget();
+      }
+    }
+  },60);
+}
+
+function attachBudgetEvents(){
+  budgetBody.querySelectorAll('.editable').forEach(el=>{
+    el.addEventListener('focus',()=>{ _budgetFocused=true; });
+    el.addEventListener('input',()=>{
+      const i=+el.dataset.i,f=el.dataset.f;
+      if(f==='base'||f==='splurge'||f==='actual'){
+        const raw=el.textContent.replace(/[^0-9.]/g,'');
+        budget[i][f]=raw===''?'':parseFloat(raw)||0;
+      } else {
+        budget[i][f]=el.textContent;
+      }
+      saveBudget();
+      if(f==='base'||f==='splurge'||f==='actual')recalc();
+    });
+    el.addEventListener('blur',()=>{
+      const f=el.dataset.f;
+      if(f==='base'||f==='splurge'||f==='actual'){
+        const i=+el.dataset.i;
+        el.textContent=budget[i][f]??'';
+      }
+      _budgetBlurCheck();
+    });
+    el.addEventListener('keydown',e=>{
+      if(e.key==='Enter'){e.preventDefault();el.blur();}
+    });
+  });
+  budgetBody.querySelectorAll('.paid-select').forEach(sel=>{
+    sel.addEventListener('focus',()=>{ _budgetFocused=true; });
+    sel.addEventListener('blur',()=>{ _budgetBlurCheck(); });
+    sel.addEventListener('change',()=>{
+      const i=+sel.dataset.i;
+      budget[i].paidBy = sel.value==='' ? null : +sel.value;
+      saveBudget();
+      renderSettlements();
+    });
+  });
+  budgetBody.querySelectorAll('.delete-row').forEach(b=>{
+    b.addEventListener('click',()=>{
+      budget.splice(+b.dataset.i,1);
+      saveBudget();renderBudget();
+    });
+  });
+}
+
+function recalc(){
+  const baseTotal=budget.reduce((s,r)=>s+(+r.base||0),0);
+  const splurgeTotal=budget.reduce((s,r)=>s+(+r.splurge||0),0);
+  const payingGuests=bridePays?guests:Math.max(guests-1,1);
+  document.getElementById('total-group').textContent=fmt(baseTotal);
+  document.getElementById('total-per').textContent=fmt(baseTotal/payingGuests);
+  document.getElementById('total-splurge').textContent=fmt(splurgeTotal/payingGuests);
+  // Actual total — only show cell when at least one row has an actual value
+  const actualRows=budget.filter(r=>r.actual!=null&&r.actual!=='');
+  const actualCell=document.getElementById('total-actual-cell');
+  if(actualCell){
+    if(actualRows.length>0){
+      const actualTotal=actualRows.reduce((s,r)=>s+(+r.actual||0),0);
+      document.getElementById('total-actual').textContent=fmt(actualTotal);
+      actualCell.style.display='';
+      // Colour the cell based on over/under
+      const over=actualTotal>baseTotal;
+      actualCell.style.background=over?'rgba(163,45,74,.08)':'rgba(45,122,61,.08)';
+      actualCell.querySelector('.total-cell-label').style.color=over?'#a32d4a':'#2d7a3d';
+      document.getElementById('total-actual').style.color=over?'#a32d4a':'#2d7a3d';
+    } else {
+      actualCell.style.display='none';
+    }
+  }
+  renderSettlements();
+}
+
+document.getElementById('guest-count').textContent=guests;
+document.getElementById('guest-plus').addEventListener('click',()=>{guests++;saveGuests();document.getElementById('guest-count').textContent=guests;recalc();});
+document.getElementById('guest-minus').addEventListener('click',()=>{if(guests>1){guests--;saveGuests();document.getElementById('guest-count').textContent=guests;recalc();}});
+
+const brideToggle=document.getElementById('bride-toggle');
+function updateBrideToggle(){
+  brideToggle.textContent=bridePays?'Yes — even split':'No — split her share';
+  brideToggle.classList.toggle('on',!bridePays);
+}
+brideToggle.addEventListener('click',()=>{bridePays=!bridePays;saveBridePays();updateBrideToggle();recalc();});
+updateBrideToggle();
+
+document.getElementById('add-row').addEventListener('click',()=>{
+  budget.push({cat:"New Category",note:"Click to edit",base:0,splurge:0,actual:'',paidBy:null});
+  saveBudget();renderBudget();
+});
+document.getElementById('reset-budget').addEventListener('click',()=>{
+  if(confirm('Reset budget to defaults?')){
+    budget=JSON.parse(JSON.stringify(DEFAULT_BUDGET));
+    saveBudget();renderBudget();
+  }
+});
+renderBudget();
+
+/* ============================================
+   PEOPLE & SETTLEMENTS (Tricount-style)
+============================================ */
+
+function renderPeople(){
+  const chips=document.getElementById('people-chips');
+  if(!chips)return;
+  chips.innerHTML='';
+  people.forEach((name,i)=>{
+    const chip=document.createElement('div');
+    chip.className='person-chip';
+    chip.innerHTML=`${name}<button class="rm" data-pi="${i}" title="Remove">×</button>`;
+    chips.appendChild(chip);
+  });
+  chips.querySelectorAll('.rm').forEach(b=>{
+    b.addEventListener('click',()=>{
+      // Clear paidBy references that point to removed or shifted person
+      const idx=+b.dataset.pi;
+      people.splice(idx,1);
+      budget.forEach(r=>{
+        if(r.paidBy===idx)r.paidBy=null;
+        else if(r.paidBy>idx)r.paidBy--;
+      });
+      savePeople();saveBudget();
+      renderPeople();renderBudget();
+    });
+  });
+  // Show/hide settle panel
+  const wrap=document.getElementById('settle-wrap');
+  if(wrap)wrap.style.display=people.length>=2?'block':'none';
+  renderSettlements();
+}
+
+// Add person
+const personInput=document.getElementById('person-input');
+document.getElementById('add-person').addEventListener('click',addPerson);
+personInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addPerson();}});
+function addPerson(){
+  const name=personInput.value.trim();
+  if(!name||people.includes(name))return;
+  people.push(name);
+  savePeople();
+  personInput.value='';
+  renderPeople();renderBudget();
+}
+
+/* ── Settlement calculation (greedy minimum-transactions) ── */
+function calcSettlements(){
+  if(people.length<2)return{balances:[],settlements:[]};
+  const bal=new Array(people.length).fill(0);
+  budget.forEach(row=>{
+    if(row.paidBy==null||row.paidBy==='')return;
+    const paid=+row.paidBy;
+    const amount=+row.base||0;
+    if(!amount)return;
+    const share=amount/people.length;
+    bal[paid]+=amount;
+    for(let i=0;i<people.length;i++)bal[i]-=share;
+  });
+  // Greedy settle-up
+  const pos=[],neg=[];
+  bal.forEach((b,i)=>{
+    if(b>0.005)pos.push([i,b]);
+    else if(b<-0.005)neg.push([i,-b]);
+  });
+  pos.sort((a,b)=>b[1]-a[1]);neg.sort((a,b)=>b[1]-a[1]);
+  const settlements=[];
+  let pi=0,ni=0;
+  while(pi<pos.length&&ni<neg.length){
+    const amt=Math.min(pos[pi][1],neg[ni][1]);
+    if(amt>0.005)settlements.push({from:neg[ni][0],to:pos[pi][0],amount:amt});
+    pos[pi][1]-=amt;neg[ni][1]-=amt;
+    if(pos[pi][1]<0.005)pi++;
+    if(neg[ni][1]<0.005)ni++;
+  }
+  return{balances:bal,settlements};
+}
+
+function renderSettlements(){
+  const wrap=document.getElementById('settle-wrap');
+  if(!wrap)return;
+  if(people.length<2){wrap.style.display='none';return;}
+  wrap.style.display='block';
+  const{balances,settlements}=calcSettlements();
+  // Balances
+  const balList=document.getElementById('bal-list');
+  if(balList){
+    balList.innerHTML='';
+    people.forEach((name,i)=>{
+      const b=balances[i]||0;
+      const cls=b>0.005?'pos':b<-0.005?'neg':'zero';
+      const sign=b>0.005?'+':'';
+      const label=b>0.005?'gets back':b<-0.005?'owes':'all square';
+      const row=document.createElement('div');
+      row.className='bal-row';
+      row.innerHTML=`<span class="bal-name">${name}</span><span class="bal-amt ${cls}">${sign}${fmt(Math.abs(b))} <small style="font-size:.55em;font-style:normal;letter-spacing:.12em;text-transform:uppercase;font-family:'DM Sans'">${label}</small></span>`;
+      balList.appendChild(row);
+    });
+  }
+  // Settlements
+  const settleList=document.getElementById('settle-list');
+  if(settleList){
+    settleList.innerHTML='';
+    if(!settlements.length){
+      const anyPaid=budget.some(r=>r.paidBy!=null&&r.paidBy!=='');
+      settleList.innerHTML=`<div class="settle-note">${anyPaid?'🥂 Everyone\'s square!':'Assign who paid each expense in the "Paid by" column above to see settlements.'}</div>`;
+    } else {
+      settlements.forEach(s=>{
+        const row=document.createElement('div');
+        row.className='settl-row';
+        row.innerHTML=`<span class="settl-from">${people[s.from]}</span><span class="settl-arrow">→</span><span class="settl-to">${people[s.to]}</span><span class="settl-amt">${fmt(s.amount)}</span>`;
+        settleList.appendChild(row);
+      });
+    }
+  }
+}
+
+renderPeople();
 
 /* ============================================
    GAME 5 — MR & MRS
@@ -4295,7 +4795,7 @@ setTimeout(()=>{
     if (Math.abs(dx) < 60) return;
     if (Math.abs(dy) > Math.abs(dx) * 0.75) return;
     // Skip if swipe started inside a scroll/input container
-    if (_target && _target.closest('.tabs,.bingo-board,.timeline-edit,.poll-q-input,.poll-opt-input,.budget-simple-input')) return;
+    if (_target && _target.closest('.tabs,.bingo-board,.budget-table-wrap,.timeline-edit,.poll-q-input,.poll-opt-input')) return;
     if (document.activeElement && ['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)) return;
     // Find current section
     const cur = sections.findIndex(s => {
