@@ -2196,6 +2196,17 @@
   </div>
 </div>
 
+<div class="modal" id="bingo-rand-confirm-modal">
+  <div class="modal-content">
+    <h3>Randomize Bingo?</h3>
+    <p>This will replace all current cell content with house-party prompts. Are you sure?</p>
+    <div class="modal-actions">
+      <button class="btn ghost small" id="bingo-rand-no">No, keep it</button>
+      <button class="btn" id="bingo-rand-yes">Yes, randomize!</button>
+    </div>
+  </div>
+</div>
+
 <!-- HIDDEN PRINT CONTAINER (only visible when printing) -->
 <div class="print-bingo" id="print-bingo-container" style="display:none"></div>
 
@@ -2886,7 +2897,21 @@ function checkBingo(){
   bingoStatus.textContent=marked>0?`${marked} marked — keep going`:'Tap squares as they happen…';
   bingoStatus.classList.remove('win');
 }
-document.getElementById('bingo-rand').addEventListener('click',randomizeBingo);
+// Randomize: ask for confirmation first
+const _bingoRandModal = document.getElementById('bingo-rand-confirm-modal');
+document.getElementById('bingo-rand').addEventListener('click',()=>{
+  _bingoRandModal.classList.add('open');
+});
+document.getElementById('bingo-rand-no').addEventListener('click',()=>{
+  _bingoRandModal.classList.remove('open');
+});
+document.getElementById('bingo-rand-yes').addEventListener('click',()=>{
+  _bingoRandModal.classList.remove('open');
+  randomizeBingo();
+});
+_bingoRandModal.addEventListener('click',e=>{
+  if(e.target===_bingoRandModal) _bingoRandModal.classList.remove('open');
+});
 document.getElementById('bingo-clear').addEventListener('click',clearBingo);
 document.getElementById('bingo-edit-toggle').addEventListener('click',()=>setBingoEditMode(!_bingoEditMode));
 document.getElementById('bingo-edit-modal-apply').addEventListener('click',()=>closeBingoCellEdit(true));
