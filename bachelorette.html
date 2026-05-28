@@ -2196,6 +2196,17 @@
   </div>
 </div>
 
+<div class="modal" id="bingo-clear-confirm-modal">
+  <div class="modal-content">
+    <h3>Clear Bingo Card?</h3>
+    <p>This will erase all cell content and marks. Are you sure?</p>
+    <div class="modal-actions">
+      <button class="btn ghost small" id="bingo-clear-no">No, keep it</button>
+      <button class="btn" id="bingo-clear-yes">Yes, clear it</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal" id="bingo-rand-confirm-modal">
   <div class="modal-content">
     <h3>Randomize Bingo?</h3>
@@ -2912,7 +2923,20 @@ document.getElementById('bingo-rand-yes').addEventListener('click',()=>{
 _bingoRandModal.addEventListener('click',e=>{
   if(e.target===_bingoRandModal) _bingoRandModal.classList.remove('open');
 });
-document.getElementById('bingo-clear').addEventListener('click',clearBingo);
+const _bingoClearModal = document.getElementById('bingo-clear-confirm-modal');
+document.getElementById('bingo-clear').addEventListener('click',()=>{
+  _bingoClearModal.classList.add('open');
+});
+document.getElementById('bingo-clear-no').addEventListener('click',()=>{
+  _bingoClearModal.classList.remove('open');
+});
+document.getElementById('bingo-clear-yes').addEventListener('click',()=>{
+  _bingoClearModal.classList.remove('open');
+  clearBingo();
+});
+_bingoClearModal.addEventListener('click',e=>{
+  if(e.target===_bingoClearModal) _bingoClearModal.classList.remove('open');
+});
 document.getElementById('bingo-edit-toggle').addEventListener('click',()=>setBingoEditMode(!_bingoEditMode));
 document.getElementById('bingo-edit-modal-apply').addEventListener('click',()=>closeBingoCellEdit(true));
 document.getElementById('bingo-edit-modal-cancel').addEventListener('click',()=>closeBingoCellEdit(false));
