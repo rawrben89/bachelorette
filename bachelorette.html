@@ -3131,22 +3131,57 @@ function _sbDeleteCell(){
   _sbSave();
 }
 
+function _sbLevenshtein(a, b){
+  const m = a.length, n = b.length;
+  const dp = Array.from({length:m+1}, (_,i) =>
+    Array.from({length:n+1}, (_,j) => i===0 ? j : j===0 ? i : 0)
+  );
+  for(let i=1;i<=m;i++) for(let j=1;j<=n;j++)
+    dp[i][j] = a[i-1]===b[j-1] ? dp[i-1][j-1] : 1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);
+  return dp[m][n];
+}
+
 function _sbCheckInput(){
   const text = document.getElementById('sbingo-type-input').value.toLowerCase().trim();
   if(!text) return;
 
-  const hits = [];
+  // Collect all cells whose trigger appears in the typed text
+  const candidates = [];
   _sbCells.forEach((data, i) => {
     if(!data || data.free || data.revealed || !data.trigger) return;
-    if(text.includes(data.trigger.toLowerCase().trim())){
-      _sbCells[i] = {...data, revealed:true};
-      hits.push(data.label || '(unlabeled)');
+    const trigger = data.trigger.toLowerCase().trim();
+    if(text.includes(trigger)){
+      candidates.push({i, data, trigger, dist: _sbLevenshtein(text, trigger)});
     }
   });
 
   const hint = document.getElementById('sbingo-match-hint');
   clearTimeout(hint._t);
-  if(hits.length){
+
+  let toReveal = [];
+  if(candidates.length === 1){
+    // Unique match — reveal directly
+    toReveal = [candidates[0]];
+  } else if(candidates.length > 1){
+    // Ambiguous — pick the closest trigger to what was typed
+    candidates.sort((a, b) => a.dist - b.dist);
+    const best = candidates[0];
+    const maxDist = Math.min(4, Math.floor(best.trigger.length / 3));
+    if(best.dist <= maxDist){
+      toReveal = [best];
+    } else {
+      hint.textContent = 'Multiple matches — be more specific!';
+      hint.className = 'sbingo-match-hint miss';
+      hint._t = setTimeout(() => { hint.textContent = ''; hint.className = 'sbingo-match-hint'; }, 3500);
+      return;
+    }
+  }
+
+  if(toReveal.length){
+    const hits = toReveal.map(({i, data}) => {
+      _sbCells[i] = {...data, revealed:true};
+      return data.label || '(unlabeled)';
+    });
     hint.textContent = 'Revealed: ' + hits.join(', ');
     hint.className = 'sbingo-match-hint hit';
     _sbBuildBoard();
