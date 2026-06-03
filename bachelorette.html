@@ -226,7 +226,7 @@
     font-family:"DM Sans";font-size:14px;color:var(--ink);border-radius:4px;box-sizing:border-box;
   }
   .sbingo-modal-input:focus{outline:none;border-color:var(--pink-hot);background:#fff5e9}
-  .sbingo-modal-input.trigger-inp{border-style:dashed}
+
   .bingo-cell.sbingo-revealed.sb-long{font-size:8.5px;line-height:1.15}
   .bingo-cell.sbingo-revealed.sb-medium{font-size:9.5px}
 
@@ -2291,11 +2291,9 @@
 <div class="modal" id="sbingo-cell-modal">
   <div class="modal-content">
     <h3>Bingo Square</h3>
-    <p>The label appears when revealed. The trigger is the secret keyword typed to reveal it.</p>
+    <p>What goes on this card? Type something that includes any key word to reveal it.</p>
     <label class="sbingo-modal-label" for="sbingo-cell-label-inp">Label (shown on card)</label>
-    <input type="text" id="sbingo-cell-label-inp" class="sbingo-modal-input" maxlength="120" placeholder="e.g. She screams" autocomplete="off" />
-    <label class="sbingo-modal-label" for="sbingo-cell-trigger-inp">Trigger word / phrase</label>
-    <input type="text" id="sbingo-cell-trigger-inp" class="sbingo-modal-input trigger-inp" maxlength="80" placeholder="e.g. scream" autocomplete="off" />
+    <input type="text" id="sbingo-cell-label-inp" class="sbingo-modal-input" maxlength="120" placeholder="e.g. She will scream" autocomplete="off" />
     <div class="modal-actions" style="margin-top:20px">
       <button class="btn ghost small" id="sbingo-cell-del" style="display:none;margin-right:auto;color:#a32d4a;border-color:#a32d4a">Remove</button>
       <button class="btn ghost small" id="sbingo-cell-cancel">Cancel</button>
@@ -3099,8 +3097,7 @@ let _sbEditingIdx = null;
 function _sbOpenModal(idx){
   _sbEditingIdx = idx;
   const data = _sbCells[idx];
-  document.getElementById('sbingo-cell-label-inp').value   = data ? (data.label   || '') : '';
-  document.getElementById('sbingo-cell-trigger-inp').value = data ? (data.trigger || '') : '';
+  document.getElementById('sbingo-cell-label-inp').value = data ? (data.label || '') : '';
   document.getElementById('sbingo-cell-del').style.display = data ? '' : 'none';
   document.getElementById('sbingo-cell-modal').classList.add('open');
   setTimeout(() => document.getElementById('sbingo-cell-label-inp').focus(), 80);
@@ -3109,11 +3106,10 @@ function _sbOpenModal(idx){
 function _sbCloseModal(save){
   document.getElementById('sbingo-cell-modal').classList.remove('open');
   if(save && _sbEditingIdx !== null){
-    const label   = document.getElementById('sbingo-cell-label-inp').value.trim();
-    const trigger = document.getElementById('sbingo-cell-trigger-inp').value.trim();
+    const label = document.getElementById('sbingo-cell-label-inp').value.trim();
     const prev = _sbCells[_sbEditingIdx];
-    _sbCells[_sbEditingIdx] = (label || trigger)
-      ? {label, trigger, revealed: prev ? !!prev.revealed : false}
+    _sbCells[_sbEditingIdx] = label
+      ? {label, revealed: prev ? !!prev.revealed : false}
       : null;
     _sbBuildBoard();
     _sbCheckSBingo();
@@ -3141,17 +3137,24 @@ function _sbLevenshtein(a, b){
   return dp[m][n];
 }
 
+// Words to ignore when matching (too common to be meaningful)
+const _sbStopWords = new Set(['a','an','the','is','it','in','on','at','to','of','and','or','she','he','they','will','has','have','was','be','so','do','did','her','his']);
+
+function _sbLabelWords(label){
+  return label.toLowerCase().split(/\s+/).filter(w => w.length > 2 && !_sbStopWords.has(w));
+}
+
 function _sbCheckInput(){
   const text = document.getElementById('sbingo-type-input').value.toLowerCase().trim();
   if(!text) return;
 
-  // Collect all cells whose trigger appears in the typed text
+  // A cell matches if any of its significant label words appear in the typed text
   const candidates = [];
   _sbCells.forEach((data, i) => {
-    if(!data || data.free || data.revealed || !data.trigger) return;
-    const trigger = data.trigger.toLowerCase().trim();
-    if(text.includes(trigger)){
-      candidates.push({i, data, trigger, dist: _sbLevenshtein(text, trigger)});
+    if(!data || data.free || data.revealed || !data.label) return;
+    const words = _sbLabelWords(data.label);
+    if(words.some(w => text.includes(w))){
+      candidates.push({i, data, dist: _sbLevenshtein(text, data.label.toLowerCase().trim())});
     }
   });
 
@@ -3160,13 +3163,12 @@ function _sbCheckInput(){
 
   let toReveal = [];
   if(candidates.length === 1){
-    // Unique match — reveal directly
     toReveal = [candidates[0]];
   } else if(candidates.length > 1){
-    // Ambiguous — pick the closest trigger to what was typed
+    // Ambiguous — pick the label closest to what was typed
     candidates.sort((a, b) => a.dist - b.dist);
     const best = candidates[0];
-    const maxDist = Math.min(4, Math.floor(best.trigger.length / 3));
+    const maxDist = Math.min(4, Math.floor(best.data.label.length / 3));
     if(best.dist <= maxDist){
       toReveal = [best];
     } else {
@@ -3180,7 +3182,7 @@ function _sbCheckInput(){
   if(toReveal.length){
     const hits = toReveal.map(({i, data}) => {
       _sbCells[i] = {...data, revealed:true};
-      return data.label || '(unlabeled)';
+      return data.label;
     });
     hint.textContent = 'Revealed: ' + hits.join(', ');
     hint.className = 'sbingo-match-hint hit';
@@ -3236,7 +3238,7 @@ _sbBuildBoard();
 _sbCheckSBingo();
 
 document.getElementById('sbingo-clear-btn').addEventListener('click', () => {
-  if(confirm('Reset all revealed squares? (Labels and triggers stay.)')) _sbClear();
+  if(confirm('Reset all revealed squares? (Labels stay.)')) _sbClear();
 });
 document.getElementById('sbingo-type-btn').addEventListener('click', _sbCheckInput);
 document.getElementById('sbingo-type-input').addEventListener('keydown', e => {
@@ -3249,10 +3251,6 @@ document.getElementById('sbingo-cell-modal').addEventListener('click', e => {
   if(e.target === document.getElementById('sbingo-cell-modal')) _sbCloseModal(false);
 });
 document.getElementById('sbingo-cell-label-inp').addEventListener('keydown', e => {
-  if(e.key==='Enter'){ e.preventDefault(); document.getElementById('sbingo-cell-trigger-inp').focus(); }
-  if(e.key==='Escape') _sbCloseModal(false);
-});
-document.getElementById('sbingo-cell-trigger-inp').addEventListener('keydown', e => {
   if(e.key==='Enter'){ e.preventDefault(); _sbCloseModal(true); }
   if(e.key==='Escape') _sbCloseModal(false);
 });
