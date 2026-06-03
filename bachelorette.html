@@ -180,6 +180,73 @@
   }
   #bingo-edit-input:focus{outline:none;border-color:var(--pink-hot);background:#fff5e9;}
 
+  /* ---------- SECRET BINGO ---------- */
+  .sbingo-setup-header{
+    display:grid;grid-template-columns:1fr 1fr 32px;gap:8px;
+    padding:0 8px 8px;
+    font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--wine);opacity:.65;
+  }
+  .sbingo-item-row{
+    display:grid;grid-template-columns:1fr 1fr 32px;gap:8px;
+    margin-bottom:8px;align-items:center;
+  }
+  .sbingo-item-row input{
+    width:100%;padding:9px 12px;border:1px solid var(--line);background:#fff;
+    font-family:"DM Sans";font-size:13px;color:var(--ink);border-radius:4px;
+  }
+  .sbingo-item-row input:focus{outline:none;border-color:var(--pink-hot);background:#fff5e9}
+  .sbingo-item-row input.sb-trigger{border-style:dashed}
+  .sbingo-del{
+    background:transparent;border:none;cursor:pointer;color:var(--wine);
+    opacity:.3;transition:all .2s;font-size:20px;padding:4px;line-height:1;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .sbingo-del:hover{opacity:1;color:var(--pink-hot)}
+  .sbingo-type-row{
+    display:flex;gap:10px;margin-bottom:10px;
+  }
+  .sbingo-type-row input{
+    flex:1;padding:12px 16px;border:1.5px solid var(--wine);background:#fff;
+    font-family:"DM Sans";font-size:15px;color:var(--ink);border-radius:4px;
+  }
+  .sbingo-type-row input:focus{outline:none;border-color:var(--pink-hot);background:#fff5e9}
+  .sbingo-match-hint{
+    min-height:28px;padding:6px 12px 6px 0;margin-bottom:14px;
+    font-size:13px;font-style:italic;color:var(--wine);
+    border-radius:4px;transition:all .3s;
+  }
+  .sbingo-match-hint.hit{
+    background:#fff5e9;color:var(--pink-hot);padding:6px 12px;
+    border-left:3px solid var(--pink-hot);
+  }
+  .sbingo-match-hint.miss{
+    background:var(--cream-deep);color:var(--wine);opacity:.7;padding:6px 12px;
+  }
+  .bingo-cell.sbingo-hidden{
+    background:var(--wine);color:rgba(255,255,255,.3);font-size:22px;
+    cursor:default;user-select:none;
+  }
+  .bingo-cell.sbingo-hidden:hover{background:var(--wine)}
+  .bingo-cell.sbingo-revealed{
+    background:var(--pink-hot);color:var(--cream);
+    animation:sbingo-reveal .45s cubic-bezier(.34,1.56,.64,1);
+  }
+  .bingo-cell.sbingo-empty{
+    background:#FCFAF6;opacity:.3;cursor:default;
+  }
+  .bingo-cell.sbingo-empty:hover{background:#FCFAF6}
+  @keyframes sbingo-reveal{
+    0%{transform:scale(.5);opacity:0}
+    100%{transform:scale(1);opacity:1}
+  }
+  @media (max-width:540px){
+    .sbingo-setup-header{display:none}
+    .sbingo-item-row{grid-template-columns:1fr 32px;grid-template-rows:auto auto;gap:6px}
+    .sbingo-item-row input:nth-child(1){grid-column:1;grid-row:1}
+    .sbingo-item-row input:nth-child(2){grid-column:1;grid-row:2}
+    .sbingo-del{grid-column:2;grid-row:1}
+  }
+
   /* ---------- DRINK IF / TRUTH OR DARE CARDS ---------- */
   .card-stage{
     background:var(--cream-deep);
@@ -1448,6 +1515,7 @@
       <button class="tab" data-tab="bl"><span class="tab-num">10</span>Bucket List</button>
       <button class="tab" data-tab="nhie"><span class="tab-num">11</span>Never Have I</button>
       <button class="tab" data-tab="vote"><span class="tab-num">12</span>Live Vote</button>
+      <button class="tab" data-tab="sbingo"><span class="tab-num">13</span>Secret Bingo</button>
     </div>
 
     <!-- BINGO -->
@@ -1828,6 +1896,49 @@
       </div>
 
       <div id="poll-idle" class="poll-status">No active poll — type a question above and launch it.</div>
+    </div>
+
+    <!-- SECRET BINGO -->
+    <div class="panel" id="panel-sbingo">
+      <div class="game-header">
+        <div>
+          <h3>Secret <em>Bingo</em></h3>
+          <p>Add items with a hidden trigger word. During the party, type what you see or hear — matching squares auto-reveal!</p>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn ghost small" id="sbingo-setup-btn" style="display:none">✏️ Setup</button>
+          <button class="btn ghost small" id="sbingo-clear-btn">Clear</button>
+        </div>
+      </div>
+
+      <!-- Setup mode -->
+      <div id="sbingo-setup">
+        <p style="font-size:14px;color:#3a1226;margin-bottom:16px">Add up to 24 items. The <strong>Label</strong> appears on the card when revealed. The <strong>Trigger</strong> is the secret word — type it during the party to reveal that square.</p>
+        <div class="sbingo-setup-header">
+          <span>Label (shown on card)</span>
+          <span>Trigger word / phrase</span>
+          <span></span>
+        </div>
+        <div id="sbingo-items-list"></div>
+        <div style="margin-top:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+          <button class="btn ghost small" id="sbingo-add-item">+ Add Item</button>
+          <span id="sbingo-count" style="font-size:12px;color:var(--wine);opacity:.6;font-style:italic"></span>
+        </div>
+        <div style="margin-top:24px">
+          <button class="btn" id="sbingo-play-btn">▶ Start Playing</button>
+        </div>
+      </div>
+
+      <!-- Play mode -->
+      <div id="sbingo-play" style="display:none">
+        <div class="sbingo-type-row">
+          <input type="text" id="sbingo-type-input" placeholder="Type what you see or hear…" autocomplete="off" autocorrect="off" spellcheck="false" />
+          <button class="btn small" id="sbingo-type-btn">Reveal</button>
+        </div>
+        <div id="sbingo-match-hint" class="sbingo-match-hint"></div>
+        <div class="bingo-board" id="sbingo-board"></div>
+        <div class="bingo-status" id="sbingo-status">Type something to reveal squares…</div>
+      </div>
     </div>
 
   </div>
@@ -2949,6 +3060,201 @@ document.getElementById('bingo-edit-modal').addEventListener('click',e=>{
   if(e.target===document.getElementById('bingo-edit-modal'))closeBingoCellEdit(false);
 });
 buildBingo();
+
+/* ============================================
+   GAME 13 — SECRET BINGO
+============================================ */
+let _sbItems = [];
+let _sbPlaying = false;
+
+function _sbEsc(s){ return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function _sbSave(){
+  try{ localStorage.setItem('bach_sbingo', JSON.stringify({items:_sbItems,playing:_sbPlaying})); }catch(e){}
+}
+
+function _sbLoad(){
+  try{
+    const d = JSON.parse(localStorage.getItem('bach_sbingo')||'{}');
+    if(Array.isArray(d.items)) _sbItems = d.items;
+    if(d.playing) _sbPlaying = true;
+  }catch(e){}
+}
+
+function _sbRenderSetup(){
+  const list = document.getElementById('sbingo-items-list');
+  list.innerHTML = '';
+  _sbItems.forEach((item, i) => {
+    const row = document.createElement('div');
+    row.className = 'sbingo-item-row';
+    row.innerHTML = `
+      <input type="text" class="sb-label" placeholder="e.g. She screams" maxlength="40" value="${_sbEsc(item.label)}" />
+      <input type="text" class="sb-trigger" placeholder="e.g. scream" maxlength="40" value="${_sbEsc(item.trigger)}" />
+      <button class="sbingo-del" title="Remove">×</button>
+    `;
+    row.querySelector('.sb-label').addEventListener('input', e => { _sbItems[i].label = e.target.value; _sbSave(); });
+    row.querySelector('.sb-trigger').addEventListener('input', e => { _sbItems[i].trigger = e.target.value; _sbSave(); });
+    row.querySelector('.sbingo-del').addEventListener('click', () => { _sbItems.splice(i, 1); _sbRenderSetup(); _sbSave(); });
+    list.appendChild(row);
+  });
+  document.getElementById('sbingo-count').textContent = `${_sbItems.length} / 24 items`;
+  document.getElementById('sbingo-add-item').style.display = _sbItems.length >= 24 ? 'none' : '';
+}
+
+function _sbAddItem(){
+  if(_sbItems.length >= 24) return;
+  _sbItems.push({label:'', trigger:'', revealed:false});
+  _sbRenderSetup();
+  _sbSave();
+  const inputs = document.getElementById('sbingo-items-list').querySelectorAll('.sb-label');
+  if(inputs.length) setTimeout(() => inputs[inputs.length-1].focus(), 0);
+}
+
+function _sbBuildBoard(){
+  const board = document.getElementById('sbingo-board');
+  board.innerHTML = '';
+  for(let i = 0; i < 25; i++){
+    const cell = document.createElement('div');
+    if(i === 12){
+      cell.className = 'bingo-cell free marked';
+      cell.textContent = 'FREE';
+    } else {
+      const idx = i < 12 ? i : i - 1;
+      const item = _sbItems[idx];
+      if(!item){
+        cell.className = 'bingo-cell sbingo-empty';
+        cell.textContent = '✦';
+      } else if(item.revealed){
+        cell.className = 'bingo-cell sbingo-revealed';
+        cell.textContent = item.label || '✓';
+        cell.style.animation = 'none'; // no re-animate on board rebuild
+      } else {
+        cell.className = 'bingo-cell sbingo-hidden';
+        cell.textContent = '?';
+      }
+    }
+    cell.dataset.idx = i;
+    board.appendChild(cell);
+  }
+}
+
+function _sbCheckInput(){
+  const raw = document.getElementById('sbingo-type-input').value;
+  const text = raw.toLowerCase().trim();
+  if(!text) return;
+
+  const hits = [];
+  _sbItems.forEach((item, i) => {
+    if(!item.trigger || item.revealed) return;
+    if(text.includes(item.trigger.toLowerCase().trim())){
+      item.revealed = true;
+      hits.push(item.label || '(unlabeled)');
+    }
+  });
+
+  const hint = document.getElementById('sbingo-match-hint');
+  if(hits.length){
+    hint.textContent = 'Revealed: ' + hits.join(', ');
+    hint.className = 'sbingo-match-hint hit';
+    _sbBuildBoard();
+    // Re-animate only the newly revealed cells
+    document.querySelectorAll('#sbingo-board .sbingo-revealed').forEach(c => {
+      c.style.animation = '';
+    });
+    _sbCheckSBingo();
+    _sbSave();
+    document.getElementById('sbingo-type-input').value = '';
+    document.getElementById('sbingo-type-input').focus();
+  } else {
+    hint.textContent = 'No match — keep listening!';
+    hint.className = 'sbingo-match-hint miss';
+  }
+  clearTimeout(hint._t);
+  hint._t = setTimeout(() => { hint.textContent = ''; hint.className = 'sbingo-match-hint'; }, 3500);
+}
+
+function _sbCheckSBingo(){
+  const marked = [];
+  for(let i = 0; i < 25; i++){
+    if(i === 12){ marked.push(true); continue; }
+    const idx = i < 12 ? i : i - 1;
+    marked.push(_sbItems[idx] ? _sbItems[idx].revealed : false);
+  }
+  const lines = [];
+  for(let r = 0; r < 5; r++) lines.push([r*5, r*5+1, r*5+2, r*5+3, r*5+4]);
+  for(let c = 0; c < 5; c++) lines.push([c, c+5, c+10, c+15, c+20]);
+  lines.push([0,6,12,18,24]); lines.push([4,8,12,16,20]);
+
+  const status = document.getElementById('sbingo-status');
+  const board = document.getElementById('sbingo-board');
+  for(const line of lines){
+    if(line.every(i => marked[i])){
+      status.textContent = 'BINGO! 🥂';
+      status.classList.add('win');
+      if(!board.dataset.celebrated){ board.dataset.celebrated = '1'; fireConfetti({count:120}); }
+      return;
+    }
+  }
+  board.dataset.celebrated = '';
+  const count = _sbItems.filter(it => it.revealed).length;
+  status.textContent = count > 0 ? `${count} revealed — keep going!` : 'Type something to reveal squares…';
+  status.classList.remove('win');
+}
+
+function _sbStartPlay(){
+  const valid = _sbItems.filter(it => it.label || it.trigger);
+  if(valid.length < 1){
+    alert('Add at least one item first!');
+    return;
+  }
+  _sbPlaying = true;
+  document.getElementById('sbingo-setup').style.display = 'none';
+  document.getElementById('sbingo-play').style.display = '';
+  document.getElementById('sbingo-setup-btn').style.display = '';
+  _sbBuildBoard();
+  _sbCheckSBingo();
+  _sbSave();
+  setTimeout(() => document.getElementById('sbingo-type-input').focus(), 100);
+}
+
+function _sbGoSetup(){
+  _sbPlaying = false;
+  document.getElementById('sbingo-setup').style.display = '';
+  document.getElementById('sbingo-play').style.display = 'none';
+  document.getElementById('sbingo-setup-btn').style.display = 'none';
+  _sbRenderSetup();
+  _sbSave();
+}
+
+function _sbClear(){
+  _sbItems = _sbItems.map(it => ({...it, revealed:false}));
+  document.getElementById('sbingo-board').dataset.celebrated = '';
+  _sbBuildBoard();
+  _sbCheckSBingo();
+  _sbSave();
+}
+
+// Init
+_sbLoad();
+_sbRenderSetup();
+if(_sbPlaying){
+  document.getElementById('sbingo-setup').style.display = 'none';
+  document.getElementById('sbingo-play').style.display = '';
+  document.getElementById('sbingo-setup-btn').style.display = '';
+  _sbBuildBoard();
+  _sbCheckSBingo();
+}
+
+document.getElementById('sbingo-add-item').addEventListener('click', _sbAddItem);
+document.getElementById('sbingo-play-btn').addEventListener('click', _sbStartPlay);
+document.getElementById('sbingo-setup-btn').addEventListener('click', _sbGoSetup);
+document.getElementById('sbingo-clear-btn').addEventListener('click', () => {
+  if(confirm('Reset all revealed squares?')) _sbClear();
+});
+document.getElementById('sbingo-type-btn').addEventListener('click', _sbCheckInput);
+document.getElementById('sbingo-type-input').addEventListener('keydown', e => {
+  if(e.key === 'Enter'){ e.preventDefault(); _sbCheckInput(); }
+});
 
 /* ============================================
    GAME 2 — DRINK IF
