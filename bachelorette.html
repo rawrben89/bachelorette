@@ -208,13 +208,27 @@
   /* Revealed */
   .bingo-cell.sbingo-revealed{
     background:var(--pink-hot);color:var(--cream);cursor:default;
-    animation:sbingo-reveal .45s cubic-bezier(.34,1.56,.64,1);
+    animation:sbingo-flip .65s cubic-bezier(.34,1.56,.64,1) forwards;
+    overflow:hidden;
   }
   .bingo-cell.sbingo-revealed:hover{background:var(--pink-hot)}
-  .bingo-cell.sbingo-revealed.marked::after{content:"✿";position:absolute;font-size:48px;color:rgba(255,255,255,.3);font-family:"Fraunces",serif}
-  @keyframes sbingo-reveal{
-    0%{transform:scale(.5);opacity:0}
-    100%{transform:scale(1);opacity:1}
+  .bingo-cell.sbingo-revealed.marked::after{content:"✿";position:absolute;font-size:48px;color:rgba(255,255,255,.25);font-family:"Fraunces",serif}
+  /* shine sweep after flip */
+  .bingo-cell.sbingo-revealed::before{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.55) 50%,transparent 70%);
+    animation:sbingo-shine .65s .3s ease forwards;
+    opacity:0;pointer-events:none;
+  }
+  @keyframes sbingo-flip{
+    0%  {transform:perspective(500px) rotateY(90deg) scale(.7);opacity:0;filter:brightness(2)}
+    55% {transform:perspective(500px) rotateY(-10deg) scale(1.1);opacity:1;filter:brightness(1.4)}
+    100%{transform:perspective(500px) rotateY(0deg) scale(1);opacity:1;filter:brightness(1)}
+  }
+  @keyframes sbingo-shine{
+    0%  {opacity:0;transform:translateX(-100%)}
+    30% {opacity:1}
+    100%{opacity:0;transform:translateX(100%)}
   }
   /* Cell edit modal inputs */
   .sbingo-modal-label{
@@ -1889,7 +1903,7 @@
           <h3>Secret <em>Bingo</em></h3>
           <p>Tap any square to set a label and a hidden trigger word. Then type what you see or hear — matching squares auto-reveal!</p>
         </div>
-        <button class="btn ghost small" id="sbingo-clear-btn">Clear</button>
+        <button class="btn ghost small" id="sbingo-clear-btn">New Game</button>
       </div>
       <div class="bingo-board" id="sbingo-board"></div>
       <div class="bingo-status" id="sbingo-status">Tap squares to fill them in.</div>
@@ -3132,6 +3146,30 @@ function _sbDeleteCell(){
   _sbSave();
 }
 
+function _sbSparkle(cellEl){
+  const rect = cellEl.getBoundingClientRect();
+  const cx = rect.left + rect.width  / 2;
+  const cy = rect.top  + rect.height / 2;
+  const shapes = ['✦','★','✿','♥','•'];
+  const colors = ['#FF2D7F','#C9924A','#fff','#E63A7C','#FFD700'];
+  for(let i = 0; i < 16; i++){
+    const p = document.createElement('span');
+    const angle = (i / 16) * Math.PI * 2 + Math.random() * .4;
+    const dist  = 30 + Math.random() * 60;
+    const size  = 9  + Math.random() * 13;
+    p.textContent = shapes[i % shapes.length];
+    p.style.cssText = `position:fixed;left:${cx}px;top:${cy}px;font-size:${size}px;`
+      + `color:${colors[i % colors.length]};pointer-events:none;z-index:9999;`
+      + `transform:translate(-50%,-50%);line-height:1;`;
+    document.body.appendChild(p);
+    p.animate([
+      {transform:'translate(-50%,-50%) scale(1)', opacity:1},
+      {transform:`translate(calc(-50% + ${Math.cos(angle)*dist}px),calc(-50% + ${Math.sin(angle)*dist}px)) scale(.1)`, opacity:0}
+    ], {duration: 480 + Math.random()*220, easing:'ease-out', fill:'forwards'})
+    .onfinish = () => p.remove();
+  }
+}
+
 function _sbLevenshtein(a, b){
   const m = a.length, n = b.length;
   const dp = Array.from({length:m+1}, (_,i) =>
@@ -3205,6 +3243,11 @@ function _sbCheckInput(){
     hint.textContent = 'Revealed: ' + hits.join(', ');
     hint.className = 'sbingo-match-hint hit';
     _sbBuildBoard();
+    // Sparkle each newly revealed cell
+    toReveal.forEach(({i}) => {
+      const el = document.querySelector(`#sbingo-board .bingo-cell[data-idx="${i}"]`);
+      if(el) _sbSparkle(el);
+    });
     _sbCheckSBingo();
     _sbSave();
     document.getElementById('sbingo-type-input').value = '';
@@ -3256,7 +3299,7 @@ _sbBuildBoard();
 _sbCheckSBingo();
 
 document.getElementById('sbingo-clear-btn').addEventListener('click', () => {
-  if(confirm('Reset all revealed squares? (Labels stay.)')) _sbClear();
+  if(confirm('Start a new game? (Resets all revealed squares — labels stay.)')) _sbClear();
 });
 document.getElementById('sbingo-type-btn').addEventListener('click', _sbCheckInput);
 document.getElementById('sbingo-type-input').addEventListener('keydown', e => {
