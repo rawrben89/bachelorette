@@ -1903,7 +1903,10 @@
           <h3>Secret <em>Bingo</em></h3>
           <p>Tap any square to set a label and a hidden trigger word. Then type what you see or hear — matching squares auto-reveal!</p>
         </div>
-        <button class="btn ghost small" id="sbingo-clear-btn">New Game</button>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn ghost small" id="sbingo-reset-btn">Reset</button>
+          <button class="btn ghost small" id="sbingo-clear-btn" style="color:#a32d4a;border-color:#a32d4a">Clear</button>
+        </div>
       </div>
       <div class="bingo-board" id="sbingo-board"></div>
       <div class="bingo-status" id="sbingo-status">Tap squares to fill them in.</div>
@@ -2315,6 +2318,30 @@
       <button class="btn ghost small" id="sbingo-cell-del" style="display:none;margin-right:auto;color:#a32d4a;border-color:#a32d4a">Remove</button>
       <button class="btn ghost small" id="sbingo-cell-cancel">Cancel</button>
       <button class="btn" id="sbingo-cell-save">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- SBINGO RESET CONFIRM -->
+<div class="modal" id="sbingo-reset-modal">
+  <div class="modal-content">
+    <h3>Reset Game?</h3>
+    <p>All revealed squares will be hidden again. Labels and triggers stay.</p>
+    <div class="modal-actions">
+      <button class="btn ghost small" id="sbingo-reset-no">Cancel</button>
+      <button class="btn" id="sbingo-reset-yes">Yes, reset</button>
+    </div>
+  </div>
+</div>
+
+<!-- SBINGO CLEAR CONFIRM -->
+<div class="modal" id="sbingo-clear-modal">
+  <div class="modal-content">
+    <h3>Clear Everything?</h3>
+    <p>This will remove all labels and triggers from every square. Are you sure?</p>
+    <div class="modal-actions">
+      <button class="btn ghost small" id="sbingo-clear-no">Cancel</button>
+      <button class="btn" style="background:#a32d4a" id="sbingo-clear-yes">Yes, clear all</button>
     </div>
   </div>
 </div>
@@ -3285,8 +3312,16 @@ function _sbCheckSBingo(){
   status.classList.remove('win');
 }
 
-function _sbClear(){
+function _sbReset(){
   _sbCells = _sbCells.map((d,i) => i===12 ? d : (d ? {...d, revealed:false} : null));
+  document.getElementById('sbingo-board').dataset.celebrated = '';
+  _sbBuildBoard();
+  _sbCheckSBingo();
+  _sbSave();
+}
+
+function _sbClearAll(){
+  _sbCells = Array.from({length:25}, (_,i) => i===12 ? {free:true} : null);
   document.getElementById('sbingo-board').dataset.celebrated = '';
   _sbBuildBoard();
   _sbCheckSBingo();
@@ -3298,9 +3333,18 @@ _sbLoad();
 _sbBuildBoard();
 _sbCheckSBingo();
 
-document.getElementById('sbingo-clear-btn').addEventListener('click', () => {
-  if(confirm('Start a new game? (Resets all revealed squares — labels stay.)')) _sbClear();
-});
+const _sbResetModal = document.getElementById('sbingo-reset-modal');
+const _sbClearModal = document.getElementById('sbingo-clear-modal');
+
+document.getElementById('sbingo-reset-btn').addEventListener('click', () => _sbResetModal.classList.add('open'));
+document.getElementById('sbingo-reset-no').addEventListener('click',  () => _sbResetModal.classList.remove('open'));
+document.getElementById('sbingo-reset-yes').addEventListener('click', () => { _sbResetModal.classList.remove('open'); _sbReset(); });
+_sbResetModal.addEventListener('click', e => { if(e.target===_sbResetModal) _sbResetModal.classList.remove('open'); });
+
+document.getElementById('sbingo-clear-btn').addEventListener('click', () => _sbClearModal.classList.add('open'));
+document.getElementById('sbingo-clear-no').addEventListener('click',  () => _sbClearModal.classList.remove('open'));
+document.getElementById('sbingo-clear-yes').addEventListener('click', () => { _sbClearModal.classList.remove('open'); _sbClearAll(); });
+_sbClearModal.addEventListener('click', e => { if(e.target===_sbClearModal) _sbClearModal.classList.remove('open'); });
 document.getElementById('sbingo-type-btn').addEventListener('click', _sbCheckInput);
 document.getElementById('sbingo-type-input').addEventListener('keydown', e => {
   if(e.key==='Enter'){ e.preventDefault(); _sbCheckInput(); }
