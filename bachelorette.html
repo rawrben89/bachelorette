@@ -5483,6 +5483,26 @@ ${stockHTML}
 
 // Start Firebase live sync (connects, sets up listeners, shows share bar)
 initDb();
+
+/* ============================================
+   AUTO-RELOAD ON NEW DEPLOY
+   Polls this page's ETag/Last-Modified every 90 s.
+   Reloads silently when GitHub Pages serves a newer version.
+============================================ */
+(function(){
+  let _knownStamp = null;
+  async function _checkVersion(){
+    try{
+      const res = await fetch(location.pathname || location.href, {method:'HEAD', cache:'no-store'});
+      const stamp = res.headers.get('etag') || res.headers.get('last-modified');
+      if(!stamp) return;
+      if(_knownStamp === null){ _knownStamp = stamp; return; }
+      if(stamp !== _knownStamp){ location.reload(); }
+    }catch(e){}
+  }
+  _checkVersion();
+  setInterval(_checkVersion, 90000);
+})();
 </script>
 
 </body>
