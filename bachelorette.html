@@ -3148,13 +3148,19 @@ function _sbCheckInput(){
   const text = document.getElementById('sbingo-type-input').value.toLowerCase().trim();
   if(!text) return;
 
-  // A cell matches if any of its significant label words appear in the typed text
+  // A cell matches if:
+  //   (a) any significant label word appears in the typed text, OR
+  //   (b) the typed text is very similar to the full label phrase
   const candidates = [];
   _sbCells.forEach((data, i) => {
     if(!data || data.free || data.revealed || !data.label) return;
-    const words = _sbLabelWords(data.label);
-    if(words.some(w => text.includes(w))){
-      candidates.push({i, data, dist: _sbLevenshtein(text, data.label.toLowerCase().trim())});
+    const label = data.label.toLowerCase().trim();
+    const dist  = _sbLevenshtein(text, label);
+    const fuzzyThreshold = Math.min(6, Math.floor(label.length / 4));
+    const wordMatch  = _sbLabelWords(data.label).some(w => text.includes(w));
+    const fuzzyMatch = dist <= fuzzyThreshold;
+    if(wordMatch || fuzzyMatch){
+      candidates.push({i, data, dist});
     }
   });
 
