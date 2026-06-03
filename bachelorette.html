@@ -227,6 +227,8 @@
   }
   .sbingo-modal-input:focus{outline:none;border-color:var(--pink-hot);background:#fff5e9}
   .sbingo-modal-input.trigger-inp{border-style:dashed}
+  .bingo-cell.sbingo-revealed.sb-long{font-size:8.5px;line-height:1.15}
+  .bingo-cell.sbingo-revealed.sb-medium{font-size:9.5px}
 
   /* ---------- DRINK IF / TRUTH OR DARE CARDS ---------- */
   .card-stage{
@@ -2291,9 +2293,9 @@
     <h3>Bingo Square</h3>
     <p>The label appears when revealed. The trigger is the secret keyword typed to reveal it.</p>
     <label class="sbingo-modal-label" for="sbingo-cell-label-inp">Label (shown on card)</label>
-    <input type="text" id="sbingo-cell-label-inp" class="sbingo-modal-input" maxlength="40" placeholder="e.g. She screams" autocomplete="off" />
+    <input type="text" id="sbingo-cell-label-inp" class="sbingo-modal-input" maxlength="120" placeholder="e.g. She screams" autocomplete="off" />
     <label class="sbingo-modal-label" for="sbingo-cell-trigger-inp">Trigger word / phrase</label>
-    <input type="text" id="sbingo-cell-trigger-inp" class="sbingo-modal-input trigger-inp" maxlength="40" placeholder="e.g. scream" autocomplete="off" />
+    <input type="text" id="sbingo-cell-trigger-inp" class="sbingo-modal-input trigger-inp" maxlength="80" placeholder="e.g. scream" autocomplete="off" />
     <div class="modal-actions" style="margin-top:20px">
       <button class="btn ghost small" id="sbingo-cell-del" style="display:none;margin-right:auto;color:#a32d4a;border-color:#a32d4a">Remove</button>
       <button class="btn ghost small" id="sbingo-cell-cancel">Cancel</button>
@@ -3077,8 +3079,10 @@ function _sbBuildBoard(){
       cell.textContent = '+';
       _sbAttachCellClick(cell, i);
     } else if(data.revealed){
-      cell.className = 'bingo-cell sbingo-revealed marked';
-      cell.textContent = data.label || '✓';
+      const lbl = data.label || '✓';
+      let sizeClass = lbl.length > 50 ? ' sb-long' : lbl.length > 28 ? ' sb-medium' : '';
+      cell.className = 'bingo-cell sbingo-revealed marked' + sizeClass;
+      cell.textContent = lbl;
     } else {
       cell.className = 'bingo-cell sbingo-set';
       cell.textContent = '?';
