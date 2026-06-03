@@ -226,6 +226,7 @@
     font-family:"DM Sans";font-size:14px;color:var(--ink);border-radius:4px;box-sizing:border-box;
   }
   .sbingo-modal-input:focus{outline:none;border-color:var(--pink-hot);background:#fff5e9}
+  .sbingo-modal-input.trigger-inp{border-style:dashed}
 
   .bingo-cell.sbingo-revealed.sb-long{font-size:8.5px;line-height:1.15}
   .bingo-cell.sbingo-revealed.sb-medium{font-size:9.5px}
@@ -2291,9 +2292,11 @@
 <div class="modal" id="sbingo-cell-modal">
   <div class="modal-content">
     <h3>Bingo Square</h3>
-    <p>What goes on this card? Type something that includes any key word to reveal it.</p>
+    <p>The label appears when revealed. The trigger is the secret keyword typed to reveal it.</p>
     <label class="sbingo-modal-label" for="sbingo-cell-label-inp">Label (shown on card)</label>
     <input type="text" id="sbingo-cell-label-inp" class="sbingo-modal-input" maxlength="120" placeholder="e.g. She will scream" autocomplete="off" />
+    <label class="sbingo-modal-label" for="sbingo-cell-trigger-inp">Trigger word / phrase</label>
+    <input type="text" id="sbingo-cell-trigger-inp" class="sbingo-modal-input trigger-inp" maxlength="80" placeholder="e.g. scream" autocomplete="off" />
     <div class="modal-actions" style="margin-top:20px">
       <button class="btn ghost small" id="sbingo-cell-del" style="display:none;margin-right:auto;color:#a32d4a;border-color:#a32d4a">Remove</button>
       <button class="btn ghost small" id="sbingo-cell-cancel">Cancel</button>
@@ -3097,7 +3100,8 @@ let _sbEditingIdx = null;
 function _sbOpenModal(idx){
   _sbEditingIdx = idx;
   const data = _sbCells[idx];
-  document.getElementById('sbingo-cell-label-inp').value = data ? (data.label || '') : '';
+  document.getElementById('sbingo-cell-label-inp').value   = data ? (data.label   || '') : '';
+  document.getElementById('sbingo-cell-trigger-inp').value = data ? (data.trigger || '') : '';
   document.getElementById('sbingo-cell-del').style.display = data ? '' : 'none';
   document.getElementById('sbingo-cell-modal').classList.add('open');
   setTimeout(() => document.getElementById('sbingo-cell-label-inp').focus(), 80);
@@ -3106,10 +3110,11 @@ function _sbOpenModal(idx){
 function _sbCloseModal(save){
   document.getElementById('sbingo-cell-modal').classList.remove('open');
   if(save && _sbEditingIdx !== null){
-    const label = document.getElementById('sbingo-cell-label-inp').value.trim();
+    const label   = document.getElementById('sbingo-cell-label-inp').value.trim();
+    const trigger = document.getElementById('sbingo-cell-trigger-inp').value.trim();
     const prev = _sbCells[_sbEditingIdx];
-    _sbCells[_sbEditingIdx] = label
-      ? {label, revealed: prev ? !!prev.revealed : false}
+    _sbCells[_sbEditingIdx] = (label || trigger)
+      ? {label, trigger, revealed: prev ? !!prev.revealed : false}
       : null;
     _sbBuildBoard();
     _sbCheckSBingo();
@@ -3149,19 +3154,26 @@ function _sbCheckInput(){
   if(!text) return;
 
   // A cell matches if:
-  //   (a) any significant label word appears in the typed text, OR
-  //   (b) the typed text is very similar to the full label phrase
+  //   trigger set  → typed text contains the trigger, OR is very similar to it
+  //   no trigger   → any significant label word appears in typed text, OR text is very similar to full label
   const candidates = [];
   _sbCells.forEach((data, i) => {
-    if(!data || data.free || data.revealed || !data.label) return;
-    const label = data.label.toLowerCase().trim();
-    const dist  = _sbLevenshtein(text, label);
-    const fuzzyThreshold = Math.min(6, Math.floor(label.length / 4));
-    const wordMatch  = _sbLabelWords(data.label).some(w => text.includes(w));
-    const fuzzyMatch = dist <= fuzzyThreshold;
-    if(wordMatch || fuzzyMatch){
-      candidates.push({i, data, dist});
+    if(!data || data.free || data.revealed || !(data.label || data.trigger)) return;
+    let match = false;
+    let dist;
+    if(data.trigger){
+      const trigger = data.trigger.toLowerCase().trim();
+      const triggerDist = _sbLevenshtein(text, trigger);
+      const fuzzyThreshold = Math.min(4, Math.floor(trigger.length / 4));
+      match = text.includes(trigger) || triggerDist <= fuzzyThreshold;
+      dist  = _sbLevenshtein(text, trigger);
+    } else {
+      const label = data.label.toLowerCase().trim();
+      dist = _sbLevenshtein(text, label);
+      const fuzzyThreshold = Math.min(6, Math.floor(label.length / 4));
+      match = _sbLabelWords(data.label).some(w => text.includes(w)) || dist <= fuzzyThreshold;
     }
+    if(match) candidates.push({i, data, dist});
   });
 
   const hint = document.getElementById('sbingo-match-hint');
@@ -3257,6 +3269,10 @@ document.getElementById('sbingo-cell-modal').addEventListener('click', e => {
   if(e.target === document.getElementById('sbingo-cell-modal')) _sbCloseModal(false);
 });
 document.getElementById('sbingo-cell-label-inp').addEventListener('keydown', e => {
+  if(e.key==='Enter'){ e.preventDefault(); document.getElementById('sbingo-cell-trigger-inp').focus(); }
+  if(e.key==='Escape') _sbCloseModal(false);
+});
+document.getElementById('sbingo-cell-trigger-inp').addEventListener('keydown', e => {
   if(e.key==='Enter'){ e.preventDefault(); _sbCloseModal(true); }
   if(e.key==='Escape') _sbCloseModal(false);
 });
