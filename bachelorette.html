@@ -386,8 +386,16 @@
     text-align:left;text-transform:uppercase;letter-spacing:.22em;font-size:11px;
     color:var(--wine);padding:14px 12px;border-bottom:2px solid var(--wine);font-weight:500;
   }
-  .budget-table th:nth-child(n+3){text-align:right}
+  .budget-table th:nth-child(5),.budget-table th:nth-child(6){text-align:right}
   .budget-table th:last-child{width:60px}
+  .split-cell{min-width:80px}
+  .split-chip{
+    display:inline-block;padding:2px 7px;border:1px solid var(--wine);border-radius:999px;
+    cursor:pointer;font-family:"DM Sans";font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    background:transparent;color:var(--wine);margin:2px 2px;opacity:.35;
+    transition:opacity .15s,background .15s,color .15s;
+  }
+  .split-chip.on{background:var(--wine);color:var(--cream);opacity:1}
   .budget-table tbody tr{border-bottom:1px solid var(--line);transition:background .2s}
   .budget-table tbody tr:hover{background:rgba(230,58,124,.04)}
   .budget-table td{padding:14px 12px;vertical-align:middle}
@@ -1269,7 +1277,9 @@
     .budget-table td.cat-cell{font-size:15px}
     /* Mobile: hide Notes (col 2); show Paid By (col 3) */
     .budget-table th:nth-child(2),
-    .budget-table td:nth-child(2){display:none}
+    .budget-table td:nth-child(2),
+    .budget-table th:nth-child(4),
+    .budget-table td:nth-child(4){display:none}
     .budget-table th:nth-child(3),
     .budget-table td:nth-child(3){display:table-cell}
     .paid-select{max-width:96px;font-size:11px;padding:3px 5px}
@@ -1972,6 +1982,7 @@
           <th>Category</th>
           <th>Notes</th>
           <th>Paid by</th>
+          <th>Split</th>
           <th>Amount $</th>
           <th></th>
         </tr>
@@ -3644,11 +3655,18 @@ function renderBudget(){
     const paidByIdx = (row.paidBy !== null && row.paidBy !== undefined && row.paidBy !== '') ? +row.paidBy : null;
     const paidOpts = `<option value="">— who paid? —</option>` +
       people.map((p,pi)=>`<option value="${pi}"${paidByIdx===pi?' selected':''}>${p}</option>`).join('');
+    const splitChips = people.length
+      ? people.map((p,pi)=>{
+          const on = !row.splitWith || row.splitWith.includes(pi);
+          return `<button class="split-chip${on?' on':''}" data-i="${i}" data-pi="${pi}" title="${p}">${p}</button>`;
+        }).join('')
+      : `<span style="font-size:11px;color:var(--line)">—</span>`;
     const tr=document.createElement('tr');
     tr.innerHTML=`
       <td class="cat-cell"><span class="editable" contenteditable="true" data-i="${i}" data-f="cat">${row.cat}</span></td>
       <td><span class="editable" contenteditable="true" data-i="${i}" data-f="note" style="font-size:13px;color:#6b324d">${row.note}</span></td>
       <td><select class="paid-select" data-i="${i}">${paidOpts}</select></td>
+      <td class="split-cell">${splitChips}</td>
       <td><span class="currency">$</span><span class="editable amount" contenteditable="true" data-i="${i}" data-f="base">${row.base}</span></td>
       <td><button class="delete-row" data-i="${i}" title="Delete row">×</button></td>
     `;
@@ -3707,6 +3725,20 @@ function attachBudgetEvents(){
       budget[i].paidBy = sel.value==='' ? null : +sel.value;
       saveBudget();
       renderSettlements();
+    });
+  });
+  budgetBody.querySelectorAll('.split-chip').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const i=+btn.dataset.i, pi=+btn.dataset.pi;
+      const row=budget[i];
+      // Materialise null (all) into an explicit array before toggling
+      if(!row.splitWith) row.splitWith=people.map((_,idx)=>idx);
+      const pos=row.splitWith.indexOf(pi);
+      if(pos===-1) row.splitWith.push(pi);
+      else row.splitWith.splice(pos,1);
+      // If everyone is included, collapse back to null
+      if(row.splitWith.length===people.length) row.splitWith=null;
+      saveBudget();renderBudget();renderSettlements();
     });
   });
   budgetBody.querySelectorAll('.delete-row').forEach(b=>{
@@ -3771,6 +3803,10 @@ function renderPeople(){
       budget.forEach(r=>{
         if(r.paidBy===idx)r.paidBy=null;
         else if(r.paidBy>idx)r.paidBy--;
+        if(r.splitWith){
+          r.splitWith=r.splitWith.filter(pi=>pi!==idx).map(pi=>pi>idx?pi-1:pi);
+          if(!r.splitWith.length||r.splitWith.length===people.length)r.splitWith=null;
+        }
       });
       savePeople();saveBudget();
       renderPeople();renderBudget();
@@ -3804,9 +3840,10 @@ function calcSettlements(){
     const paid=+row.paidBy;
     const amount=+row.base||0;
     if(!amount)return;
-    const share=amount/people.length;
+    const splitList=(row.splitWith&&row.splitWith.length)?row.splitWith:people.map((_,i)=>i);
+    const share=amount/splitList.length;
     bal[paid]+=amount;
-    for(let i=0;i<people.length;i++)bal[i]-=share;
+    for(const i of splitList)bal[i]-=share;
   });
   // Greedy settle-up
   const pos=[],neg=[];
